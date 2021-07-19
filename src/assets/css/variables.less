@@ -1,0 +1,50 @@
+/*
+  全局公用变量，mixin, extend
+ */
+ @color-default: #333333;
+ @color-secondary: #666666;
+ @color-info: #999999; // 注释文本：14px/12px  #99999
+ @color-hint: #f5a338; // 提醒文本：14px/12px  #f5a338
+ @color-warn: #f00000; // 警告文本：14px/12px  #f00000
+ @color-success: #75df70; // 成功文本：14px/12px  #75df70
+ 
+ @color-bg: #f4f4f5; // 背景颜色
+ @color-link: #099bff; // 文本链接颜色
+ 
+ @font-h1: 30px;
+ @font-h2: 18px;
+ @font-h3: 16px;
+ @font-default: 14px;
+ @font-small: 12px;
+ 
+ @border: 1px solid #f2f2f2;
+ @border-dash: 1px dashed #e6e6e6;
+ // block hover
+ @border-hover: 1px solid #f3f3f4;
+ @box-shadow: 0 0 10px 0 rgba(7, 13, 20, 0.12);
+ 
+ @transition: all ease-in-out 0.25s;
+ 
+ /* extend */
+ .tips-icon {
+   position: relative;
+   padding-left: 32px;
+   &:before {
+     content: "注";
+     display: block;
+     position: absolute;
+     padding-left: 5px;
+     margin: auto;
+     top: 0;
+     bottom: 0;
+     left: 0;
+     width: 27px;
+     height: 18px;
+     background: url("~@/assets/imgs/common/bubble.png") no-repeat;
+     background-size: cover;
+     font-size: 12px;
+     color: #fff;
+     line-height: 18px;
+   }
+ }
+ 

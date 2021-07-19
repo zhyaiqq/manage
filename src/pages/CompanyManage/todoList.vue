@@ -1,0 +1,176 @@
+<template>
+  <div class="todo">
+    <div class="search_top">
+      <el-form :inline="true" :model="formInline" class="left">
+        <el-form-item>
+          <el-select v-model="formInline.aready" placeholder="全部待办">
+            <el-option label="全部待办" value=""></el-option>
+            <el-option label="待处理" value="0"></el-option>
+            <el-option label="已处理" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="formInline.username" placeholder="请输入任务名称"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="search">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <el-table
+      ref="multipleTable"
+      :data="tableData"
+      tooltip-effect="dark"
+      style="width: 100%"
+      border
+      stripe>
+      <el-table-column
+        prop="name"
+        label="任务名称" />
+      <el-table-column
+        prop="is_deal"
+        label="状态">
+        <template slot-scope="scope">
+          <span v-if="scope.row && scope.row.is_deal" style="color: #409EFF">已处理</span>
+          <span v-else style="color: #3BB19C">待处理</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="deal_time"
+        label="更新时间" />
+      <el-table-column
+        prop="handle"
+        label="操作">
+        <template slot-scope="scope">
+          <el-button type="primary" @click="handle(0, scope.row)">详情</el-button>
+          <el-button type="primary" @click="handle(1, scope.row)" v-show="scope.row && scope.row.is_deal != 1">处理</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      @current-change="handleCurrentChange"
+      :current-page="page"
+      :page-size="pageSize"
+      :total="pageTotal"
+      layout="total, prev, pager, next, jumper"
+      background>
+    </el-pagination>
+    <el-dialog
+      title="待办事处理"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <el-form :model="form" ref="form" label-width="100px">
+        <el-form-item label="任务名称:" prop="id" required>
+          {{this.currentRow && this.currentRow.name}}
+        </el-form-item>
+        <el-form-item label="处理结果:" prop="type" required>
+          <el-select v-model="form.type" placeholder="请选择">
+            <el-option label="直接结束" :value="2" /> 
+            <el-option label="续期" :value="1" /> 
+          </el-select>
+        </el-form-item>
+        <el-form-item label="合同开始时间:" prop="contract_start_time" required>
+          <el-date-picker
+            v-model="form.contract_start_time"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="合同结束时间:" prop="contract_end_time" required>
+          <el-date-picker
+            v-model="form.contract_end_time"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import { getExpire, dealExpire } from  '@/api/todo.js'
+import { mapActions } from 'vuex'
+export default {
+  data () {
+    return {
+      formInline: {
+        aready: '',
+        username: ''
+      },
+      form: {
+        id: '',
+        type: 2,
+        contract_start_time: '',
+        contract_end_time: ''
+
+      },
+      tableData: [],
+      pageTotal: 0,
+      pageSize: 10,
+      page: 1,
+      currentRow: null,
+      dialogVisible: false
+    }
+  },
+  created () {
+    this.getExpire(1)
+  },
+  methods: {
+    ...mapActions("menu", ['getNewsNum']),
+    handle (type, data) {
+      console.log('-------', data)
+      switch (type) {
+        case 0:
+          this.$router.push(`/todolist/${data.id}`)
+          break;
+        case 1:
+          this.form.id = data.id
+          this.currentRow = data
+          this.dialogVisible = true
+          break;
+      }
+    },
+    search () {
+      this.getExpire(1)
+    },
+    handleCurrentChange (page) {
+      this.getExpire(page)
+    },
+    confirm () {
+      this.$refs.form.validate((valid) => {
+        if (valid) this.dealExpire()
+      })
+    },
+    // 获取待办事情列表
+    getExpire (page) {
+      getExpire({
+        ...this.formInline,
+        page: page,
+        page_num: 10
+      }).then(res => {
+        this.tableData = res.data
+        this.pageTotal = res.count
+        this.page = page
+      })
+    },
+    // 代办事情处理
+    dealExpire () {
+      dealExpire(this.form).then(res => {
+        if (res.code) {
+          this.dialogVisible = false
+          this.getExpire(this.page)
+          this.getNewsNum()
+          this.$message.success('处理成功')
+        }
+      })
+    }
+  }
+}
+</script>
