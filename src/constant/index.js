@@ -5,5 +5,7 @@ export const routerMap = {
   '193': {
     'path': ''
   },
-  '202': 
+  '178': {
+    'path': '/costRecord'
+  }
 }

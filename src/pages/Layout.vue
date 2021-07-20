@@ -12,19 +12,33 @@
     </div>
     <div class="cn">
       <div class="left">
-        <div class="layout_company" v-if="showCompany">
+        <!-- <div class="layout_company" v-if="showCompany">
           <div class="company">用工公司</div>
           <el-input v-model="company" placeholder="搜索公司" @input="search" />
           <ul class="company_menu">
             <li v-for="(item, index) in menuCompanyList" :key="index" @click="jump(0, item)" :class="{'active': item.id == companyId}">{{ item.name }}</li>
           </ul>
-        </div>
+        </div>-->
         <el-menu
           :default-active="menuActive"
-          unique-opened
+          :default-openeds="openMenus"
           active-text-color="#269cff"
-          class="left_menu">
-          <el-submenu :index="String(item.id)" v-for="(item, i) in menuList" :key="i">
+          class="left_menu"
+          @open="handleOpen"
+          @close="handleClose">
+          <el-submenu index="0" key="0" class="layout_company">
+            <div class="company">用工公司</div>
+            <div class="company_menu">
+              <el-input v-model="company" placeholder="搜索公司" @input="search" />
+              <el-menu-item
+                @click="jump(0, item1)"
+                :index="String(item1.id)" 
+                v-for="(item1, index) in menuCompanyList" :key="index">
+                {{ item1.name }}
+              </el-menu-item>
+            </div>
+          </el-submenu>
+          <el-submenu :index="String(item.id)" v-for="(item, i) in menuList" :key="i + 1">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>{{ item.title }}</span>
@@ -34,7 +48,7 @@
               :index="String(item1.id)" 
               v-for="(item1, index) in item.child" :key="index">
               {{ item1.title }}
-              <div class="count" v-show="item1.title == '待办事项' && todoCount > 0">{{todoCount}}</div>
+              <div class="count" v-show="item1.title == '待办事' && todoCount > 0">{{todoCount}}</div>
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -126,7 +140,8 @@ export default {
       companyList: [],
       company: '',
       companyId: '',
-      timer: null
+      timer: null,
+      openMenus: ['0']
     }
   },
   created () {
@@ -138,7 +153,12 @@ export default {
       this.menuActive = ''
     }
     this.getMen().then(() => {
-      this.searchCurrentMenu(this.menuList, meta.title)
+      let result = path.match(/\/\w+\/(\d+)/)
+      if (result) {
+        this.menuActive = result[1]
+      } else {
+        this.searchCurrentMenu(this.menuList, meta.title)
+      }
     })
     this.getUserInfo()
     this.getMenuCompany()
@@ -170,12 +190,20 @@ export default {
       for (let i = 0; i < arr.length; i++) {
         const element = arr[i];
         if (element.title === title) {
-          this.menuActive = element.id
+          this.menuActive = String(element.id)
           break;
         } else {
           if (element.child && element.child.length > 0) this.searchCurrentMenu(element.child, title)
         }
       }
+    },
+    handleOpen(key) {
+      if (key == 0) return
+      this.openMenus = ['0', key]
+    },
+    handleClose(key) {
+      if (key == 0) return
+      this.openMenus = ['0']
     },
     jump (type, item) {
       const { path, params: { id } } = this.$route
@@ -183,12 +211,6 @@ export default {
         case 0:
           if (id != item.id) {
             this.$router.push(`/companydetail/${item.id}`)
-            // 处理当前menu高亮
-            // let dom = document.querySelectorAll('.el-menu-item')
-            // for (let i = 0; i < dom.length; i++) {
-            //   dom[i].className="el-menu-item"
-            //   dom[i].style.color="#303133"
-            // }
           }
           break;
         case 1:
@@ -217,6 +239,7 @@ export default {
       }).then(() => {
         localStorage.removeItem('token')
         localStorage.removeItem('authRoute')
+        localStorage.removeItem('companyId')
         this.$router.push('/login') 
       })
     }
@@ -312,37 +335,21 @@ export default {
     }
   }
 }
+</style>
+<style lang="less">
 .layout_company {
   .company {
     height: 50px;
     line-height: 50px;
     padding: 0 45px;
+    font-size: 14px;
   }
-  .el-input {
-    width: 160px;
-    margin-left: 15px;
-    /deep/ .el-input__inner {
-      border-radius: 40px;
-      height: 30px;
-    }
+  .el-submenu__title {
+    display: none;
   }
   .company_menu {
     height: 200px;
-    overflow-y: scroll;
-    li {
-      height: 50px;
-      line-height: 50px;
-      padding: 0 45px;
-      cursor: pointer;
-      font-size: 14px;
-      color: #303133;
-      &:hover {
-        background-color: #ecf5ff;
-      }
-      &.active {
-        color: rgb(38, 156, 255);
-      }
-    }
+    overflow: hidden;
   }
 }
 </style>

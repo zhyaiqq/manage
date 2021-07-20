@@ -42,7 +42,7 @@
         prop="handle"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" @click="handle(0, scope.row)">详情</el-button>
+          <!--<el-button type="primary" @click="handle(0, scope.row)">详情</el-button>-->
           <el-button type="primary" @click="handle(1, scope.row)" v-show="scope.row && scope.row.is_deal != 1">处理</el-button>
         </template>
       </el-table-column>
@@ -69,7 +69,7 @@
             <el-option label="续期" :value="1" /> 
           </el-select>
         </el-form-item>
-        <el-form-item label="合同开始时间:" prop="contract_start_time" required>
+        <el-form-item label="合同开始时间:" prop="contract_start_time" required v-if="this.form.type == 1">
           <el-date-picker
             v-model="form.contract_start_time"
             type="date"
@@ -77,7 +77,7 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="合同结束时间:" prop="contract_end_time" required>
+        <el-form-item label="合同结束时间:" prop="contract_end_time" required v-if="this.form.type == 1">
           <el-date-picker
             v-model="form.contract_end_time"
             type="date"
@@ -162,6 +162,11 @@ export default {
     },
     // 代办事情处理
     dealExpire () {
+      let params = this.form
+      if (this.form.type == 2) {
+        delete params.contract_end_time
+        delete params.contract_start_time
+      }
       dealExpire(this.form).then(res => {
         if (res.code) {
           this.dialogVisible = false

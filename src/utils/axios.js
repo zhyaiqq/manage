@@ -12,6 +12,8 @@ const errorHandle = (status, message) => {
       // Cookies.remove('catl-token')
       // instance.defaults.headers.token = ''
       localStorage.removeItem('token')
+      localStorage.removeItem('authRoute')
+      localStorage.removeItem('companyId')
       router.push('/login')
       // Message.error('未授权，请重新登录(401)')
       Message.error(message)

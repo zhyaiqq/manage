@@ -97,6 +97,8 @@ export default {
       setUser(params).then(res => {
         if (res.code) {
           localStorage.removeItem('token')
+          localStorage.removeItem('authRoute')
+          localStorage.removeItem('companyId')
           this.$message.success('账户修改成功，请重新登录')
           setTimeout(() => {
             this.$router.push('./login')

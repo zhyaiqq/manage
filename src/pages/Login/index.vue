@@ -50,6 +50,11 @@ export default {
         ...this.form,
         uniqid: this.uniqid
       }).then(() => {
+        this.getMenuCompany({company_name: ''}).then(res=> {
+          if (res.code && res.data.length > 0) {
+            localStorage.setItem('companyId', res.data[0].id)
+          }
+        })
         this.getMen().then(res => {
           if (res.code && res.data.length > 0) {
             let authRoute = []
@@ -57,15 +62,35 @@ export default {
               if (item.url) {
                 authRoute.push(item.url)
               }
-              if (item.id == 130) {
-                authRoute.push('/companylist/:id')
-                authRoute.push('/companydetail/:id')
+              switch (item.id) {
+                case 130:
+                  authRoute.push('/companylist/:id')
+                  authRoute.push('/companydetail/:id')
+                  break;
+                case 178:
+                  authRoute.push('/costRecord')
+                  break;
+                case 217:
+                  authRoute.push('/auth')
+                  break;  
               }
             })
             if (authRoute.length > 0) {
               localStorage.setItem('authRoute', JSON.stringify(authRoute))
               generateRoutes(this.$router)
-              this.$router.push(authRoute[0])
+              let companyId = localStorage.getItem('companyId')
+              let result = authRoute.findIndex(item => item.match(/\/\w+\/:/))
+              let result2 = authRoute.findIndex(item => item.match(/^\/\w+$/))
+              if (result < result2) {
+                if (companyId) {
+                  let url = authRoute[result].replace(':id', companyId)
+                  this.$router.push(url)
+                } else {
+                  this.$router.push(authRoute[result2])
+                }
+              } else {
+                this.$router.push(authRoute[result2])
+              }
             }
           }
         })
@@ -77,6 +102,12 @@ export default {
         this.image = image
         this.uniqid = uniqid
       })
+    },
+    test () {
+      let authRoute = ['/companylist', '/companylist/:id', '/add/:id', '/ddd']
+      let result = authRoute.findIndex(item => item.match(/\/\w+\/:/))
+      let result2 = authRoute.findIndex(item => item.match(/^\/\w+$/))
+      console.log(result, result2 )
     }
   },
   created () {

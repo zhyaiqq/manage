@@ -29,17 +29,37 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const isLogin = localStorage.getItem('token')
+  let authList = localStorage.getItem('authRoute')
+  let companyId = localStorage.getItem('companyId')
   if (!isLogin) {
+    // 没有登录
     if (to.path != '/login') {
       router.push('/login')
     } else {
       next()
     }
   } else {
-    if (to.path == '/login') {
-      router.push('/companylist')
+    // 已经登录  判断是否有权限
+    if (authList) {
+      authList = JSON.parse(authList)
+      let url1 = authList.find(item => item.match(/^\/\w+$/))
+      if (to.path == '/login' || to.path == '/') {
+        if (authList[0].match(/\/\w+\/:/)) {
+          if (companyId) {
+            let url2 = authList[0].replace(':id', companyId)
+            router.push(url2)
+          } else {
+            router.push(url1)
+          }
+        } else {
+          router.push(url1)
+        }
+      } else {
+        next();
+      }
+    } else {
+      next()
     }
-    next();
   }
 });
 

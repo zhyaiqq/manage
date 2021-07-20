@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  publicPath: process.env.NODE_ENV === "production" ? "/web" : "/",
   devServer: {
     port: 8081,
     // overlay: {
@@ -9,7 +10,7 @@ module.exports = {
     // },
     proxy: {
       '/api': {
-        target: 'http://116.63.143.166:8001',
+        target: 'http://rlzypq.samowl.cn',
         changeOrigin: true, // 支持跨域设置
         pathRewrite: {
           // '^/api': '/',

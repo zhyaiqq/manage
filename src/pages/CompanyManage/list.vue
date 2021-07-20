@@ -71,7 +71,7 @@
           <el-button type="text" @click="handle(1, scope.row)">详情</el-button>
           <el-button type="text" @click="handle(2, scope.row)">编辑</el-button>
           <el-button type="text" @click="handle(3, scope.row)">账户充值</el-button>
-          <el-button type="text" @click="handle(4, scope.row)">费用记录</el-button>
+          <el-button type="text" @click="handle(4, scope.row)" v-show="isHasAuth(178)">费用记录</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -107,6 +107,7 @@
 
 <script>
 import { getCompanyList, banCompany, recharge } from '@/api/company.js'
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -128,6 +129,9 @@ export default {
   },
   created () {
     this.getDataList(1)
+  },
+  computed: {
+    ...mapState("menu", ['defaultAuth'])
   },
   methods: {
     handleSelectionChange () {
@@ -191,6 +195,9 @@ export default {
           this.dialogVisible = false
         }
       })
+    },
+    isHasAuth (auth_id) {
+      return this.defaultAuth && this.defaultAuth.some(item => item.id == auth_id)
     }
   }
 }

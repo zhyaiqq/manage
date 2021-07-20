@@ -46,14 +46,14 @@ const dynamic_routes = [
     path: '/todolist',
     component: () => import('@/pages/CompanyManage/todoList.vue'),
     meta: {
-      title: '待办事项'
+      title: '待办事'
     }
   },
   {
     path: '/todolist/:id',
     component: () => import('@/pages/CompanyManage/todoDetail.vue'),
     meta: {
-      title: '待办事项'
+      title: '待办事'
     }
   },
   {
@@ -115,6 +115,10 @@ export function generateRoutes(router) {
     let result = dynamic_routes.find(item1 => item1.path == item)
     return result
   })
+  router.addRoute('Home', {
+    path: '/',
+    redirect: newRoutes[0]
+  })
   newRoutes.forEach(route => {
     router.addRoute('Home', route)
   })
@@ -122,4 +126,5 @@ export function generateRoutes(router) {
     path: '*',
     redirect: '/404'
   })
+  console.log(router)
 }

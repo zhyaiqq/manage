@@ -10,39 +10,40 @@ const module = {
   getters: {
   },
   mutations: {
-    setCompany (state, data) {
+    setCompany(state, data) {
       state.companyList = data
     },
-    setMenuCompany (state, data) {
+    setMenuCompany(state, data) {
       state.menuCompanyList = data
     },
-    setStaffTypes (state, data) {
+    setStaffTypes(state, data) {
       state.staffTypeList = data
     }
   },
   actions: {
     // 获取所有公司
-    getAllCompany ({commit}) {
-      return axios.get("/api/getCompanyList", { 
+    getAllCompany({ commit }) {
+      return axios.get("/api/getCompanyList", {
         page: 1,
         page_num: 1000
-       }).then(res => {
-         if (res.code) {
+      }).then(res => {
+        if (res.code) {
           commit('setCompany', res.data)
-         }
+        }
       })
     },
     // 获取左侧菜单公司列表
-    getMenuCompany({commit}, params) {
+    getMenuCompany({ commit }, params) {
       return axios.get("/api/getMenuCompany", { params }).then(res => {
         if (res.code) {
           commit('setMenuCompany', res.data)
           return res
         }
+
       })
     },
     // 获取员工身份列表
-    getStaffList ({commit}) {
+    getStaffList({ commit }) {
       return axios.get("/api/getStaffList").then(res => {
         if (res.code) {
           commit('setStaffTypes', res.data)

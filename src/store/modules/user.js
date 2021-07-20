@@ -8,7 +8,7 @@ const module = {
   getters: {
   },
   mutations: {
-    setUser (state, data) {
+    setUser(state, data) {
       console.log(data)
       state.userInfo = data
     }
@@ -23,7 +23,7 @@ const module = {
       })
     },
     // 查询登录用户信息
-    getUserInfo ({commit}) {
+    getUserInfo({ commit }) {
       axios.get("/api/findLogUser").then(res => {
         if (res.code) {
           commit('setUser', res.data)
