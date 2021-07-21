@@ -75,6 +75,8 @@ export default {
       if (res.code) {
         this.imageUrl = res.data.http
         this.$message.success('上传成功')
+      } else {
+        this.$message.warning(res.info)
       }
     },
     submit () {

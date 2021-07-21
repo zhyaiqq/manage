@@ -7,6 +7,10 @@
       <div class="tag_title2">
         岗位{{index + 1}}
       </div>
+      <div @click="deleteJob(index)" class="delete" v-show="type == 1 && jobList.length > 1">
+        <i class="el-icon-remove-outline"></i>
+        删除岗位
+      </div>
       <el-form :model="item" :rules="workFormRules" :ref="'workForm' + index" label-width="400px">
         <el-form-item label="岗位名称：" prop="name" required>
           <el-input v-model="item.name" :disabled="type != 1" />
@@ -53,7 +57,14 @@ export default {
   },
   methods: {
     addJob () {
-      this.jobList.push(this.workForm)
+      this.jobList.push({
+        name: '',
+        ask: '',
+        treatment: ''
+      })
+    },
+    deleteJob (index) {
+      this.jobList.splice(index, 1)
     },
     async validate ()  {
       let flag = true
@@ -74,7 +85,8 @@ export default {
 <style lang="less" scoped>
 @import '@/assets/css/common.less';
 .cn {
-  padding-top: 60px;
+  position: relative;
+  margin-top: 60px;
   .add {
     padding-left: 400px;
     font-size: 14px;
@@ -84,6 +96,13 @@ export default {
       font-size: 18px;
       vertical-align: middle;
     }
+  }
+  .delete {
+    position: absolute;
+    top: 20px;
+    left: 800px;
+    font-size: 12px;
+    cursor: pointer;
   }
 }
 </style>

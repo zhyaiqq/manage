@@ -49,7 +49,12 @@ export default {
       this.login({
         ...this.form,
         uniqid: this.uniqid
-      }).then(() => {
+      }).then((res) => {
+        if (!res.code) {
+          this.getCode()
+          return
+        }
+        localStorage.setItem('token', res.data)
         this.getMenuCompany({company_name: ''}).then(res=> {
           if (res.code && res.data.length > 0) {
             localStorage.setItem('companyId', res.data[0].id)
@@ -102,12 +107,6 @@ export default {
         this.image = image
         this.uniqid = uniqid
       })
-    },
-    test () {
-      let authRoute = ['/companylist', '/companylist/:id', '/add/:id', '/ddd']
-      let result = authRoute.findIndex(item => item.match(/\/\w+\/:/))
-      let result2 = authRoute.findIndex(item => item.match(/^\/\w+$/))
-      console.log(result, result2 )
     }
   },
   created () {

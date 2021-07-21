@@ -45,13 +45,16 @@ const errorHandle = (status, message) => {
     case 505:
       Message.error('HTTP版本不受支持(505)')
       break
-    default:
+    case 0:
       Message.error(message)
+      break
   }
 }
 
 const instance = axios.create({
-  baseURL: '/',
+  baseURL: 'http://rlzypq.samowl.cn',
+  // baseURL: 'http://116.63.143.166:8001',
+  baseURL: '',
   timeout: 10000,
   withCredentials: false
 })
@@ -68,7 +71,8 @@ instance.interceptors.response.use(
   (res) => {
     if (res.headers['content-type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
       return Promise.resolve(res)
-    } else if (res.status === 200 && res.data?.code === 1) {
+    } else if (res.status === 200) {
+      errorHandle(res.data.code, res.data?.info)
       return Promise.resolve(res.data)
     } else {
       errorHandle(res.data.code, res.data?.info)

@@ -70,16 +70,14 @@ export default {
     }
   },
   methods: {
-    async validate ()  {
-      let result = await this.$refs.baseForm.validate()
-      return result
-    },
     uploadSuccess (res) {
       if (res.code) {
         this.baseForm.business = res.data.url
         this.file.url = res.data.url
         this.file.http = res.data.http
         this.$message.success('上传成功')
+      } else {
+        this.$message.warning(res.info)
       }
     }
   }

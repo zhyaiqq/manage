@@ -28,3 +28,24 @@ export function remakSalary(data) {
     return res
   })
 }
+
+// 获取薪资页按钮
+export function getSalaryButton(params) {
+  return axios.get("/api/getSalaryButton", { params }).then(res => {
+    return res
+  })
+}
+
+// 对账发放按钮-发放
+export function addSalaryButton(data) {
+  return axios.post("/api/addSalaryButton", data).then(res => {
+    return res
+  })
+}
+
+// 对账发放按钮-对账
+export function addSalaryButton2(data) {
+  return axios.post("/api/addSalaryButton2", data).then(res => {
+    return res
+  })
+}

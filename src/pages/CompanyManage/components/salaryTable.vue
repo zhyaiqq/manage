@@ -19,8 +19,8 @@
         </el-form-item>
       </el-form>
       <div class="right">
-        <el-button type="primary" @click="handle(5)">确认对账</el-button>
-        <el-button type="primary" @click="handle(6)">确认发放</el-button>
+        <el-button type="primary" @click="addSalaryButton2">确认对账</el-button>
+        <el-button type="primary" @click="addSalaryButton">确认发放</el-button>
         <el-upload
           v-show="isHasAuth(174)"
           style="display:inline-block; margin: 0 10px"
@@ -137,8 +137,8 @@
         prop="handle"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" @click="handle(3, scope.row)" v-show="isHasAuth(169)">编辑</el-button>
-          <el-button type="text" @click="handle(4, scope.row)" v-show="isHasAuth(172)">备注</el-button>
+          <el-button type="text" @click="handle(3, scope.row)" v-show="isHasAuth(169) && (scope.row.is_out != 1 || scope.row.is_record != 1)">编辑</el-button>
+          <el-button type="text" @click="handle(4, scope.row)" v-show="isHasAuth(172) && (scope.row.is_out != 1 || scope.row.is_record != 1)">备注</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -198,7 +198,7 @@
 </template>
 
 <script>
-import { getStaffSalaryList, editSalary, remakSalary } from '@/api/salary.js'
+import { getStaffSalaryList, editSalary, remakSalary, getSalaryButton, addSalaryButton, addSalaryButton2 } from '@/api/salary.js'
 import { mapState } from 'vuex'
 export default {
   data () {
@@ -228,6 +228,7 @@ export default {
   },
   props: ['companyId'],
   created () {
+    this.getSalaryButton()
     this.getStaffSalaryList(1)
   },
   computed: {
@@ -271,6 +272,8 @@ export default {
     uploadSuccess (res) {
       if (res.code) {
         this.getStaffSalaryList(this.page)
+      } else {
+        this.$message.warning(res.info)
       }
     },
     confirm () {
@@ -324,6 +327,39 @@ export default {
       this.$refs.downloadFile.target = '_blank';
       this.$refs.downloadFile.href = url
       this.$refs.downloadFile.click();
+    },
+    // 获取薪资页按钮
+    getSalaryButton () {
+      getSalaryButton({
+        company_id: this.companyId
+      }).then|(res => {
+        if (res.code) {
+          this.$message.success('陈工')
+        }
+      })
+       
+    },
+    // 对账发放按钮-发放
+    addSalaryButton () {
+      addSalaryButton({
+        company_id: this.companyId,
+        is: 1
+      }).then(res => {
+        if (res.code) {
+          this.$message.success('陈工')
+        }
+      })
+    },
+    // 对账发放按钮-对账
+    addSalaryButton2 () {
+      addSalaryButton2({
+        company_id: this.companyId,
+        is: 0
+      }).then(res => {
+        if (res.code) {
+          this.$message.success('陈工')
+        }
+      })
     },
     isHasAuth (auth_id) {
       return this.defaultAuth && this.defaultAuth.some(item => item.id == auth_id)

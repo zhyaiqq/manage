@@ -195,6 +195,8 @@ export default {
         this.file.http = res.data.http
         this.file.url = res.data.url
         this.$message.success('上传成功')
+      } else {
+        this.$message.warning(res.info)
       }
     },
     closeDialog () {

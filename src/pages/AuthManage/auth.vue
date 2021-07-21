@@ -80,7 +80,7 @@ export default {
         auth_id: ids
       }).then(res => {
         if (res.code) {
-          console.log('添加角色权限', res)
+          this.$message.success('添加角色权限成功')
         }
       })
     },
@@ -100,15 +100,15 @@ export default {
     save () {
       let ids = []
       this.authList && this.authList.map(item => {
-        if (item.select) {
-          ids.push(item.id)
-        }
         item.child && item.child.map(item1 => {
           if (item1.select) {
             ids.push(item1.id)
+            ids.push(item.id)
           }
         })
       })
+      ids = new Set(ids)
+      ids= [...ids]
       this.updateAuthRole(ids)
     }
   }

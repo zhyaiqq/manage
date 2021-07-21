@@ -467,6 +467,8 @@ export default {
           this.contractFile.http = res.data.http
         }
         this.$message.success('上传成功')
+      } else {
+        this.$message.warning(res.info)
       }
     },
     closeDialog (type) {

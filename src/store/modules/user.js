@@ -34,10 +34,7 @@ const module = {
     login({ state }, data) {
       console.log(state)
       return axios.post("/api/login", data).then(res => {
-        if (res.code) {
-          localStorage.setItem('token', res.data)
-          return res
-        }
+        return res
       })
     }
   },

@@ -82,7 +82,7 @@ export default {
           color: 'rgba(82, 193, 245, 1)'
         }
       ],
-      currentIndex: 3,
+      currentIndex: 0,
       baseInfo: null,
       jobList: null,
       isBack: false,

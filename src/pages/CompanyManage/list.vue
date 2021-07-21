@@ -194,6 +194,8 @@ export default {
       }).then(res => {
         if (res.code) {
           this.dialogVisible = false
+          this.getDataList(this.page)
+          this.$message.success('充值成功')
         }
       })
     },

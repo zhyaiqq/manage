@@ -19,17 +19,24 @@ export default {
   },
   components: { BaseForm, WorkForm },
   methods: {
-    async submit () {
-      let result = await this.$refs['baseComp'].validate()
-      console.log('结果', result)
+    submit () {
+      this.$refs['baseComp'].$refs.baseForm.validate((valid) => {
+        if (valid) {
+          this.addCompany()
+        }
+      })
+
+    },
+    // 新增公司
+    addCompany () {
       addCompany({
         ...this.$refs['baseComp'].baseForm,
         station: this.$refs['workComp'].jobList,
-        cost_time: 15,
         remark: ''
       }).then(res => {
         if (res.code) {
           this.$message.success('新增成功')
+          this.$router.push('/companylist')
         }
       })
     }
