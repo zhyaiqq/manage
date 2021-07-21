@@ -19,8 +19,18 @@
         </el-form-item>
       </el-form>
       <div class="right">
-        <el-button type="primary" @click="addSalaryButton2">确认对账</el-button>
-        <el-button type="primary" @click="addSalaryButton">确认发放</el-button>
+        <el-button type="primary" 
+          @click="() => {
+            if (item == 'record') {
+              this.addSalaryButto2()
+            } else {
+              this.addSalaryButton()
+            }
+          }" 
+          v-for="(item, index) in Object.keys(btns)"
+          :key="index">
+          {{item == 'record' ? '确认对账' : '确认发放'}}
+        </el-button>
         <el-upload
           v-show="isHasAuth(174)"
           style="display:inline-block; margin: 0 10px"
@@ -223,7 +233,8 @@ export default {
       dialogVisible: false,
       dialogVisible2: false,
       currentRow: null,
-      authorization: { 'Authorization': localStorage.getItem('token') }
+      authorization: { 'Authorization': localStorage.getItem('token') },
+      btns: {}
     }
   },
   props: ['companyId'],
@@ -332,9 +343,15 @@ export default {
     getSalaryButton () {
       getSalaryButton({
         company_id: this.companyId
-      }).then|(res => {
+      }).then(res => {
         if (res.code) {
-          this.$message.success('陈工')
+          let obj = {}
+          for(let i in res.data) {
+            if (res.data[i] == 1) {
+              obj[i] = res.data[i]
+            }
+          }
+          this.btns = obj
         }
       })
        
@@ -346,7 +363,7 @@ export default {
         is: 1
       }).then(res => {
         if (res.code) {
-          this.$message.success('陈工')
+          this.$message.success('操作成功')
         }
       })
     },
@@ -357,7 +374,7 @@ export default {
         is: 0
       }).then(res => {
         if (res.code) {
-          this.$message.success('陈工')
+          this.$message.success('操作成功')
         }
       })
     },
