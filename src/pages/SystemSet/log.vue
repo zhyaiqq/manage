@@ -3,13 +3,14 @@
     <div class="search_top">
       <el-form :inline="true" :model="formInline">
         <el-form-item label="操作人员：">
-            <el-select v-model="formInline.user_id" placeholder="请选择操作人员">
+            <el-select v-model="formInline.user_id" placeholder="请选择操作人员" @change="search">
               <el-option label="全部" value=""></el-option>
               <el-option :label="item.username" :value="item.id" v-for="(item, index) in userList" :key="index"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="操作日期：" prop="time">
           <el-date-picker
+            @change="search"
             v-model="formInline.time"
             type="daterange"
             value-format="yyyy-MM-dd"

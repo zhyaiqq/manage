@@ -3,7 +3,7 @@
     <div class="search_top">
       <el-form :inline="true" :model="formInline" class="left">
         <el-form-item>
-          <el-input v-model="formInline.company" placeholder="请输入公司名称"></el-input>
+          <el-input v-model="formInline.company" placeholder="请输入公司名称" @keyup.enter.native="search"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search">查询</el-button>

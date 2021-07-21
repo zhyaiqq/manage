@@ -3,14 +3,14 @@
     <div class="search_top">
       <el-form :inline="true" :model="formInline" class="left">
         <el-form-item>
-          <el-select v-model="formInline.aready" placeholder="全部待办">
+          <el-select v-model="formInline.aready" placeholder="全部待办" @change="search">
             <el-option label="全部待办" value=""></el-option>
             <el-option label="待处理" value="0"></el-option>
             <el-option label="已处理" value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="formInline.username" placeholder="请输入任务名称"></el-input>
+          <el-input v-model="formInline.username" placeholder="请输入任务名称" @keyup.enter.native="search"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search">查询</el-button>
