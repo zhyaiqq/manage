@@ -11,12 +11,10 @@
       </el-form>
     </div>
     <el-table
-      ref="multipleTable"
       :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
+      :header-cell-style="{textAlign: 'center'}"
+      :cell-style="{textAlign: 'center'}"
       border
-      stripe
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
@@ -43,8 +41,11 @@
         show-overflow-tooltip />
       <el-table-column
         prop="business"
-        label="营业执照"
-        show-overflow-tooltip />
+        label="营业执照">
+        <template slot-scope="scope">
+          <img :src="scope.row.business" style="width: 80px;height:80px"/>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="charge_person"
         label="负责人"

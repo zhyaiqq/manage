@@ -6,14 +6,16 @@
     <div class="cn">
       <div v-show="currentIndex === 0" style="position: relative">
         <div class="overview">
-          <div v-for="(item, index) in overviewList" :key="index" class="item" :style="'background: ' + item.color">
+          <div v-for="(item, index) in overviewList" :key="index" :class="`item item${index+1}`">
             <div>{{ item.title }}</div>
             <div class="bold">{{ item.value }}</div>
           </div>
         </div>
+        <!--
         <div class="back" v-show="isBack">
           <el-button type="primary" @click="back(0)">返回</el-button>
         </div>
+        -->
         <BaseForm :type="type" :formData="{...baseInfo}" ref="baseComp" />
         <div class="btn-wrap">
           <el-button type="success" @click="edit(0)" v-show="type == 1">提交</el-button>
@@ -21,9 +23,11 @@
         </div>
       </div>
       <div v-show="currentIndex === 1" style="marginTop: 30px; position: relative">
+        <!--
         <div class="back back1" v-show="isBack">
           <el-button type="primary" @click="back(1)">返回</el-button>
         </div>
+        -->
         <WorkForm :type="type" :formData="stationInfo" ref="workComp" />
         <div class="btn-wrap">
           <el-button type="success" @click="edit(2)" v-show="type == 1">提交</el-button>
@@ -239,6 +243,18 @@ export default {
       height: 100px;
       margin-right: 20px;
       color: #fff;
+      &.item1 {
+        background-image: linear-gradient(to right, #309EE1 , #55BCC0);
+      }
+      &.item2 {
+        background-image: linear-gradient(to right, #FC3B91 , #FF7B7E);
+      }
+      &.item3 {
+        background-image: linear-gradient(to right, #9959C6 , #C443D8);
+      }
+      &.item4 {
+        background-image: linear-gradient(to right, #F1A323 , #EDC11D);
+      }
       .bold {
         margin-top: 10px;
         font-weight: bold;

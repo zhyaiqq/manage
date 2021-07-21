@@ -24,16 +24,17 @@
       </el-form>
     </div>
     <el-table
-      ref="multipleTable"
       :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
+      :header-cell-style="{textAlign: 'center'}"
+      :cell-style="{textAlign: 'center'}"
+      border
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
         width="55">
       </el-table-column>
       <el-table-column
+        width="120px"
         prop="id"
         label="编号">
       </el-table-column>

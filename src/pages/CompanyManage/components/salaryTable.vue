@@ -6,18 +6,30 @@
           <el-input v-model="formInline.username" placeholder="请输入姓名"></el-input>
         </el-form-item>
         <el-form-item>
-        <el-button type="primary" @click="search">搜索</el-button>
+          <el-date-picker
+            class="select-date"
+            v-model="formInline.time"
+            type="month"
+            value-format="yyyy-MM"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="search">搜索</el-button>
         </el-form-item>
       </el-form>
       <div class="right">
+        <el-button type="primary" @click="handle(5)">确认对账</el-button>
+        <el-button type="primary" @click="handle(6)">确认发放</el-button>
         <el-upload
           v-show="isHasAuth(174)"
-          style="display:inline-block; margin-right: 20px"
-          action="/api/excel_salary"
+          style="display:inline-block; margin: 0 10px"
+          action="http://rlzypq.samowl.cn/api/excel_salary"
           :data="{'company_id': companyId}"
           name="excel"
           :headers="authorization"
-          :show-file-list="false">
+          :show-file-list="false"
+          :on-success="uploadSuccess">
           <el-button type="primary">导入薪资数据</el-button>
         </el-upload>
         <el-button type="primary" @click="handle(1)" v-show="isHasAuth(176)">导出薪资数据</el-button>
@@ -25,10 +37,10 @@
       </div>
     </div>
     <el-table
-      ref="multipleTable"
       :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
+      :header-cell-style="{textAlign: 'center'}"
+      :cell-style="{textAlign: 'center'}"
+      border
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
@@ -157,12 +169,7 @@
           <el-input v-model="form.bank" />
         </el-form-item>
         <el-form-item label="发薪日期:" prop="pay_date" required>
-          <el-date-picker
-            v-model="form.pay_date"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择日期">
-          </el-date-picker>
+          <el-input v-model="form.pay_date" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -197,7 +204,8 @@ export default {
   data () {
     return {
       formInline: {
-        username: ''
+        username: '',
+        time: ''
       },
       form: {
         'salary': '',
@@ -260,6 +268,11 @@ export default {
           break;
       }
     },
+    uploadSuccess (res) {
+      if (res.code) {
+        this.getStaffSalaryList(this.page)
+      }
+    },
     confirm () {
       this.$refs.form.validate((valid) => {
         if (valid) this.editSalary()
@@ -268,7 +281,7 @@ export default {
     // 员工薪资列表
     getStaffSalaryList (page) {
       getStaffSalaryList({
-        username: this.formInline.username,
+        ...this.formInline,
         company_id: this.companyId,
         page: page
       }).then(res => {
@@ -296,7 +309,7 @@ export default {
     // 编辑薪资信息
     editSalary () {
       editSalary({
-        psu_id: this.currentRow.psu_id,
+        psu_id: this.currentRow.user_id,
         ...this.form
       }).then(res => {
         if (res.code) {
@@ -319,6 +332,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.select-date .el-input__inner {
+  width: 200px !important;
+}
 </style>

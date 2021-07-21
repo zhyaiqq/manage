@@ -12,7 +12,7 @@
       <div class="right">
         <el-upload
           style="display:inline-block; margin-right: 20px"
-          action="/api/excel_staff"
+          action="http://rlzypq.samowl.cn/api/excel_staff"
           :data="{'company_id': companyId}"
           name="excel"
           :headers="authorization"
@@ -25,10 +25,10 @@
       </div>
     </div>
     <el-table
-      ref="multipleTable"
       :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
+      :header-cell-style="{textAlign: 'center'}"
+      :cell-style="{textAlign: 'center'}"
+      border
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
@@ -85,7 +85,9 @@
         <template slot-scope="scope">
           <el-button type="text" @click="handle(3, scope.row)" v-show="isHasAuth(141)">编辑</el-button>
           <el-button type="text" @click="handle(4, scope.row)" v-show="isHasAuth(142)">备注</el-button>
-          <el-button type="text" @click="handle(5, scope.row)" :disabled="scope.row.entry_status == 1" v-show="isHasAuth(143)">离职</el-button>
+          <el-button type="text" @click="handle(5, scope.row)" v-show="isHasAuth(143)">
+            {{scope.row && scope.row.entry_status == 2 ? '离职' : '在职'}}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -181,7 +183,7 @@
         <el-form-item label="上传简历:" prop="resume" required>
           <el-upload
             class="avatar-uploader"
-            action="/api/upFile"
+            action="http://rlzypq.samowl.cn/api/upFile"
             :show-file-list="false"
             name="image"
             :on-success="(res) => uploadSuccess(0, res)"
@@ -195,7 +197,7 @@
         <el-form-item label="上传报名表:" prop="report" required>
           <el-upload
             class="avatar-uploader"
-            action="/api/upFile"
+            action="http://rlzypq.samowl.cn/api/upFile"
             name="image"
             :show-file-list="false"
             :on-success="(res) => uploadSuccess(1, res)"
@@ -209,7 +211,7 @@
         <el-form-item label="上传合同:" prop="contract" required>
           <el-upload
             class="avatar-uploader"
-            action="/api/upFile"
+            action="http://rlzypq.samowl.cn/api/upFile"
             name="image"
             :show-file-list="false"
             :on-success="(res) => uploadSuccess(2, res)"
@@ -242,6 +244,32 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible2 = false">取 消</el-button>
         <el-button type="primary" @click="staffRemark">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="员工离职"
+      :visible.sync="dialogVisible3"
+      width="30%"
+      @closed="closeDialog(2)">
+      <el-form :model="form4" ref="form4" label-width="100px">
+        <el-form-item label="离职:" prop="entry_status" required>
+          <el-select v-model="form4.entry_status" placeholder="请选择">
+            <el-option label="完全离职" :value="1" /> 
+            <el-option label="半离职" :value="3" /> 
+          </el-select>
+          <div v-show="form4.entry_status == 1">五险一金均已停缴</div>
+        </el-form-item>
+        <el-form-item label="半离职:" prop="entry_status_list" required v-if="form4.entry_status == 3">
+         <el-checkbox-group v-model="form4.entry_status_list">
+            <el-checkbox :label="1">五险在缴</el-checkbox>
+            <el-checkbox :label="2">公积金在缴</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible3 = false">取 消</el-button>
+        <el-button type="primary" @click="quitConfirm">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -285,6 +313,10 @@ export default {
         staff_id: '',
         remark_string: ''
       },
+      form4: {
+        entry_status: '',
+        entry_status_list: []
+      },
       companyList: [],
       tableData: [],
       multipleSelection: [],
@@ -293,6 +325,7 @@ export default {
       pageTotal: 0,
       dialogVisible: false,
       dialogVisible2: false,
+      dialogVisible3: false,
       currentStaff: null,
       dialogTitle: '新增员工',
       authorization: { 'Authorization': localStorage.getItem('token') },
@@ -349,6 +382,7 @@ export default {
               for (let i = 0; i < subjects.length; i++) {
                 this.form[subjects[i]] = res.data.user_info[subjects[i]]
               }
+              console.log('eeeeeeeeeeeeeeeeeee22', this.form)
               this.form2.resume = res.data.user_info.resume
               this.form2.report = res.data.user_info.report
               this.form2.contract = res.data.user_info.contract
@@ -370,8 +404,16 @@ export default {
           this.dialogVisible2 = true
           break;
         case 5: 
-          // 离职
-          this.staffQuit(data.id)
+          if (data.entry_status == 2) {
+            // 离职
+            this.dialogVisible3 = true
+          } else {
+            // 在职
+            this.staffQuit({
+              staff_id: this.currentStaff.id,
+              entry_status: 2
+            })
+          }
           break;
         case 6:
           // 下载人员模板
@@ -387,6 +429,18 @@ export default {
       } else {
         this.editStaff()
       }
+    },
+    quitConfirm () {
+      console.log(this.form4)
+      let params = {
+        staff_id: this.currentStaff.id,
+        ...this.form4
+      }
+      this.$refs.form4.validate((valid) => {
+        if (valid) {
+          this.staffQuit(params)
+        }
+      })
     },
     uploadResume () {
     },
@@ -476,11 +530,10 @@ export default {
       })
     },
     // 员工离职
-    staffQuit (id) {
-      staffQuit ({
-        staff_id:id
-      }).then(res => {
+    staffQuit (params) {
+      staffQuit (params).then(res => {
         if (res.code) {
+          this.dialogVisible3 = false
           this.getDispatchList(this.page)
           this.$message.success('操作成功')
         }

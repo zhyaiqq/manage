@@ -20,10 +20,10 @@
       </div>
     </div>
     <el-table
-      ref="multipleTable"
       :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%">
+      :header-cell-style="{textAlign: 'center'}"
+      :cell-style="{textAlign: 'center'}"
+      border>
       <el-table-column
         prop="username"
         label="用户名称" />
@@ -96,7 +96,7 @@
         <el-form-item label="头像:" prop="role_id">
           <el-upload
             class="avatar-uploader"
-            action="/api/upFile"
+            action="http://rlzypq.samowl.cn/api/upFile"
             name="image"
             :show-file-list="false"
             :on-success="uploadSuccess">

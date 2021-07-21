@@ -8,6 +8,12 @@
       <div class="header_right">
         <div>{{userInfo && userInfo.username}}</div>
         <div class="right_btn" @click="onLogout">退出登录</div>
+        <!--<el-menu class="el-menu-demo" mode="horizontal">
+          <el-submenu index="1">
+            <template slot="title">{{userInfo && userInfo.username}}</template>
+            <el-menu-item index="2-1">退出登录</el-menu-item>
+          </el-submenu>
+        </el-menu>-->
       </div>
     </div>
     <div class="cn">
@@ -145,17 +151,15 @@ export default {
     }
   },
   created () {
-    const { meta, path, params: {id} } = this.$route
+    const { meta, path } = this.$route
+    console.log('eeeeeeeeeeeee', path)
     this.companyId = ''
     this.pageMeta = meta
-    if (path.includes('/companydetail/')) {
-      this.companyId = id
-      this.menuActive = ''
-    }
     this.getMen().then(() => {
-      let result = path.match(/\/\w+\/(\d+)/)
+      let result = path.match(/\/companydetail\/(\d+)/)
       if (result) {
         this.menuActive = result[1]
+        this.companyId = result[1]
       } else {
         this.searchCurrentMenu(this.menuList, meta.title)
       }
@@ -203,6 +207,7 @@ export default {
     },
     handleClose(key) {
       if (key == 0) return
+      console.log('rwerewrwerewrwerwerr-------')
       this.openMenus = ['0']
     },
     jump (type, item) {
@@ -344,12 +349,21 @@ export default {
     padding: 0 45px;
     font-size: 14px;
   }
+  .el-input {
+    width: 150px;
+    margin-left: 15px;
+    .el-input__inner {
+      height: 30px;
+      border-radius: 30px;
+    }
+  }
   .el-submenu__title {
     display: none;
   }
   .company_menu {
     height: 200px;
-    overflow: hidden;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 }
 </style>

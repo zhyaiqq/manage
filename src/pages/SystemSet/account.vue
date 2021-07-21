@@ -3,7 +3,7 @@
     <el-form-item>
       <el-upload
         class="avatar-uploader"
-        action="/api/upFile"
+        action="http://rlzypq.samowl.cn/api/upFile"
         name="image"
         :show-file-list="false"
         :on-success="uploadSuccess"

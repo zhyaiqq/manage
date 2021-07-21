@@ -19,7 +19,7 @@
         </div>
         <el-upload
           v-else
-          action="/api/upFile"
+          action="http://rlzypq.samowl.cn/api/upFile"
           :show-file-list="false"
           name="image"
           :on-success="uploadSuccess">

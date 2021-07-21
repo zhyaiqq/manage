@@ -15,10 +15,10 @@
       </div>
     </div>
     <el-table
-      ref="multipleTable"
       :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
+      :header-cell-style="{textAlign: 'center'}"
+      :cell-style="{textAlign: 'center'}"
+      border
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
@@ -80,8 +80,15 @@
         prop="base_time"
         label="参保时间" />
       <el-table-column
-        prop="type"
-        label="参保类型" />
+        prop="is_base"
+        label="参保类型">
+        <template slot-scope="scope">
+          {{ scope.row && scope.row.is_base  == 1 ? '基数参保': '工资参保' }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="is_stop_string"
+        label="社保状态" />
       <el-table-column
         prop="social_remark"
         label="备注"
@@ -94,7 +101,9 @@
         <template slot-scope="scope">
           <el-button type="text" @click="handle(3, scope.row)" v-show="isHasAuth(156)">编辑</el-button>
           <el-button type="text" @click="handle(4, scope.row)" v-show="isHasAuth(159)">备注</el-button>
-          <el-button type="text" @click="handle(5, scope.row)" :disabled="scope.row.is_stop == 0" v-show="isHasAuth(161)">停保</el-button>
+          <el-button type="text" @click="handle(5, scope.row)" v-show="isHasAuth(161)">
+            {{ scope.row && scope.row.is_stop == 0 ? '在保' : '停保'}}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -287,6 +296,7 @@ export default {
           for (let i = 0; i < subjects.length; i++) {
             this.form[subjects[i]] = data[subjects[i]]
           }
+          this.form.type = data.is_base
           this.dialogVisible = true
           break;
         case 4:
@@ -296,6 +306,7 @@ export default {
           // 备注
           break;
         case 5:
+          this.currentRow = data
           // 停保
           this.stop()
           break;

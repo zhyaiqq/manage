@@ -14,10 +14,10 @@
       </div>
     </div>
     <el-table
-      ref="multipleTable"
       :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
+      :header-cell-style="{textAlign: 'center'}"
+      :cell-style="{textAlign: 'center'}"
+      border
       @selection-change="handleSelectionChange">
       <el-table-column
         prop="name"

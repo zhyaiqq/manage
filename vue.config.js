@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "/web" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
   devServer: {
     port: 8081,
     // overlay: {
