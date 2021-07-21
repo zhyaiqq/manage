@@ -286,7 +286,7 @@ export default {
         case 2:
           // 导出社保名单
           this.$refs.downloadFile.target = '_blank';
-          this.$refs.downloadFile.href = `/api/getSocialListExcel?company_id=${this.companyId}&username=${this.formInline.username}&token=${localStorage.getItem('token')}`
+          this.$refs.downloadFile.href = `http://rlzypq.samowl.cn/api/getSocialListExcel?company_id=${this.companyId}&username=${this.formInline.username}&token=${localStorage.getItem('token')}`
           this.$refs.downloadFile.click();
           break;
         case 3:

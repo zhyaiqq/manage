@@ -247,7 +247,7 @@ export default {
       switch (type) {
         case 1:
           // 导出薪资数据
-          this.downFile(`/api/getStaffSalaryListExcel?company_id=${this.companyId}&username=${this.formInline.username}&token=${localStorage.getItem('token')}`)
+          this.downFile(`http://rlzypq.samowl.cn/api/getStaffSalaryListExcel?company_id=${this.companyId}&username=${this.formInline.username}&token=${localStorage.getItem('token')}`)
           break;
         case 2:
           // 下载薪资模板

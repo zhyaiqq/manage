@@ -373,7 +373,7 @@ export default {
           this.dialogVisible = true
           break;
         case 2:
-          this.downloadFile(`/api/getDispatchListExcel?company_id=${this.companyId}&username=${this.formInline.username}&token=${localStorage.getItem('token')}`)
+          this.downloadFile(`http://rlzypq.samowl.cn/api/getDispatchListExcel?company_id=${this.companyId}&username=${this.formInline.username}&token=${localStorage.getItem('token')}`)
           break;
         case 3:
           // 编辑
