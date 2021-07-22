@@ -18,12 +18,10 @@
       </el-form>
     </div>
     <el-table
-      ref="multipleTable"
       :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
-      border
-      stripe>
+      :header-cell-style="{textAlign: 'center'}"
+      :cell-style="{textAlign: 'center'}"
+      border>
       <el-table-column
         prop="name"
         label="任务名称" />
@@ -43,7 +41,7 @@
         label="操作">
         <template slot-scope="scope">
           <!--<el-button type="primary" @click="handle(0, scope.row)">详情</el-button>-->
-          <el-button type="primary" @click="handle(1, scope.row)" v-show="scope.row && scope.row.is_deal != 1">处理</el-button>
+          <el-button type="text" @click="handle(1, scope.row)" v-show="scope.row && scope.row.is_deal != 1">处理</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -150,8 +148,10 @@ export default {
     },
     // 获取待办事情列表
     getExpire (page) {
+      let params = this.formInline
+      if (params.aready == '') delete params.aready
       getExpire({
-        ...this.formInline,
+        ...params,
         page: page,
         page_num: 10
       }).then(res => {

@@ -166,7 +166,8 @@
     <el-dialog
       title="编辑薪资信息"
       :visible.sync="dialogVisible"
-      width="40%">
+      width="40%"
+      @closed="closeDialog(0)">
       <el-form :model="form" ref="form" label-width="200px">
         <el-form-item label="基本工资:" prop="salary" required>
           <el-input v-model="form.salary"/>
@@ -181,7 +182,7 @@
           <el-input v-model="form.bank" />
         </el-form-item>
         <el-form-item label="发薪日期:" prop="pay_date" required>
-          <el-input v-model="form.pay_date" />
+          <el-input-number v-model="form.pay_date" @change="handleChange" :min="1" :max="30" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -192,7 +193,8 @@
     <el-dialog
       title="薪资备注"
       :visible.sync="dialogVisible2"
-      width="30%">
+      width="30%"
+      @closed="closeDialog(1)">
       <el-form :model="form2" ref="form2" label-width="100px">
         <el-form-item label="姓名:" prop="psu_id" required>
           {{ currentRow && currentRow.name }}
@@ -224,7 +226,7 @@ export default {
         'achievements': '',
         'bank': '',
         'bank_card': '',
-        'pay_date': ''
+        'pay_date': 15
       },
       form2: {},
       tableData: [],
@@ -293,6 +295,18 @@ export default {
       this.$refs.form.validate((valid) => {
         if (valid) this.editSalary()
       })
+    },
+    handleChange (value) {
+      this.form.pay_date = value
+    },
+    closeDialog (type) {
+      if (type) {
+        this.form2 = this.$options.data().form2
+        this.$refs.form2 && this.$refs.form2.resetFields()
+        return
+      }
+      this.form = this.$options.data().form
+      this.$refs.form.resetFields()
     },
     // 员工薪资列表
     getStaffSalaryList (page) {
@@ -390,5 +404,8 @@ export default {
 <style>
 .select-date .el-input__inner {
   width: 200px !important;
+}
+.el-input-number {
+  width: auto;
 }
 </style>

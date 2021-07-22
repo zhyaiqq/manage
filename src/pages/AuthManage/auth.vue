@@ -1,8 +1,8 @@
 <template>
   <div class="auth_wrap">
     <div class="top">当前角色：{{role_name}}</div>
-    <div v-for="(item, index) in authList" :key="index" class="auth_group">
-      <div class="item_head">
+    <el-card v-for="(item, index) in authList" :key="index" class="auth_group">
+      <div slot="header" class="clearfix">
         <el-checkbox v-model="item.select" @change="change(item)">{{item.title}}</el-checkbox>
       </div>
       <ul class="item_wrap">
@@ -14,7 +14,7 @@
           </el-checkbox>
         </li>
       </ul>
-    </div>
+    </el-card>
     <div class="btns">
       <el-button type="primary" @click="allSelect">全选</el-button>
       <el-button type="primary" @click="save">保存</el-button>
@@ -118,12 +118,10 @@ export default {
 <style lang="less" scoped>
 .auth_wrap {
   .top {
-    margin: 40px 0;
+    margin-bottom: 20px;
   }
   .auth_group {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
   }
   .item_head {
     height: 50px;

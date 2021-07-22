@@ -35,7 +35,7 @@
         <el-input v-model="baseForm.tel" :disabled="type != 1" />
       </el-form-item>
       <el-form-item label="发薪日期：" prop="cost_time" required>
-        <el-input v-model="baseForm.cost_time" :disabled="type != 1" />
+        <el-input-number v-model="baseForm.cost_time" @change="handleChange" :min="1" :max="30" :disabled="type != 1" />
       </el-form-item>
     </el-form>
   </el-card>
@@ -70,6 +70,9 @@ export default {
     }
   },
   methods: {
+    handleChange (value) {
+      this.baseForm.cost_time = value
+    },
     uploadSuccess (res) {
       if (res.code) {
         this.baseForm.business = res.data.url

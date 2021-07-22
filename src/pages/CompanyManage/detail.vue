@@ -1,51 +1,46 @@
 <template>
   <div class="company_detail">
-    <!--<div class="top" v-if="companyAuth && companyAuth.child.length > 0">
-      <el-button type="primary" :class="{'current': currentIndex == index}" @click="changeTab(index)" v-for="(item, index) in companyAuth.child" :key="index">{{ item.title }}</el-button>
-    </div>-->
-    <div class="cn">
-      <el-tabs v-model="currentIndex" @tab-click="changeTab">
-        <el-tab-pane label="基础信息" name="0">
-          <div style="position: relative" v-show="currentIndex == 0">
-            <div class="overview">
-              <div v-for="(item, index) in overviewList" :key="index" :class="`item item${index+1}`">
-                <div>{{ item.title }}</div>
-                <div class="bold">{{ item.value }}</div>
-              </div>
-            </div>
-            <BaseForm :type="type" :formData="{...baseInfo}" ref="baseComp" />
-            <div>
-              <el-button type="primary" @click="edit(0)" v-show="type == 1">提交</el-button>
-              <el-button type="primary" @click="edit(1)" v-show="type == 0">编辑</el-button>
+    <el-tabs v-model="currentIndex" @tab-click="changeTab" v-if="companyAuth && companyAuth.child.length > 0">
+      <el-tab-pane label="基础信息" name="0" v-show="isShowTab(companyAuth.child,'基础信息')">
+        <div style="position: relative">
+          <div class="overview">
+            <div v-for="(item, index) in overviewList" :key="index" :class="`item item${index+1}`">
+              <div>{{ item.title }}</div>
+              <div class="bold">{{ item.value }}</div>
             </div>
           </div>
-        </el-tab-pane>
-        <el-tab-pane label="岗位需求" name="1">
-          <div style="marginTop: 30px; position: relative" v-show="currentIndex == 1">
-            <WorkForm :type="type" :formData="stationInfo" ref="workComp" />
-            <div>
-              <el-button type="primary" @click="edit(2)" v-show="type == 1">提交</el-button>
-              <el-button type="primary" @click="edit(3)" v-show="type == 0">编辑</el-button>
-            </div>
+          <BaseForm :type="type" :formData="{...baseInfo}" ref="baseComp" />
+          <div>
+            <el-button type="primary" @click="edit(0)" v-show="type == 1">提交</el-button>
+            <el-button type="primary" @click="edit(1)" v-show="type == 0">编辑</el-button>
           </div>
-        </el-tab-pane>
-        <el-tab-pane label="派遣人员" name="2">
-          <DispatchTable :companyId="id" v-if="currentIndex == 2" />
-        </el-tab-pane>
-        <el-tab-pane label="社保名单" name="3">
-          <SocialTable :companyId="id" v-if="currentIndex == 3" />
-        </el-tab-pane>
-        <el-tab-pane label="员工薪资" name="4">
-          <SalaryTable :companyId="id" v-if="currentIndex == 4" />
-        </el-tab-pane>
-        <el-tab-pane label="扣费记录" name="5">
-          <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" v-if="currentIndex == 5" />
-        </el-tab-pane>
-        <el-tab-pane label="补偿金" name="6">
-          <CompensationTable :companyId="id" v-if="currentIndex == 6" />
-        </el-tab-pane>
-      </el-tabs>
-    </div>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="岗位需求" name="1" v-show="isShowTab(companyAuth.child,'岗位需求')">
+        <div style="marginTop: 30px; position: relative" v-show="currentIndex == '1'">
+          <WorkForm :type="type" :formData="stationInfo" ref="workComp" />
+          <div>
+            <el-button type="primary" @click="edit(2)" v-show="type == 1">提交</el-button>
+            <el-button type="primary" @click="edit(3)" v-show="type == 0">编辑</el-button>
+          </div>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="派遣人员" name="2" v-show="isShowTab(companyAuth.child,'派遣人员')">
+        <DispatchTable :companyId="id" v-if="currentIndex == 2" />
+      </el-tab-pane>
+      <el-tab-pane label="社保名单" name="3" v-show="isShowTab(companyAuth.child,'社保名单')">
+        <SocialTable :companyId="id" v-if="currentIndex == 3" />
+      </el-tab-pane>
+      <el-tab-pane label="员工薪资" name="4" v-show="isShowTab(companyAuth.child,'员工薪资')">
+        <SalaryTable :companyId="id" v-if="currentIndex == 4" />
+      </el-tab-pane>
+      <el-tab-pane label="扣费记录" name="5" v-show="isShowTab(companyAuth.child,'扣费记录')">
+        <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" v-if="currentIndex == 5" />
+      </el-tab-pane>
+      <el-tab-pane label="补偿金" name="6" v-show="isShowTab(companyAuth.child,'补偿金')">
+        <CompensationTable :companyId="id" v-if="currentIndex == 6" />
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -132,6 +127,12 @@ export default {
       this.getCompanyInfo()
       this.getStationInfo()
       this.getOverview()
+    },
+    companyAuth () {
+      if (this.companyAuth && this.companyAuth.child.length > 0) {
+        console.log('erwrewrwerwer---------------', this.companyAuth)
+        // this.currentIndex = '1'
+      }
     }
   },
   methods: {
@@ -141,6 +142,9 @@ export default {
       this.pageMeta = this.$route.meta
       this.isBack = false
       this.type = this.pageMeta.title == '公司列表' ? this.type : 0
+    },
+    isShowTab (arr, title) {
+      return arr.find(item => item.title == title)
     },
     // 返回
     back (type) {
@@ -223,19 +227,6 @@ export default {
 
 <style lang="less" scoped>
 .company_detail {
-  .top {
-    padding: 20px 0;
-    display: flex;
-    flex-direction: row;
-    .el-button {
-      width: 140px;
-      margin-right: 40px;
-      &.current {
-        background: #66b1ff;
-        border-color: #66b1ff;
-      }
-    }
-  }
   .overview {
     display: flex;
     margin-top: 30px;
