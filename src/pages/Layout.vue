@@ -59,9 +59,11 @@
           </el-submenu>
         </el-menu>
       </div>
-      <div class="main_cn">
+      <div class="main_cn" ref="mainCn">
         <div class="sub_header" v-show="!(pageMeta && pageMeta.hideHead)">{{ pageMeta ? (pageMeta.title === '角色管理' ? '角色成员' : pageMeta.title) : '' }}</div>
-        <router-view />
+        <el-card :class="cardClass">
+          <router-view />
+        </el-card>
       </div>
     </div>
   </div>
@@ -147,10 +149,12 @@ export default {
       company: '',
       companyId: '',
       timer: null,
-      openMenus: ['0']
+      openMenus: ['0'],
+      cardClass: ''
     }
   },
   created () {
+    this.computedClass()
     const { meta, path } = this.$route
     console.log('eeeeeeeeeeeee', path)
     this.companyId = ''
@@ -173,10 +177,11 @@ export default {
   computed: {
     ...mapState("company", ['menuCompanyList']),
     ...mapState("user", ['userInfo']),
-    ...mapState("menu", ['todoCount', 'authMenuList', 'menuList', 'showCompany']),
+    ...mapState("menu", ['todoCount', 'authMenuList', 'menuList', 'showCompany'])
   },
   watch: {
     $route(to) {
+      this.computedClass()
       const { meta, path, params: {id} } = to
       this.companyId = ''
       this.pageMeta = meta
@@ -190,6 +195,13 @@ export default {
     ...mapActions('company', ['getMenuCompany', 'getStaffList']),
     ...mapActions('user', ['getUserInfo']),
     ...mapActions("menu", ['getExcelUrl', 'getNewsNum', 'getMen']),
+    computedClass () {
+      if (this.pageMeta && this.pageMeta.hideHead) {
+        this.cardClass = 'card1'
+      } else {
+        this.cardClass = 'card2'
+      }
+    },
     searchCurrentMenu (arr, title) {
       for (let i = 0; i < arr.length; i++) {
         const element = arr[i];
@@ -317,7 +329,6 @@ export default {
   }
   .main_cn {
      width: 100%;
-     padding: 0 30px;
      overflow-y: scroll;
     .sub_header {
       height: 50px;
@@ -325,7 +336,6 @@ export default {
       font-weight: bold;
       color: #666;
       padding-left: 30px;
-      border-bottom: 1px solid #ccc;
       background-color: #fff;
       position: relative;
       &::after {
@@ -337,6 +347,14 @@ export default {
         height: 16px;
         background-color: @primaryColor1;
       }
+    }
+    .card1 {
+      margin: 15px;
+      min-height: calc(100% - 35px)
+    }
+    .card2 {
+      margin: 15px;
+      min-height: calc(100% - 85px)
     }
   }
 }

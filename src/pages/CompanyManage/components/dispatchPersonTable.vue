@@ -9,20 +9,20 @@
         <el-button type="primary" @click="search">搜索</el-button>
         </el-form-item>
       </el-form>
-      <div class="right">
-        <el-upload
-          style="display:inline-block; margin-right: 20px"
-          action="http://rlzypq.samowl.cn/api/excel_staff"
-          :data="{'company_id': companyId}"
-          name="excel"
-          :headers="authorization"
-          :show-file-list="false">
-          <el-button type="primary" v-show="isHasAuth(149)">导入人员数据</el-button>
-        </el-upload>
-        <el-button type="primary" @click="handle(1)" v-show="isHasAuth(147)">新增员工</el-button>
-        <el-button type="primary" @click="handle(2)" v-show="isHasAuth(151)">导出人员数据</el-button>
-        <el-button type="primary" @click="handle(6)" v-show="isHasAuth(151)">下载人员模板</el-button>
-      </div>
+    </div>
+    <div class="table-btns">
+      <el-upload
+        style="display:inline-block; margin-right: 20px"
+        action="http://rlzypq.samowl.cn/api/excel_staff"
+        :data="{'company_id': companyId}"
+        name="excel"
+        :headers="authorization"
+        :show-file-list="false">
+        <el-button type="primary" v-show="isHasAuth(149)" size="small">导入人员数据</el-button>
+      </el-upload>
+      <el-button type="primary" @click="handle(1)" v-show="isHasAuth(147)" size="small">新增员工</el-button>
+      <el-button type="primary" @click="handle(2)" v-show="isHasAuth(151)" size="small">导出人员数据</el-button>
+      <el-button type="primary" @click="handle(6)" v-show="isHasAuth(151)" size="small">下载人员模板</el-button>
     </div>
     <el-table
       :data="tableData"

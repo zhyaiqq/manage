@@ -1,9 +1,9 @@
 <template>
-  <div class="base_info">
-    <div class="tag_title1">
-      公司基础信息新增
+  <el-card class="box-card" style="margin: 15px 0;">
+    <div slot="header" class="clearfix">
+      <span>公司基础信息新增</span>
     </div>
-    <el-form :model="baseForm" :rules="baseFormRules" ref="baseForm" label-width="400px">
+    <el-form :model="baseForm" :rules="baseFormRules" ref="baseForm" label-width="100px">
       <el-form-item label="公司名称：" prop="name" required>
         <el-input v-model="baseForm.name" :disabled="type != 1" />
       </el-form-item>
@@ -38,7 +38,7 @@
         <el-input v-model="baseForm.cost_time" :disabled="type != 1" />
       </el-form-item>
     </el-form>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -83,5 +83,3 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
-</style>

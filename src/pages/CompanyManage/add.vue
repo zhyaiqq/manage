@@ -2,9 +2,7 @@
   <div class="add_company">
     <BaseForm ref="baseComp" type="1" />
     <WorkForm ref="workComp" type="1" />
-    <div class="bottom-btn">
-      <el-button type="success" @click="submit">提交</el-button>
-    </div>
+    <el-button type="primary" @click="submit">提交</el-button>
   </div>
 </template>
 
@@ -46,7 +44,6 @@ export default {
 
 <style scoped lang="less">
 .add_company {
-  padding-top: 30px;
 }
 .el-input {
   width: 250px;

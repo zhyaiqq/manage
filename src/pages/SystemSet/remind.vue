@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="form" :rules="formRules" ref="form" label-width="400px" style="marginTop: 40px;">
+  <el-form :model="form" :rules="formRules" ref="form" label-width="140px" style="marginTop: 40px;">
     <el-form-item label="退休提醒（退休前）:" prop="base_retire" required>
       <el-input v-model="form.base_retire"></el-input>
     </el-form-item>
@@ -7,9 +7,7 @@
       <el-input v-model="form.base_expire"></el-input>
     </el-form-item>
     <el-form-item>
-      <div class="form-item-btn">
-        <el-button type="success" @click="submit">提交</el-button>
-      </div>
+      <el-button type="primary" @click="submit">提交</el-button>
     </el-form-item>
   </el-form>
 </template>

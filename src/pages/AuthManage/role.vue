@@ -9,9 +9,9 @@
           <el-button type="primary" @click="search">查询</el-button>
         </el-form-item>
       </el-form>
-      <div class="right">
-        <el-button type="primary" @click="handle(0)" v-show="isHasAuth(210)">新增角色</el-button>
-      </div>
+    </div>
+    <div class="table-btns">
+      <el-button type="primary" @click="handle(0)" v-show="isHasAuth(210)" size="small">新增角色</el-button>
     </div>
     <el-table
       :data="tableData"

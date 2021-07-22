@@ -18,33 +18,33 @@
           <el-button type="primary" @click="search">搜索</el-button>
         </el-form-item>
       </el-form>
-      <div class="right">
-        <el-button type="primary" 
-          @click="() => {
-            if (item == 'record') {
-              this.addSalaryButto2()
-            } else {
-              this.addSalaryButton()
-            }
-          }" 
-          v-for="(item, index) in Object.keys(btns)"
-          :key="index">
-          {{item == 'record' ? '确认对账' : '确认发放'}}
-        </el-button>
-        <el-upload
-          v-show="isHasAuth(174)"
-          style="display:inline-block; margin: 0 10px"
-          action="http://rlzypq.samowl.cn/api/excel_salary"
-          :data="{'company_id': companyId}"
-          name="excel"
-          :headers="authorization"
-          :show-file-list="false"
-          :on-success="uploadSuccess">
-          <el-button type="primary">导入薪资数据</el-button>
-        </el-upload>
-        <el-button type="primary" @click="handle(1)" v-show="isHasAuth(176)">导出薪资数据</el-button>
-        <el-button type="primary" @click="handle(2)" v-show="isHasAuth(174)">下载薪资模板</el-button>
-      </div>
+    </div>
+    <div class="table-btns">
+      <el-button type="primary" 
+        @click="() => {
+          if (item == 'record') {
+            this.addSalaryButto2()
+          } else {
+            this.addSalaryButton()
+          }
+        }" 
+        v-for="(item, index) in Object.keys(btns)"
+        :key="index">
+        {{item == 'record' ? '确认对账' : '确认发放'}}
+      </el-button>
+      <el-upload
+        v-show="isHasAuth(174)"
+        style="display:inline-block; margin: 0 10px"
+        action="http://rlzypq.samowl.cn/api/excel_salary"
+        :data="{'company_id': companyId}"
+        name="excel"
+        :headers="authorization"
+        :show-file-list="false"
+        :on-success="uploadSuccess">
+        <el-button type="primary" size="small">导入薪资数据</el-button>
+      </el-upload>
+      <el-button type="primary" @click="handle(1)" v-show="isHasAuth(176)" size="small">导出薪资数据</el-button>
+      <el-button type="primary" @click="handle(2)" v-show="isHasAuth(174)" size="small">下载薪资模板</el-button>
     </div>
     <el-table
       :data="tableData"

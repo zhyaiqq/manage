@@ -1,32 +1,31 @@
 <template>
-  <div class="work">
-    <div class="tag_title1">
-      公司岗位需求编辑
-    </div>
-    <div class="cn" v-for="(item, index) in jobList" :key="index">
-      <div class="tag_title2">
-        岗位{{index + 1}}
+  <div class="work_form">
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>公司岗位需求编辑</span>
       </div>
-      <div @click="deleteJob(index)" class="delete" v-show="type == 1 && jobList.length > 1">
-        <i class="el-icon-remove-outline"></i>
-        删除岗位
+      <el-card class="box-card-item" v-for="(item, index) in jobList" :key="index">
+        <div slot="header" class="clearfix">
+          <span>岗位{{index + 1}}</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="deleteJob(index)" v-show="jobList.length > 1">删除岗位</el-button>
+        </div>
+        <el-form :model="item" :rules="workFormRules" :ref="'workForm' + index" label-width="100px">
+          <el-form-item label="岗位名称：" prop="name" required>
+            <el-input v-model="item.name" :disabled="type != 1" />
+          </el-form-item>
+          <el-form-item label="岗位要求：" prop="ask" required>
+            <el-input v-model="item.ask" :disabled="type != 1" />
+          </el-form-item>
+          <el-form-item label="工资待遇：" prop="treatment" required>
+            <el-input v-model="item.treatment" :disabled="type != 1" />
+          </el-form-item>
+        </el-form>
+      </el-card>
+      <div @click="addJob" class="add" v-show="type == 1">
+        <i class="el-icon-circle-plus-outline"></i>
+        岗位需求
       </div>
-      <el-form :model="item" :rules="workFormRules" :ref="'workForm' + index" label-width="400px">
-        <el-form-item label="岗位名称：" prop="name" required>
-          <el-input v-model="item.name" :disabled="type != 1" />
-        </el-form-item>
-        <el-form-item label="岗位要求：" prop="ask" required>
-          <el-input v-model="item.ask" :disabled="type != 1" />
-        </el-form-item>
-        <el-form-item label="工资待遇：" prop="treatment" required>
-          <el-input v-model="item.treatment" :disabled="type != 1" />
-        </el-form-item>
-      </el-form>
-    </div>
-    <div @click="addJob" class="add" v-show="type == 1">
-      <i class="el-icon-circle-plus-outline"></i>
-      岗位需求
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -84,11 +83,19 @@ export default {
 
 <style lang="less" scoped>
 @import '@/assets/css/common.less';
-.cn {
-  position: relative;
-  margin-top: 60px;
+.work_form {
+  .title {
+    font-weight: bold;
+  }
+  .box-card {
+    margin: 15px 0;
+  }
+  .box-card-item {
+    width: 700px;
+    margin-bottom: 15px;
+  }
   .add {
-    padding-left: 400px;
+    padding-left: 100px;
     font-size: 14px;
     color: @primaryColor2;
     cursor: pointer;

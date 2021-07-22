@@ -9,9 +9,9 @@
         <el-button type="primary" @click="search">搜索</el-button>
         </el-form-item>
       </el-form>
-      <div class="right">
-        <el-button type="primary" @click="handle(1)"  v-show="isHasAuth(186)">新增补偿</el-button>
-      </div>
+    </div>
+    <div class="table-btns">
+      <el-button type="primary" @click="handle(1)"  v-show="isHasAuth(186)" size="small">新增补偿</el-button>
     </div>
     <el-table
       :data="tableData"

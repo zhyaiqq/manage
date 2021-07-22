@@ -1,44 +1,50 @@
 <template>
   <div class="company_detail">
-    <div class="top" v-if="companyAuth && companyAuth.child.length > 0">
+    <!--<div class="top" v-if="companyAuth && companyAuth.child.length > 0">
       <el-button type="primary" :class="{'current': currentIndex == index}" @click="changeTab(index)" v-for="(item, index) in companyAuth.child" :key="index">{{ item.title }}</el-button>
-    </div>
+    </div>-->
     <div class="cn">
-      <div v-show="currentIndex === 0" style="position: relative">
-        <div class="overview">
-          <div v-for="(item, index) in overviewList" :key="index" :class="`item item${index+1}`">
-            <div>{{ item.title }}</div>
-            <div class="bold">{{ item.value }}</div>
+      <el-tabs v-model="currentIndex" @tab-click="changeTab">
+        <el-tab-pane label="基础信息" name="0">
+          <div style="position: relative">
+            <div class="overview">
+              <div v-for="(item, index) in overviewList" :key="index" :class="`item item${index+1}`">
+                <div>{{ item.title }}</div>
+                <div class="bold">{{ item.value }}</div>
+              </div>
+            </div>
+            <BaseForm :type="type" :formData="{...baseInfo}" ref="baseComp" />
+            <div>
+              <el-button type="primary" @click="edit(0)" v-show="type == 1">提交</el-button>
+              <el-button type="primary" @click="edit(1)" v-show="type == 0">编辑</el-button>
+            </div>
           </div>
-        </div>
-        <!--
-        <div class="back" v-show="isBack">
-          <el-button type="primary" @click="back(0)">返回</el-button>
-        </div>
-        -->
-        <BaseForm :type="type" :formData="{...baseInfo}" ref="baseComp" />
-        <div class="btn-wrap">
-          <el-button type="success" @click="edit(0)" v-show="type == 1">提交</el-button>
-          <el-button type="success" @click="edit(1)" v-show="type == 0">编辑</el-button>
-        </div>
-      </div>
-      <div v-show="currentIndex === 1" style="marginTop: 30px; position: relative">
-        <!--
-        <div class="back back1" v-show="isBack">
-          <el-button type="primary" @click="back(1)">返回</el-button>
-        </div>
-        -->
-        <WorkForm :type="type" :formData="stationInfo" ref="workComp" />
-        <div class="btn-wrap">
-          <el-button type="success" @click="edit(2)" v-show="type == 1">提交</el-button>
-          <el-button type="success" @click="edit(3)" v-show="type == 0">编辑</el-button>
-        </div>
-      </div>
-      <DispatchTable v-if="currentIndex === 2" :companyId="id" />
-      <SocialTable v-if="currentIndex === 3" :companyId="id" />
-      <SalaryTable v-if="currentIndex === 4" :companyId="id" />
-      <ChargeTable v-if="currentIndex === 5" :companyId="id" :companyName="baseInfo && baseInfo.name" />
-      <CompensationTable v-if="currentIndex === 6" :companyId="id" />
+        </el-tab-pane>
+        <el-tab-pane label="岗位需求" name="1">
+          <div style="marginTop: 30px; position: relative">
+            <WorkForm :type="type" :formData="stationInfo" ref="workComp" />
+            <div>
+              <el-button type="primary" @click="edit(2)" v-show="type == 1">提交</el-button>
+              <el-button type="primary" @click="edit(3)" v-show="type == 0">编辑</el-button>
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="派遣人员" name="2">
+          <DispatchTable :companyId="id" />
+        </el-tab-pane>
+        <el-tab-pane label="社保名单" name="3">
+          <SocialTable :companyId="id" />
+        </el-tab-pane>
+        <el-tab-pane label="员工薪资" name="4">
+          <SalaryTable :companyId="id" />
+        </el-tab-pane>
+        <el-tab-pane label="扣费记录" name="5">
+          <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" />
+        </el-tab-pane>
+        <el-tab-pane label="补偿金" name="6">
+          <CompensationTable :companyId="id" />
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
@@ -82,7 +88,7 @@ export default {
           color: 'rgba(82, 193, 245, 1)'
         }
       ],
-      currentIndex: 0,
+      currentIndex: '0',
       baseInfo: null,
       jobList: null,
       isBack: false,
@@ -114,7 +120,7 @@ export default {
   },
   watch: {
     $route (to) {
-      this.currentIndex = 0
+      this.currentIndex = '0'
       this.isBack = false
       const { action } = to.query
       const { id } = to.params
@@ -130,12 +136,11 @@ export default {
   },
   methods: {
     ...mapActions('company', ['getMenuCompany']),
-    changeTab (index) {
+    changeTab () {
       this.jobList = [...this.jobList]
       this.pageMeta = this.$route.meta
       this.isBack = false
       this.type = this.pageMeta.title == '公司列表' ? this.type : 0
-      this.currentIndex = index
     },
     // 返回
     back (type) {
@@ -259,15 +264,6 @@ export default {
         margin-top: 10px;
         font-weight: bold;
       }
-    }
-  }
-  .btn-wrap {
-    margin-left: 400px;
-    padding-top: 40px;
-    width: 300px;
-    text-align: center;
-    .el-button {
-      width: 150px;
     }
   }
   .back {

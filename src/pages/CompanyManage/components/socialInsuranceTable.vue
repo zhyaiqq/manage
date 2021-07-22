@@ -9,10 +9,10 @@
         <el-button type="primary" @click="search">搜索</el-button>
         </el-form-item>
       </el-form>
-      <div class="right">
-        <el-button type="primary" @click="handle(1)" v-show="isHasAuth(163)">修改五险比例</el-button>
-        <el-button type="primary" @click="handle(2)" v-show="isHasAuth(165)">导出社保数据</el-button>
-      </div>
+    </div>
+    <div class="table_btns">
+      <el-button type="primary" @click="handle(1)" v-show="isHasAuth(163)" size="small">修改五险比例</el-button>
+      <el-button type="primary" @click="handle(2)" v-show="isHasAuth(165)" size="small">导出社保数据</el-button>
     </div>
     <el-table
       :data="tableData"

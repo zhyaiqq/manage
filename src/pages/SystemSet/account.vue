@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="form" :rules="formRules" ref="form" label-width="400px" class="account_set">
+  <el-form :model="form" :rules="formRules" ref="form" label-width="100px" class="account_set">
     <el-form-item>
       <el-upload
         class="avatar-uploader"
@@ -28,9 +28,7 @@
       <el-input v-model="form.password2"></el-input>
     </el-form-item>
     <el-form-item>
-      <div class="form-item-btn">
-        <el-button type="success" @click="submit">提交</el-button>
-      </div>
+      <el-button type="primary" @click="submit">提交</el-button>
     </el-form-item>
   </el-form>
 </template>
