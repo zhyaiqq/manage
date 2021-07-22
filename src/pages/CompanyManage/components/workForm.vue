@@ -7,7 +7,7 @@
       <el-card class="box-card-item" v-for="(item, index) in jobList" :key="index">
         <div slot="header" class="clearfix">
           <span>岗位{{index + 1}}</span>
-          <el-button style="float: right; padding: 3px 0" type="text" @click="deleteJob(index)" v-show="jobList.length > 1">删除岗位</el-button>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="deleteJob(index)" v-show="type == 1 && jobList.length > 1">删除岗位</el-button>
         </div>
         <el-form :model="item" :rules="workFormRules" :ref="'workForm' + index" label-width="100px">
           <el-form-item label="岗位名称：" prop="name" required>

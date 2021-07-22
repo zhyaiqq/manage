@@ -58,6 +58,7 @@
       </el-table-column>
       <el-table-column
         prop="name"
+        width="120px"
         label="姓名"/>
       <el-table-column
         prop="sex"
@@ -68,6 +69,7 @@
       </el-table-column>
       <el-table-column
         prop="card_id"
+        width="180px"
         label="身份证号" />
       <el-table-column
         prop="department"

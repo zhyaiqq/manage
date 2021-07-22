@@ -10,6 +10,7 @@
 import BaseForm from './components/baseForm.vue'
 import WorkForm from './components/workForm.vue'
 import { addCompany } from '@/api/company.js'
+import { mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -17,6 +18,7 @@ export default {
   },
   components: { BaseForm, WorkForm },
   methods: {
+    ...mapActions('company', ['getMenuCompany']),
     submit () {
       this.$refs['baseComp'].$refs.baseForm.validate((valid) => {
         if (valid) {
@@ -34,6 +36,7 @@ export default {
       }).then(res => {
         if (res.code) {
           this.$message.success('新增成功')
+          this.getMenuCompany()
           this.$router.push('/companylist')
         }
       })

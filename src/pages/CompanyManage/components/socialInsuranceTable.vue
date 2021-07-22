@@ -38,16 +38,21 @@
       </el-table-column>
       <el-table-column
         prop="card_id"
+        width="190px"
         label="身份证号" />
       <el-table-column
         prop="age"
+        width="120px"
         label="年龄" />
       <el-table-column
-        prop="address"
+        prop="tel"
+        width="120px"
         label="联系方式"/>
       <el-table-column
         prop="address"
-        label="住址"/>
+        label="住址"
+        width="200px"
+        show-overflow-tooltip/>
       <el-table-column
         prop="nation"
         label="民族"/>
@@ -56,6 +61,7 @@
         label="户口性质"/>
       <el-table-column
         prop="contract_start_time"
+        width="170px"
         label="入职日期">
       </el-table-column>
       <el-table-column
@@ -66,6 +72,7 @@
       <el-table-column
         prop="salary"
         label="薪资待遇"
+        width="120px"
         show-overflow-tooltip>
       </el-table-column>
       <el-table-column
@@ -74,10 +81,12 @@
       <el-table-column
         prop="current_address"
         label="用工所在地"
+        width="200px"
         show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="base_time"
+        width="170px"
         label="参保时间" />
       <el-table-column
         prop="is_base"
@@ -87,12 +96,52 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="wages_perce"
+        label="占工资比例">
+      </el-table-column>
+      <el-table-column
         prop="is_stop_string"
         label="社保状态" />
       <el-table-column
         prop="social_remark"
         label="备注"
         show-overflow-tooltip>
+      <el-table-column
+        prop="company_pension"
+        label="养老保险（企业认缴）"/>
+      <el-table-column
+        prop="person_pension"
+        label="养老保险（个人认缴）"/>
+      <el-table-column
+        prop="company_unemployment"
+        label="失业保险（企业认缴）"/>
+      <el-table-column
+        prop="person_unemployment"
+        label="失业保险（个人认缴）"/>
+      <el-table-column
+        prop="company_medical"
+        label="医疗保险（企业认缴）"/>
+      <el-table-column
+        prop="person_medical"
+        label="医疗保险（个人认缴）"/>
+      <el-table-column
+        prop="company_injury"
+        label="工伤保险（企业认缴）"/>
+      <el-table-column
+        prop="person_injury"
+        label="工伤保险（个人认缴）"/>
+      <el-table-column
+        prop="company_birth"
+        label="生育保险（企业认缴）"/>
+      <el-table-column
+        prop="person_birth"
+        label="生育保险（个人认缴）"/>
+      <el-table-column
+        prop="company_accumulation"
+        label="公积金（企业认缴）"/>
+      <el-table-column
+        prop="person_accumulation"
+        label="公积金（个人认缴）"/>
       </el-table-column>
       <el-table-column
         width="150px"
@@ -166,14 +215,14 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="占工资比例:" prop="wages_perce" v-show="dialogTitle == '员工社保'">
-        <el-input v-model="form.wages_perce"/>
-        </el-form-item>
         <el-form-item label="参保类型:" prop="type" required v-show="dialogTitle == '员工社保'">
           <el-select v-model="form.type" placeholder="请选择">
             <el-option label="基数参保" :value="1" /> 
             <el-option label="工资参保" :value="2" /> 
           </el-select>
+        </el-form-item>
+        <el-form-item label="占工资比例:" prop="wages_perce" v-show="dialogTitle == '员工社保' && form.type == 2">
+          <el-input v-model="form.wages_perce"/>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

@@ -6,7 +6,7 @@
     <div class="cn">
       <el-tabs v-model="currentIndex" @tab-click="changeTab">
         <el-tab-pane label="基础信息" name="0">
-          <div style="position: relative">
+          <div style="position: relative" v-show="currentIndex == 0">
             <div class="overview">
               <div v-for="(item, index) in overviewList" :key="index" :class="`item item${index+1}`">
                 <div>{{ item.title }}</div>
@@ -21,7 +21,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="岗位需求" name="1">
-          <div style="marginTop: 30px; position: relative">
+          <div style="marginTop: 30px; position: relative" v-show="currentIndex == 1">
             <WorkForm :type="type" :formData="stationInfo" ref="workComp" />
             <div>
               <el-button type="primary" @click="edit(2)" v-show="type == 1">提交</el-button>
@@ -30,19 +30,19 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="派遣人员" name="2">
-          <DispatchTable :companyId="id" />
+          <DispatchTable :companyId="id" v-if="currentIndex == 2" />
         </el-tab-pane>
         <el-tab-pane label="社保名单" name="3">
-          <SocialTable :companyId="id" />
+          <SocialTable :companyId="id" v-if="currentIndex == 3" />
         </el-tab-pane>
         <el-tab-pane label="员工薪资" name="4">
-          <SalaryTable :companyId="id" />
+          <SalaryTable :companyId="id" v-if="currentIndex == 4" />
         </el-tab-pane>
         <el-tab-pane label="扣费记录" name="5">
-          <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" />
+          <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" v-if="currentIndex == 5" />
         </el-tab-pane>
         <el-tab-pane label="补偿金" name="6">
-          <CompensationTable :companyId="id" />
+          <CompensationTable :companyId="id" v-if="currentIndex == 6" />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -181,6 +181,7 @@ export default {
             station: jobList
           }).then(res => {
             if (res.code) {
+              this.jobList = jobList
               this.isBack = false
               this.type = 0
               this.$message.success('编辑成功')

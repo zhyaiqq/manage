@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="login">
     <div class="main_box">
       <h3 class="title">人力资源数据服务系统</h3>
       <el-form :model="form" ref="form">
@@ -116,12 +116,15 @@ export default {
 </script>
 
 <style scoped lang="less">
+.login {
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .main_box {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -150px;
-  margin-top: -120px;
   width: 300px;
   height: 240px;
 }

@@ -17,7 +17,8 @@
         :data="{'company_id': companyId}"
         name="excel"
         :headers="authorization"
-        :show-file-list="false">
+        :show-file-list="false"
+        :on-success="uploadPerson">
         <el-button type="primary" v-show="isHasAuth(149)" size="small">导入人员数据</el-button>
       </el-upload>
       <el-button type="primary" @click="handle(1)" v-show="isHasAuth(147)" size="small">新增员工</el-button>
@@ -467,6 +468,13 @@ export default {
           this.contractFile.http = res.data.http
         }
         this.$message.success('上传成功')
+      } else {
+        this.$message.warning(res.info)
+      }
+    },
+    uploadPerson (res) {
+      if (res.code) {
+        this.getDispatchList(1)
       } else {
         this.$message.warning(res.info)
       }
