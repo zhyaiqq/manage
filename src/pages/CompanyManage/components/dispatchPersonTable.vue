@@ -106,28 +106,28 @@
       :visible.sync="dialogVisible"
       width="70%"
       @closed="closeDialog(0)">
-      <div class="tag_title1 mb40">
+      <div class="mb40">
         员工基础信息
       </div>
-      <el-form :model="form" ref="form" :rules="rules" label-width="200px" :inline="true" :validate-on-rule-change="false">
-        <el-form-item label="姓名:" prop="name" required>
+      <el-form :model="form" ref="form" :rules="rules1" label-width="200px" :inline="true" :validate-on-rule-change="false">
+        <el-form-item label="姓名:" prop="name">
           <el-input v-model="form.name"/>
         </el-form-item>
-        <el-form-item label="家庭地址:" prop="address" required>
+        <el-form-item label="家庭地址:" prop="address">
           <el-input v-model="form.address"/>
         </el-form-item>
-        <el-form-item label="性别:" prop="sex" required>
+        <el-form-item label="性别:" prop="sex">
           <el-select v-model="form.sex" placeholder="请选择">
             <el-option label="女" :value="0" /> 
             <el-option label="男" :value="1" /> 
           </el-select>
         </el-form-item>
-        <el-form-item label="选择身份:" prop="current_type" required>
+        <el-form-item label="选择身份:" prop="current_type">
           <el-select v-model="form.current_type" placeholder="请选择">
             <el-option :label="item.name" :value="item.id" v-for="(item, index) in staffTypeList" :key="index" /> 
           </el-select>
         </el-form-item>
-        <el-form-item label="出生日期:" prop="age" required>
+        <el-form-item label="出生日期:" prop="age">
           <el-date-picker
             v-model="form.age"
             type="date"
@@ -135,10 +135,10 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="身份证号码:" prop="card_id" required>
+        <el-form-item label="身份证号码:" prop="card_id">
           <el-input v-model="form.card_id"/>
         </el-form-item>
-        <el-form-item label="入职日期:" prop="entry_time" required>
+        <el-form-item label="入职日期:" prop="entry_time">
           <el-date-picker
             v-model="form.entry_time"
             type="date"
@@ -146,18 +146,18 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="状态:" prop="entry_status" required>
+        <el-form-item label="状态:" prop="entry_status">
           <el-select v-model="form.entry_status" placeholder="请选择">
             <el-option label="离职" :value="1" /> 
             <el-option label="在职" :value="2" /> 
           </el-select>
         </el-form-item>
-        <el-form-item label="选择用工公司:" prop="company_id" required>
+        <el-form-item label="选择用工公司:" prop="company_id">
           <el-select v-model="form.company_id" placeholder="请选择">
             <el-option :label="item.name" :value="item.id" v-for="(item, index) in companyList" :key="index" /> 
           </el-select> 
         </el-form-item>
-        <el-form-item label="合同开始时间:" prop="contract_start_time" required>
+        <el-form-item label="合同开始时间:" prop="contract_start_time">
           <el-date-picker
             v-model="form.contract_start_time"
             type="date"
@@ -165,7 +165,7 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="合同结束时间:" prop="contract_end_time" required>
+        <el-form-item label="合同结束时间:" prop="contract_end_time">
           <el-date-picker
             v-model="form.contract_end_time"
             type="date"
@@ -173,15 +173,15 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="退休年纪:" prop="retire_age" required>
+        <el-form-item label="退休年纪:" prop="retire_age">
           <el-input v-model="form.retire_age"/>
         </el-form-item>
       </el-form>
-      <div class="tag_title1 mb40">
+      <div class="mb40">
         员工文档信息
       </div>
-      <el-form :model="form2" ref="form2" label-width="200px" :inline="true">
-        <el-form-item label="上传简历:" prop="resume" required>
+      <el-form :model="form2" ref="form2" :rules="rules2" label-width="200px" :inline="true">
+        <el-form-item label="上传简历:" prop="resume">
           <el-upload
             class="avatar-uploader"
             action="http://rlzypq.samowl.cn/api/upFile"
@@ -195,7 +195,7 @@
             <div>上传简历</div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="上传报名表:" prop="report" required>
+        <el-form-item label="上传报名表:" prop="report">
           <el-upload
             class="avatar-uploader"
             action="http://rlzypq.samowl.cn/api/upFile"
@@ -209,7 +209,7 @@
             <div>上传报名表</div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="上传合同:" prop="contract" required>
+        <el-form-item label="上传合同:" prop="contract">
           <el-upload
             class="avatar-uploader"
             action="http://rlzypq.samowl.cn/api/upFile"
@@ -234,11 +234,11 @@
       :visible.sync="dialogVisible2"
       width="30%"
       @closed="closeDialog(1)">
-      <el-form :model="form3" ref="form3" label-width="100px">
-        <el-form-item label="员工:" prop="staff_id" required>
+      <el-form :model="form3" ref="form3" :rules="rules3" label-width="100px">
+        <el-form-item label="员工:" prop="staff_id">
           {{ currentStaff && currentStaff.name }}
         </el-form-item>
-        <el-form-item label="备注信息:" prop="remark_string" required>
+        <el-form-item label="备注信息:" prop="remark_string">
           <el-input type="textarea" v-model="form3.remark_string"/>
         </el-form-item>
       </el-form>
@@ -252,21 +252,20 @@
       :visible.sync="dialogVisible3"
       width="30%"
       @closed="closeDialog(2)">
-      <el-form :model="form4" ref="form4" label-width="100px">
-        <el-form-item label="离职:" prop="entry_status" required>
+      <el-form :model="form4" ref="form4" :rules="rules4" label-width="100px">
+        <el-form-item label="离职:" prop="entry_status">
           <el-select v-model="form4.entry_status" placeholder="请选择">
             <el-option label="完全离职" :value="1" /> 
             <el-option label="半离职" :value="3" /> 
           </el-select>
           <div v-show="form4.entry_status == 1">五险一金均已停缴</div>
         </el-form-item>
-        <el-form-item label="半离职:" prop="entry_status_list" required v-if="form4.entry_status == 3">
+        <el-form-item label="半离职:" prop="entry_status_list" v-if="form4.entry_status == 3">
          <el-checkbox-group v-model="form4.entry_status_list">
             <el-checkbox :label="1">五险在缴</el-checkbox>
             <el-checkbox :label="2">公积金在缴</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible3 = false">取 消</el-button>
@@ -300,23 +299,45 @@ export default {
         'contract_end_time': '', 
         'retire_age': ''
       },
-      rules: {
-        name: [
-          { required: true, message: '请输入习惯名', trigger: 'blur' },
-        ]
+      rules1: {
+        name: { required: true, message: '请输入姓名', trigger: 'change' },
+        address: { required: true, message: '请输入家庭住址', trigger: 'change' },
+        age: { required: true, message: '请选择出生日期', trigger: 'change' },
+        card_id: { required: true, message: '请输入身份证号', trigger: 'change' },
+        company_id: { required: true, message: '请选择公司', trigger: 'change' },
+        sex: { required: true, message: '请选择性别', trigger: 'change' },
+        current_type: { required: true, message: '请选择身份', trigger: 'change' },
+        entry_status: { required: true, message: '请选择状态', trigger: 'change' },
+        entry_time: { required: true, message: '请选择入职日期', trigger: 'change' },
+        contract_start_time: { required: true, message: '请选择合同开始时间', trigger: 'change' },
+        contract_end_time: { required: true, message: '请选择合同结束时间', trigger: 'change' },
+        retire_age: { required: true, message: '请输入退休年纪', trigger: 'change' },
       },
       form2: {
         resume: '',
         report: '',
         contract: ''
       },
+      rules2: {
+        resume: { required: true, message: '请上传简历', trigger: 'change' },
+        report: { required: true, message: '请上传报名表', trigger: 'change' },
+        contract: { required: true, message: '请上传合同', trigger: 'change' }
+      },
       form3: {
         staff_id: '',
         remark_string: ''
       },
+      rules3: {
+        staff_id: { required: true, message: '员工不能为空', trigger: 'change' },
+        remark_string: { required: true, message: '请输入备注信息', trigger: 'change' }
+      },
       form4: {
         entry_status: '',
         entry_status_list: []
+      },
+      rules4: {
+        entry_status: { required: true, message: '请选择', trigger: 'change' },
+        entry_status_list: { required: true, message: '请选择', trigger: 'change' }
       },
       companyList: [],
       tableData: [],
@@ -423,13 +444,19 @@ export default {
       }
     },
     confirm () {
-      if (this.dialogTitle === '新增员工') {
-        this.$refs.form.validate((valid) => {
-          if (valid) this.addStaff()
-        })
-      } else {
-        this.editStaff()
-      }
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          this.$refs.form2.validate(valid2 => {
+            if (valid2) {
+              if (this.dialogTitle === '新增员工') {
+                this.addStaff()
+              } else {
+                this.editStaff()
+              } 
+            }
+          })
+        }
+      })
     },
     quitConfirm () {
       console.log(this.form4)
@@ -480,14 +507,27 @@ export default {
       }
     },
     closeDialog (type) {
-      console.log('dddd', type)
+      switch (type) {
+        case 0:
+          this.form = this.$options.data().form
+          this.$refs.form.resetFields()
+          this.form2 = this.$options.data().form2
+          this.$refs.form2.resetFields()
+          break;
+        case 1:
+          this.form3 = this.$options.data().form3
+          this.$refs.form3 && this.$refs.form3.resetFields()
+          break;
+        case 2:
+          this.form4 = this.$options.data().form4
+          this.$refs.form4 && this.$refs.form4.resetFields()
+          break;
+      }
       if (type) {
-        this.form3 = this.$options.data().form3
-        this.$refs.form3 && this.$refs.form3.resetFields()
+
         return
       }
-      this.form = this.$options.data().form
-      this.$refs.form.resetFields()
+ 
     },
     // 获取派遣人员列表
     getDispatchList (page) {

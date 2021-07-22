@@ -12,19 +12,19 @@
         <div>上传头像</div>
       </el-upload>
     </el-form-item>
-    <el-form-item label="用户名：" prop="username" required>
+    <el-form-item label="用户名：" prop="username">
       <el-input v-model="form.username" disabled />
     </el-form-item>
-    <el-form-item label="Email：" prop="email" required>
+    <el-form-item label="Email：" prop="email">
       <el-input v-model="form.email" disabled></el-input>
     </el-form-item>
-    <el-form-item label="旧密码：" prop="password_old" required>
+    <el-form-item label="旧密码：" prop="password_old">
       <el-input v-model="form.password_old"></el-input>
     </el-form-item>
-    <el-form-item label="新密码：" prop="password" required>
+    <el-form-item label="新密码：" prop="password">
       <el-input v-model="form.password"></el-input>
     </el-form-item>
-    <el-form-item label="确认密码：" prop="password2" required>
+    <el-form-item label="确认密码：" prop="password2">
       <el-input v-model="form.password2"></el-input>
     </el-form-item>
     <el-form-item>
@@ -46,7 +46,11 @@ export default {
         password2: ''
       },
       formRules: {
-
+        username: { required: true, message: '请输入用户名', trigger: 'change' },
+        email: { required: true, message: '请输入邮箱', trigger: 'change' },
+        password_old: { required: true, message: '请输入原始密码', trigger: 'change' },
+        password: { required: true, message: '请输入新密码', trigger: 'change' },
+        password2: { required: true, message: '请确认密码', trigger: 'change' },
       },
       imageUrl: ''
     }

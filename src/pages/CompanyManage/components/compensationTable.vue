@@ -57,22 +57,23 @@
     <el-dialog
       title="新增补偿金"
       :visible.sync="dialogVisible"
-      width="50%">
-      <el-form :model="form" ref="form" label-width="200px" :inline="true">
-        <el-form-item label="补偿公司:" prop="company_id" required>
+      width="50%"
+      @closed="closeDialog()">
+      <el-form :model="form" ref="form" :rules="rules" label-width="200px" :inline="true">
+        <el-form-item label="补偿公司:" prop="company_id">
           <el-select v-model="form.company_id" placeholder="请选择" @change="selectCompany">
             <el-option :label="item.name" :value="item.id" v-for="(item, index) in companyList" :key="index" /> 
           </el-select> 
         </el-form-item>
-        <el-form-item label="被补偿人:" prop="user_id" required>
+        <el-form-item label="被补偿人:" prop="user_id">
           <el-select v-model="form.user_id" placeholder="请选择">
             <el-option :label="item.name" :value="item.id" v-for="(item, index) in userList" :key="index" /> 
           </el-select> 
         </el-form-item>
-        <el-form-item label="退费以及补偿原因:" prop="remark" required>
+        <el-form-item label="退费以及补偿原因:" prop="remark">
           <el-input v-model="form.remark"/>
         </el-form-item>
-        <el-form-item label="补偿金额:" prop="money" required>
+        <el-form-item label="补偿金额:" prop="money">
           <el-input v-model="form.money"/>
         </el-form-item>
       </el-form>
@@ -95,7 +96,18 @@ export default {
       formInline: {
         username: ''
       },
-      form: {},
+      form: {
+        company_id: '',
+        user_id: '',
+        remark: '',
+        money: ''
+      },
+      rules: {
+        company_id: { required: true, message: '请选择补偿公司', trigger: 'change' },
+        user_id: { required: true, message: '请选择被补偿人', trigger: 'change' },
+        remark: { required: true, message: '请输入原因', trigger: 'change' },
+        money: { required: true, message: '请输入补偿金额', trigger: 'change' }
+      },
       tableData: [],
       multipleSelection: [],
       page: 1,
@@ -128,6 +140,10 @@ export default {
           this.dialogVisible = true
           break;
       }
+    },
+    closeDialog () {
+      this.form = this.$options.data().form
+      this.$refs.form.resetFields()
     },
     selectCompany () {
       this.getDispatchList(this.form.company_id)

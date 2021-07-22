@@ -60,11 +60,11 @@
       title="追加余额"
       :visible.sync="dialogVisible"
       width="40%">
-      <el-form :model="form" ref="form" label-width="200px" :inline="true">
-        <el-form-item label="追加公司:" required>
+      <el-form :model="form" ref="form" :rules="rules" label-width="200px" :inline="true">
+        <el-form-item label="追加公司:">
           {{ companyName }}
         </el-form-item>
-        <el-form-item label="追加金额:" prop="money" required>
+        <el-form-item label="追加金额:" prop="money">
           <el-input v-model="form.money"/>
         </el-form-item>
       </el-form>
@@ -87,7 +87,10 @@ export default {
         username: ''
       },
       form: {
-
+        money: ''
+      },
+      rules: {
+        money: { required: true, message: '请输入金额', trigger: 'change' }
       },
       tableData: [],
       multipleSelection: [],

@@ -2,21 +2,21 @@
   <div class="login">
     <div class="main_box">
       <h3 class="title">人力资源数据服务系统</h3>
-      <el-form :model="form" ref="form">
-        <el-form-item prop="username" required>
+      <el-form :model="form" ref="form" :rules="rules">
+        <el-form-item prop="username">
           <el-input type="text" v-model="form.username" placeholder="请输入用户名称" />
         </el-form-item>
-        <el-form-item prop="password" required>
+        <el-form-item prop="password">
           <el-input type="text" v-model="form.password" placeholder="请输入登录密码" />
         </el-form-item>
-        <el-form-item prop="verify" required>
+        <el-form-item prop="verify">
           <div class="verify-box">
             <el-input type="text" v-model="form.verify" placeholder="请输入验证码" />
             <img :src="image" @click="getCode" />
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onLogin" size="medium">登录</el-button>
+          <el-button type="primary" @click="confirm" size="medium">登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -35,7 +35,12 @@ export default {
         verify: ''
       },
       image: '',
-      uniqid: ''
+      uniqid: '',
+      rules: {
+        username: { required: true, message: '请输入用户名', trigger: 'change' },
+        password: { required: true, message: '请输入密码', trigger: 'change' },
+        verify: { required: true, message: '请输入验证码', trigger: 'change' }
+      }
     }
   },
   computed: {
@@ -45,6 +50,11 @@ export default {
     ...mapActions('user', ['getCaptcha', 'login']),
     ...mapActions('company', ['getMenuCompany']),
     ...mapActions("menu", ['getMen']),
+    confirm () {
+      this.$refs.form.validate(valid => {
+        if (valid) this.onLogin()
+      })
+    },
     onLogin () {
       this.login({
         ...this.form,

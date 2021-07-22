@@ -1,6 +1,6 @@
 <template>
   <el-form :model="form" :rules="formRules" ref="form" label-width="100px" style="marginTop: 40px;">
-    <el-form-item label="五险基数：" prop="number" required>
+    <el-form-item label="五险基数：" prop="number">
       <el-input v-model="form.number"></el-input>
       <div class="tip">（每月20号以后不能修改社保基数）</div>
     </el-form-item>
@@ -19,7 +19,7 @@ export default {
         number: ''
       },
       formRules: {
-
+        number: { required: true, message: '请输入基数', trigger: 'change' }
       }
     }
   },

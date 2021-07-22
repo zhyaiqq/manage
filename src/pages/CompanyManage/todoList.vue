@@ -57,17 +57,17 @@
       title="待办事处理"
       :visible.sync="dialogVisible"
       width="30%">
-      <el-form :model="form" ref="form" label-width="100px">
-        <el-form-item label="任务名称:" prop="id" required>
+      <el-form :model="form" ref="form" :rules="rules" label-width="100px">
+        <el-form-item label="任务名称:" prop="id">
           {{this.currentRow && this.currentRow.name}}
         </el-form-item>
-        <el-form-item label="处理结果:" prop="type" required>
+        <el-form-item label="处理结果:" prop="type">
           <el-select v-model="form.type" placeholder="请选择">
             <el-option label="直接结束" :value="2" /> 
             <el-option label="续期" :value="1" /> 
           </el-select>
         </el-form-item>
-        <el-form-item label="合同开始时间:" prop="contract_start_time" required v-if="this.form.type == 1">
+        <el-form-item label="合同开始时间:" prop="contract_start_time" v-if="this.form.type == 1">
           <el-date-picker
             v-model="form.contract_start_time"
             type="date"
@@ -75,7 +75,7 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="合同结束时间:" prop="contract_end_time" required v-if="this.form.type == 1">
+        <el-form-item label="合同结束时间:" prop="contract_end_time" v-if="this.form.type == 1">
           <el-date-picker
             v-model="form.contract_end_time"
             type="date"
@@ -108,6 +108,12 @@ export default {
         contract_start_time: '',
         contract_end_time: ''
 
+      },
+      rules: {
+        id: { required: true, message: '任务名称不能为空', trigger: 'change' },
+        type: { required: true, message: '请选择处理结果', trigger: 'change' },
+        contract_start_time: { required: true, message: '请选择合同开始时间', trigger: 'change' },
+        contract_end_time: { required: true, message: '请选择合同结束时间', trigger: 'change' },
       },
       tableData: [],
       pageTotal: 0,

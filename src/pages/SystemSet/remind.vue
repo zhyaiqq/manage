@@ -1,9 +1,9 @@
 <template>
   <el-form :model="form" :rules="formRules" ref="form" label-width="140px" style="marginTop: 40px;">
-    <el-form-item label="退休提醒（退休前）:" prop="base_retire" required>
+    <el-form-item label="退休提醒（退休前）:" prop="base_retire">
       <el-input v-model="form.base_retire"></el-input>
     </el-form-item>
-    <el-form-item label="到期提醒（到期前）:" prop="base_expire" required>
+    <el-form-item label="到期提醒（到期前）:" prop="base_expire">
       <el-input v-model="form.base_expire"></el-input>
     </el-form-item>
     <el-form-item>
@@ -21,7 +21,10 @@ export default {
         base_expire: '',
         base_retire: ''
       },
-      formRules: {}
+      formRules: {
+        base_expire: { required: true, message: '请输入退休提醒时间', trigger: 'change' },
+        base_retire: { required: true, message: '请输入到期提醒时间', trigger: 'change' }
+      }
     }
   },
   methods: {

@@ -170,44 +170,44 @@
       :visible.sync="dialogVisible"
       width="70%"
       @closed="closeDialog(0)">
-      <el-form :model="form" ref="form" label-width="200px" :inline="true">
-        <el-form-item label="养老保险（企业认缴）:" prop="company_pension" required>
+      <el-form :model="form" ref="form" :rules="rules" label-width="200px" :inline="true">
+        <el-form-item label="养老保险（企业认缴）:" prop="company_pension">
           <el-input v-model="form.company_pension"/>
         </el-form-item>
-        <el-form-item label="养老保险（个人认缴）:" prop="person_pension" required>
+        <el-form-item label="养老保险（个人认缴）:" prop="person_pension">
           <el-input v-model="form.person_pension"/>
         </el-form-item>
-        <el-form-item label="失业保险（企业认缴）:" prop="company_unemployment" required>
+        <el-form-item label="失业保险（企业认缴）:" prop="company_unemployment">
           <el-input v-model="form.company_unemployment "/>
         </el-form-item>
-        <el-form-item label=" 失业保险（个人认缴）:" prop="person_unemployment" required>
+        <el-form-item label=" 失业保险（个人认缴）:" prop="person_unemployment">
           <el-input v-model="form.person_unemployment"/>
         </el-form-item>
-        <el-form-item label="医疗保险（企业认缴）:" prop="company_medical" required>
+        <el-form-item label="医疗保险（企业认缴）:" prop="company_medical">
           <el-input v-model="form.company_medical"/>
         </el-form-item>
-        <el-form-item label="医疗保险（个人认缴）:" prop="person_medical" required>
+        <el-form-item label="医疗保险（个人认缴）:" prop="person_medical">
           <el-input v-model="form.person_medical"/>
         </el-form-item>
-        <el-form-item label="工伤保险（企业认缴）:" prop="company_injury" required>
+        <el-form-item label="工伤保险（企业认缴）:" prop="company_injury">
           <el-input v-model="form.company_injury"/>
         </el-form-item>
-        <el-form-item label="工伤保险（个人认缴）:" prop="person_injury" required>
+        <el-form-item label="工伤保险（个人认缴）:" prop="person_injury">
           <el-input v-model="form.person_injury"/>
         </el-form-item>
-        <el-form-item label="生育保险（企业认缴）:" prop="company_birth" required>
+        <el-form-item label="生育保险（企业认缴）:" prop="company_birth">
           <el-input v-model="form.company_birth"/>
         </el-form-item>
-        <el-form-item label=" 生育保险（个人认缴）:" prop="person_birth" required>
+        <el-form-item label=" 生育保险（个人认缴）:" prop="person_birth">
           <el-input v-model="form.person_birth"/>
         </el-form-item>        
-        <el-form-item label="公积金（企业认缴）:" prop="company_accumulation" required>
+        <el-form-item label="公积金（企业认缴）:" prop="company_accumulation">
           <el-input v-model="form.company_accumulation"/>
         </el-form-item>
-        <el-form-item label="公积金（个人认缴）:" prop="person_accumulation" required>
+        <el-form-item label="公积金（个人认缴）:" prop="person_accumulation">
           <el-input v-model="form.person_accumulation"/>
         </el-form-item>
-        <el-form-item label="参保时间:" prop="base_time" required v-show="dialogTitle == '员工社保'">
+        <el-form-item label="参保时间:" prop="base_time" v-show="dialogTitle == '员工社保'">
           <el-date-picker
             v-model="form.base_time"
             type="date"
@@ -215,7 +215,7 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="参保类型:" prop="type" required v-show="dialogTitle == '员工社保'">
+        <el-form-item label="参保类型:" prop="type" v-show="dialogTitle == '员工社保'">
           <el-select v-model="form.type" placeholder="请选择">
             <el-option label="基数参保" :value="1" /> 
             <el-option label="工资参保" :value="2" /> 
@@ -235,11 +235,11 @@
       :visible.sync="dialogVisible2"
       width="30%"
       @closed="closeDialog(1)">
-      <el-form :model="form1" ref="form1" label-width="100px">
-        <el-form-item label="员工:" prop="staff_id" required>
+      <el-form :model="form1" ref="form1" :rules="rules1" label-width="100px">
+        <el-form-item label="员工:" prop="staff_id">
           {{ currentRow && currentRow.name }}
         </el-form-item>
-        <el-form-item label="备注信息:" prop="remark_string" required>
+        <el-form-item label="备注信息:" prop="remark_string">
           <el-input type="textarea" v-model="form1.remark_string"/>
         </el-form-item>
       </el-form>
@@ -279,9 +279,32 @@ export default {
         wages_perce: '',
         type: ''
       },
+      rules: {
+        company_pension: { required: true, message: '请输入养老保险（企业认缴）', trigger: 'change' },
+        company_unemployment: { required: true, message: '请输入失业保险（企业认缴）', trigger: 'change' },
+        company_medical: { required: true, message: '请输入医疗保险（企业认缴）', trigger: 'change' },
+        company_injury: { required: true, message: '请输入工伤保险（企业认缴）', trigger: 'change' },
+        company_birth: { required: true, message: '请输入生育保险（企业认缴）', trigger: 'change' },
+        company_accumulation: { required: true, message: '请输入公积金（企业认缴）', trigger: 'change' },
+        person_pension: { required: true, message: '请输入养老保险（个人认缴）', trigger: 'change' },
+        person_unemployment: { required: true, message: '请输入失业保险（个人认缴）', trigger: 'change' },
+        person_medical: { required: true, message: '请输入医疗保险（个人认缴）', trigger: 'change' },
+        person_injury: { required: true, message: '请输入工伤保险（个人认缴）', trigger: 'change' },
+        person_birth: { required: true, message: '请输入生育保险（个人认缴）', trigger: 'change' },
+        person_accumulation: { required: true, message: '请输入公积金（个人认缴）', trigger: 'change' },
+        company_id: { required: true, message: '公司不能为空', trigger: 'change' },
+        user_id: { required: true, message: '员工不能为空', trigger: 'change' },
+        base_time: { required: true, message: '请选择参保时间', trigger: 'change' },
+        // wages_perce: { required: true, message: '请输入用户名', trigger: 'change' },
+        type: { required: true, message: '请选择参保类型', trigger: 'change' },
+      },
       form1: {
         staff_id: '',
         remark_string: ''
+      },
+      rules1: {
+        staff_id: { required: true, message: '员工不能为空', trigger: 'change' },
+        remark_string: { required: true, message: '请输入备注信息', trigger: 'change' },
       },
       tableData: [],
       multipleSelection: [],

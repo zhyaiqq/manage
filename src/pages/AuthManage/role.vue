@@ -58,11 +58,11 @@
       :visible.sync="dialogVisible"
       width="30%"
       @closed="closeDialog">
-      <el-form :model="form" ref="form" label-width="100px">
-        <el-form-item label="角色名称:" prop="name" required>
+      <el-form :model="form" ref="form" :rules="rules" label-width="100px">
+        <el-form-item label="角色名称:" prop="name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="职能描述:" prop="describe" required>
+        <el-form-item label="职能描述:" prop="describe">
           <el-input type="textarea" v-model="form.describe"></el-input>
         </el-form-item>
       </el-form>
@@ -95,7 +95,11 @@ export default {
       pageTotal: 0,
       pageSize: 10,
       page: 1,
-      currentRow: null
+      currentRow: null,
+      rules: {
+        name: { required: true, message: '请输入角色名称', trigger: 'change' },
+        describe: { required: true, message: '请输入职称描述', trigger: 'change' }
+      }
     }
   },
   created () {

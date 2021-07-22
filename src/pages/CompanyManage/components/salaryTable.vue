@@ -168,20 +168,20 @@
       :visible.sync="dialogVisible"
       width="40%"
       @closed="closeDialog(0)">
-      <el-form :model="form" ref="form" label-width="200px">
-        <el-form-item label="基本工资:" prop="salary" required>
+      <el-form :model="form" ref="form" :rules="rules1" label-width="200px">
+        <el-form-item label="基本工资:" prop="salary">
           <el-input v-model="form.salary"/>
         </el-form-item>
-        <el-form-item label="绩效工资:" prop="achievements" required>
+        <el-form-item label="绩效工资:" prop="achievements">
           <el-input v-model="form.achievements"/>
         </el-form-item>
-        <el-form-item label="银行卡号:" prop="bank_card" required>
+        <el-form-item label="银行卡号:" prop="bank_card">
           <el-input v-model="form.bank_card" />
         </el-form-item>
-        <el-form-item label="所属银行:" prop="bank" required>
+        <el-form-item label="所属银行:" prop="bank">
           <el-input v-model="form.bank" />
         </el-form-item>
-        <el-form-item label="发薪日期:" prop="pay_date" required>
+        <el-form-item label="发薪日期:" prop="pay_date">
           <el-input-number v-model="form.pay_date" @change="handleChange" :min="1" :max="30" />
         </el-form-item>
       </el-form>
@@ -195,11 +195,11 @@
       :visible.sync="dialogVisible2"
       width="30%"
       @closed="closeDialog(1)">
-      <el-form :model="form2" ref="form2" label-width="100px">
-        <el-form-item label="姓名:" prop="psu_id" required>
+      <el-form :model="form2" ref="form2" :rules="rules2" label-width="100px">
+        <el-form-item label="姓名:" prop="psu_id">
           {{ currentRow && currentRow.name }}
         </el-form-item>
-        <el-form-item label="备注信息:" prop="remark_string" required>
+        <el-form-item label="备注信息:" prop="remark_string">
           <el-input type="textarea" v-model="form2.remark_string"/>
         </el-form-item>
       </el-form>
@@ -228,7 +228,21 @@ export default {
         'bank_card': '',
         'pay_date': 15
       },
-      form2: {},
+      rules1: {
+        salary: { required: true, message: '请输入基本工资', trigger: 'change' },
+        achievements: { required: true, message: '请输入绩效工资', trigger: 'change' },
+        bank: { required: true, message: '请输入所属银行', trigger: 'change' },
+        bank_card: { required: true, message: '请输入银行卡号', trigger: 'change' },
+        pay_date: { required: true, message: '请输入发薪日期', trigger: 'change' },
+      },
+      form2: {
+        psu_id: '',
+        remark_string: ''
+      },
+      rules2: {
+        psu_id: { required: true, message: '姓名不能为空', trigger: 'change' },
+        remark_string: { required: true, message: '请输入备注信息', trigger: 'change' }
+      },
       tableData: [],
       multipleSelection: [],
       page: 1,

@@ -72,28 +72,28 @@
       :visible.sync="dialogVisible"
       width="30%"
       @closed="closeDialog">
-      <el-form :model="form" ref="form" label-width="100px">
-        <el-form-item label="用户名:" prop="username" required>
+      <el-form :model="form" ref="form" :rules="rules" label-width="100px">
+        <el-form-item label="用户名:" prop="username">
           <el-input v-model="form.username"></el-input>
         </el-form-item>
-        <el-form-item label="昵称:" prop="nickname" required>
+        <el-form-item label="昵称:" prop="nickname">
           <el-input v-model="form.nickname"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱:" prop="email" required>
+        <el-form-item label="邮箱:" prop="email">
           <el-input v-model="form.email"></el-input>
         </el-form-item>
-        <el-form-item label="密码:" prop="password" required v-if="dialogTitle == '新增用户'">
+        <el-form-item label="密码:" prop="password" v-if="dialogTitle == '新增用户'">
           <el-input v-model="form.password" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码:" prop="password2" required v-if="dialogTitle == '新增用户'">
+        <el-form-item label="确认密码:" prop="password2" v-if="dialogTitle == '新增用户'">
           <el-input v-model="form.password2" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="角色类型:" prop="role_id" required>
+        <el-form-item label="角色类型:" prop="role_id">
           <el-select v-model="form.role_id" placeholder="全部角色">
             <el-option :label="item.title" :value="item.id" v-for="(item, index) in roleList" :key="index" />
           </el-select>
         </el-form-item>
-        <el-form-item label="头像:" prop="role_id">
+        <el-form-item label="头像:" prop="headimg">
           <el-upload
             class="avatar-uploader"
             action="http://rlzypq.samowl.cn/api/upFile"
@@ -135,6 +135,14 @@ export default {
         role_id: '',
         headimg: '',
         email: ''
+      },
+      rules: {
+        username: { required: true, message: '请输入用户名', trigger: 'change' },
+        nickname: { required: true, message: '请输入昵称', trigger: 'change' },
+        password: { required: true, message: '请输入密码', trigger: 'change' },
+        password2: { required: true, message: '请确认密码', trigger: 'change' },
+        role_id: { required: true, message: '请选择角色类型', trigger: 'change' },
+        email: { required: true, message: '请输入邮箱', trigger: 'change' },
       },
       pageTotal: 0,
       pageSize: 10,

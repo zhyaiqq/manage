@@ -10,13 +10,13 @@
           <el-button style="float: right; padding: 3px 0" type="text" @click="deleteJob(index)" v-show="type == 1 && jobList.length > 1">删除岗位</el-button>
         </div>
         <el-form :model="item" :rules="workFormRules" :ref="'workForm' + index" label-width="100px">
-          <el-form-item label="岗位名称：" prop="name" required>
+          <el-form-item label="岗位名称：" prop="name">
             <el-input v-model="item.name" :disabled="type != 1" />
           </el-form-item>
-          <el-form-item label="岗位要求：" prop="ask" required>
+          <el-form-item label="岗位要求：" prop="ask">
             <el-input v-model="item.ask" :disabled="type != 1" />
           </el-form-item>
-          <el-form-item label="工资待遇：" prop="treatment" required>
+          <el-form-item label="工资待遇：" prop="treatment">
             <el-input v-model="item.treatment" :disabled="type != 1" />
           </el-form-item>
         </el-form>
@@ -38,7 +38,11 @@ export default {
         ask: '',
         treatment: ''
       },
-      workFormRules: {},
+      workFormRules: {
+        name: { required: true, message: '请输入岗位名称', trigger: 'change' },
+        ask: { required: true, message: '请输入岗位要求', trigger: 'change' },
+        treatment: { required: true, message: '请输入工资待遇', trigger: 'change' }
+      },
       jobList: [
         {
           name: '',
