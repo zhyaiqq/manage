@@ -7,6 +7,10 @@
       </div>
       <div class="header_right">
         <div>{{userInfo && userInfo.username}}</div>
+        <div class="message" @click="$router.push('/todolist')">
+          <img src="../assets/imgs/info.png" class="message_icon" />
+          <div class="count" v-show="todoCount > 0">{{todoCount}}</div>
+        </div>
         <div class="right_btn" @click="onLogout">退出登录</div>
         <!--<el-menu class="el-menu-demo" mode="horizontal">
           <el-submenu index="1">
@@ -268,6 +272,19 @@ export default {
 @import '@/assets/css/common.less';
 .layout {
   height: 100%;
+  .count {
+    position: absolute;
+    right: 30px;
+    top: 15px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #f00;
+    color: #fff;
+    text-align: center;
+    line-height: 20px;
+    font-size: 10px;
+  }
 }
 .header {
   padding: 0 15px;
@@ -301,6 +318,20 @@ export default {
       cursor: pointer;
     }
   }
+  .message {
+    position: relative;
+    margin-left: 20px;
+    width: 40px;
+    cursor: pointer;
+    .message_icon {
+      width: 18px;
+      height: 18px;
+    }
+    .count {
+      top: -10px;
+      right: 0;
+    }
+  }
 }
 .cn {
   width: 100%;
@@ -313,19 +344,6 @@ export default {
   }
   .left_menu {
     width: 200px;
-    .count {
-      position: absolute;
-      right: 30px;
-      top: 15px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background-color: #f00;
-      color: #fff;
-      text-align: center;
-      line-height: 20px;
-      font-size: 10px;
-    }
   }
   .main_cn {
      width: 100%;

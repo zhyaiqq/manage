@@ -12,7 +12,8 @@
           <BaseForm :type="type" :formData="{...baseInfo}" ref="baseComp" />
           <div>
             <el-button type="primary" @click="edit(0)" v-show="type == 1">提交</el-button>
-            <el-button type="primary" @click="edit(1)" v-show="type == 0">编辑</el-button>
+            <el-button type="primary" @click="edit(1)" v-show="type == 0" :disabled="baseInfo && baseInfo.status == 0">编辑</el-button>
+            <el-button type="primary" plain @click="cancelEdit" v-show="type == 1">取消</el-button>
           </div>
         </div>
       </el-tab-pane>
@@ -21,7 +22,7 @@
           <WorkForm :type="type" :formData="stationInfo" ref="workComp" />
           <div>
             <el-button type="primary" @click="edit(2)" v-show="type == 1">提交</el-button>
-            <el-button type="primary" @click="edit(3)" v-show="type == 0">编辑</el-button>
+            <el-button type="primary" @click="edit(3)" v-show="type == 0" :disabled="baseInfo && baseInfo.status == 0">编辑</el-button>
           </div>
         </div>
       </el-tab-pane>
@@ -192,6 +193,14 @@ export default {
             }
           })
           break;
+      }
+    },
+    // 取消编辑
+    cancelEdit () {
+      if (this.pageMeta.title == '公司列表') {
+        this.getCompanyInfo()
+      } else {
+        this.type = 0
       }
     },
     // 查询公司详情

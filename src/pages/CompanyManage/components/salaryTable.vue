@@ -34,7 +34,7 @@
       </el-button>
       <el-upload
         v-show="isHasAuth(174)"
-        style="display:inline-block; margin: 0 10px"
+        style="display:inline-block; margin-right:10px"
         action="http://rlzypq.samowl.cn/api/excel_salary"
         :data="{'company_id': companyId}"
         name="excel"

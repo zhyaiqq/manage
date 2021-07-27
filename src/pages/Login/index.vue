@@ -1,25 +1,28 @@
 <template>
   <div class="login">
-    <div class="main_box">
-      <h3 class="title">人力资源数据服务系统</h3>
+    <el-card class="main_box">
+      <div class="title">
+        <img src="../../assets/imgs/logo.png" class="logo" />
+        人力资源数据服务系统
+      </div>
       <el-form :model="form" ref="form" :rules="rules">
         <el-form-item prop="username">
-          <el-input type="text" v-model="form.username" placeholder="请输入用户名称" />
+          <el-input type="text" v-model="form.username" placeholder="请输入用户名称" @keyup.enter.native="confirm" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input type="text" v-model="form.password" placeholder="请输入登录密码" />
+          <el-input type="password" v-model="form.password" placeholder="请输入登录密码" @keyup.enter.native="confirm" />
         </el-form-item>
         <el-form-item prop="verify">
           <div class="verify-box">
-            <el-input type="text" v-model="form.verify" placeholder="请输入验证码" />
-            <img :src="image" @click="getCode" />
+            <el-input type="text" v-model="form.verify" placeholder="请输入验证码" @keyup.enter.native="confirm" />
+            <img :src="image" @click="getCode" class="img" />
           </div>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="confirm" size="medium">登录</el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -133,14 +136,28 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.main_box {
-  width: 300px;
-  height: 240px;
+  background-image: url('../../assets/imgs/bg.png');
+  background-color: rgba(0, 121, 254, 1);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  .img {
+    height: 40px;
+  }
 }
 .title {
-  text-align: center;
-  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  font-size: 24px;
+  color: #0079FE;
+  font-weight: bold;
+  .logo {
+    width: 115px;
+    height: 115px;
+    margin-bottom: 20px;
+  }
 }
 .el-button {
   width: 100%;
@@ -152,11 +169,17 @@ export default {
   align-items: center;
 }
 .verify-box .el-input {
-  width: 150px;
+  width: 220px;
 }
 </style>
 <style>
-.verify-box .el-input .el-input__inner {
-  width: 150px;
+.login .verify-box .el-input .el-input__inner {
+  width: 220px;
+}
+.login .el-form .el-input__inner {
+  width: 350px;
+}
+.login .el-card__body {
+  padding: 20px 30px;
 }
 </style>

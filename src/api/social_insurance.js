@@ -49,5 +49,11 @@ export function editPersonSocial(data) {
   })
 }
 
+// 查询个人社保比例
+export function getSocialInfo(params) {
+  return axios.get("/api/getSocialInfo", { params }).then(res => {
+    return res
+  })
+}
 
 

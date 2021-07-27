@@ -16,7 +16,7 @@
       <el-input v-model="form.username" disabled />
     </el-form-item>
     <el-form-item label="Email：" prop="email">
-      <el-input v-model="form.email" disabled></el-input>
+      <el-input v-model="form.email"></el-input>
     </el-form-item>
     <el-form-item label="旧密码：" prop="password_old">
       <el-input v-model="form.password_old"></el-input>

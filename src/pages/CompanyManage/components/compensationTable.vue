@@ -35,9 +35,6 @@
         prop="sex_string"
         label="补偿原因" />
       <el-table-column
-        prop="company_money"
-        label="公司账户余额" />
-      <el-table-column
         prop="creat_at"
         label="补偿时间" />
       <!--

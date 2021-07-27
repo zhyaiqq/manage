@@ -10,7 +10,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="table_btns">
+    <div class="table-btns">
       <el-button type="primary" @click="handle(1)" v-show="isHasAuth(163)" size="small">修改五险比例</el-button>
       <el-button type="primary" @click="handle(2)" v-show="isHasAuth(165)" size="small">导出社保数据</el-button>
     </div>
@@ -43,7 +43,7 @@
       <el-table-column
         prop="age"
         width="120px"
-        label="年龄" />
+        label="出生日期" />
       <el-table-column
         prop="tel"
         width="120px"
@@ -97,7 +97,8 @@
       </el-table-column>
       <el-table-column
         prop="wages_perce"
-        label="占工资比例">
+        width="180px"
+        label="参保基数">
       </el-table-column>
       <el-table-column
         prop="is_stop_string"
@@ -105,7 +106,7 @@
       <el-table-column
         prop="social_remark"
         label="备注"
-        show-overflow-tooltip>
+        show-overflow-tooltip />
       <el-table-column
         prop="company_pension"
         label="养老保险（企业认缴）"/>
@@ -142,7 +143,6 @@
       <el-table-column
         prop="person_accumulation"
         label="公积金（个人认缴）"/>
-      </el-table-column>
       <el-table-column
         width="150px"
         prop="handle"
@@ -221,8 +221,8 @@
             <el-option label="工资参保" :value="2" /> 
           </el-select>
         </el-form-item>
-        <el-form-item label="占工资比例:" prop="wages_perce" v-show="dialogTitle == '员工社保' && form.type == 2">
-          <el-input v-model="form.wages_perce"/>
+        <el-form-item label="参保基数:" prop="wages_perce" v-show="dialogTitle == '员工社保' && form.type == 2">
+          <el-input v-model="form.wages_perce" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -252,7 +252,7 @@
 </template>
 
 <script>
-import { getSocialList, addCompanySocial, stop, remarkSocial, editPersonSocial } from '@/api/social_insurance.js'
+import { getSocialList, addCompanySocial, stop, remarkSocial, editPersonSocial, getSocialInfo } from '@/api/social_insurance.js'
 import { mapState } from 'vuex'
 export default {
   data () {
@@ -363,13 +363,20 @@ export default {
           break;
         case 3:
           // 编辑
-          this.dialogTitle = '员工社保'
-          this.currentRow = data
-          for (let i = 0; i < subjects.length; i++) {
-            this.form[subjects[i]] = data[subjects[i]]
-          }
-          this.form.type = data.is_base
-          this.dialogVisible = true
+          getSocialInfo({
+            user_id: data.user_id,
+            company_id: this.companyId
+          }).then(res => {
+            if (res.code) {
+              this.dialogTitle = '员工社保'
+              this.currentRow = data
+              for (let i = 0; i < subjects.length; i++) {
+                this.form[subjects[i]] = res.data[subjects[i]]
+              }
+              this.form.type = res.data.is_base
+              this.dialogVisible = true
+            }
+          })
           break;
         case 4:
           this.currentRow = data

@@ -1,10 +1,14 @@
 <template>
-  <el-form :model="form" :rules="formRules" ref="form" label-width="140px" style="marginTop: 40px;">
+  <el-form :model="form" :rules="formRules" ref="form" label-width="140px" class="remind">
     <el-form-item label="退休提醒（退休前）:" prop="base_retire">
-      <el-input v-model="form.base_retire"></el-input>
+      <el-input v-model="form.base_retire">
+        <template slot="append">天</template>
+      </el-input>
     </el-form-item>
     <el-form-item label="到期提醒（到期前）:" prop="base_expire">
-      <el-input v-model="form.base_expire"></el-input>
+      <el-input v-model="form.base_expire">
+        <template slot="append">天</template>
+      </el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submit">提交</el-button>
@@ -47,3 +51,12 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+  .remind {
+    margin-top: 40px;
+    .el-input-group {
+      width: 300px;
+    }
+  }
+</style>

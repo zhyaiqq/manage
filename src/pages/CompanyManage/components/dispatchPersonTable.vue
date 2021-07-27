@@ -12,7 +12,7 @@
     </div>
     <div class="table-btns">
       <el-upload
-        style="display:inline-block; margin-right: 20px"
+        style="display:inline-block; margin-right: 10px"
         action="http://rlzypq.samowl.cn/api/excel_staff"
         :data="{'company_id': companyId}"
         name="excel"
@@ -58,10 +58,10 @@
         prop="entry_time"
         label="入职日期" />
       <el-table-column
-        prop="entry_status"
+        prop="current_address"
         label="用工所在地" />
       <el-table-column
-        prop="entry_status"
+        prop="contract_type"
         label="合同类型" />
       <el-table-column
         prop="contract_start_time"
@@ -173,12 +173,20 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="合同类型:" prop="contract_type">
+          <el-select v-model="form.contract_type" placeholder="请选择">
+            <el-option label="试用合同" value="试用合同" /> 
+            <el-option label="正式合同" value="正式合同" /> 
+            <el-option label="借调合同" value="借调合同" /> 
+          </el-select>
+        </el-form-item>
         <el-form-item label="退休年纪:" prop="retire_age">
           <el-input v-model="form.retire_age"/>
         </el-form-item>
       </el-form>
       <div class="mb40">
         员工文档信息
+        <span style="fontSize: 12px; color: #f00">（支持文件格式:jpg、pdf）</span>
       </div>
       <el-form :model="form2" ref="form2" :rules="rules2" label-width="200px" :inline="true">
         <el-form-item label="上传简历:" prop="resume">
@@ -192,6 +200,7 @@
             <div class="upload-success-cn">
               <img :src="resumeFile.http" v-show="form2.resume" style="width: 100%; height: 100%" />
             </div>
+            <div class="upload-text">{{resumeFile.url && resumeFile.url.substr(resumeFile.url.lastIndexOf('/') + 1)}}</div>
             <div>上传简历</div>
           </el-upload>
         </el-form-item>
@@ -206,6 +215,7 @@
             <div class="upload-success-cn">
               <img :src="reportFile.http" v-show="form2.report" style="width: 100%; height: 100%" />
             </div>
+            <div class="upload-text">{{reportFile.url && reportFile.url.substr(reportFile.url.lastIndexOf('/') + 1)}}</div>
             <div>上传报名表</div>
           </el-upload>
         </el-form-item>
@@ -220,6 +230,7 @@
             <div class="upload-success-cn">
               <img :src="contractFile.http" v-show="form2.contract" style="width: 100%; height: 100%" />
             </div>
+            <div class="upload-text">{{contractFile.url && contractFile.url.substr(contractFile.url.lastIndexOf('/') + 1)}}</div>
             <div>上传合同</div>
           </el-upload>
         </el-form-item>
@@ -290,13 +301,14 @@ export default {
         'address': '',
         'age': '',
         'card_id': '',
-        'company_id': '',
+        'company_id': Number(this.companyId),
         'sex': '',
         'current_type': '',
         'entry_status': '',
         'entry_time': '', 
         'contract_start_time': '', 
         'contract_end_time': '', 
+        'contract_type': '',
         'retire_age': ''
       },
       rules1: {
@@ -311,6 +323,7 @@ export default {
         entry_time: { required: true, message: '请选择入职日期', trigger: 'change' },
         contract_start_time: { required: true, message: '请选择合同开始时间', trigger: 'change' },
         contract_end_time: { required: true, message: '请选择合同结束时间', trigger: 'change' },
+        contract_type: { required: true, message: '请选择合同类型', trigger: 'change' },
         retire_age: { required: true, message: '请输入退休年纪', trigger: 'change' },
       },
       form2: {
@@ -384,7 +397,7 @@ export default {
     },
     handle (type, data) {
       this.currentStaff = data
-      let subjects = ['name', 'address', 'age', 'card_id', 'company_id', 'sex', 'current_type', 'entry_status', 'entry_time', 'contract_start_time', 'contract_end_time', 'retire_age']
+      let subjects = ['name', 'address', 'age', 'card_id', 'company_id', 'sex', 'current_type', 'entry_status', 'entry_time', 'contract_start_time', 'contract_end_time', 'contract_type', 'retire_age']
       switch (type) {
         case 0:
           // 导入派遣人员数据
@@ -481,7 +494,7 @@ export default {
     uploadSuccess (type, res) {
       if (res.code) {
         let subject = ['resume', 'report', 'contract']
-        this.form[subject[type]] = res.data.url
+        this.form2[subject[type]] = res.data.url
         if (type == 0 ) {
           this.resumeFile.url = res.data.url
           this.resumeFile.http = res.data.http
@@ -550,13 +563,15 @@ export default {
         page: 1,
         page_num: 1000
       }).then(res => {
+        console.log('rewrwerewrewrwr', res)
         if (res.code) this.companyList = res.data
       })
     },
     // 新增员工
     addStaff () {
       addStaff({
-        ...this.form
+        ...this.form,
+        ...this.form2
       }).then(res => {
         if (res.code) {
           this.getDispatchList(1)
@@ -614,5 +629,9 @@ export default {
 </script>
 
 <style scoped>
-
+.upload-text {
+  font-size: 12px;
+  width: 100px;
+  line-height: 20px;
+}
 </style>

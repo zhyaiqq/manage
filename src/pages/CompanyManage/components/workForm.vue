@@ -14,7 +14,7 @@
             <el-input v-model="item.name" :disabled="type != 1" />
           </el-form-item>
           <el-form-item label="岗位要求：" prop="ask">
-            <el-input v-model="item.ask" :disabled="type != 1" />
+            <el-input type="textarea" v-model="item.ask" :disabled="type != 1" />
           </el-form-item>
           <el-form-item label="工资待遇：" prop="treatment">
             <el-input v-model="item.treatment" :disabled="type != 1" />
@@ -114,6 +114,9 @@ export default {
     left: 800px;
     font-size: 12px;
     cursor: pointer;
+  }
+  /deep/.el-textarea__inner {
+    height: 100px;
   }
 }
 </style>

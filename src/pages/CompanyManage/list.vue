@@ -26,8 +26,9 @@
       <el-table-column
         prop="name"
         label="公司名称"
-        width="120" />
+        width="120px" />
       <el-table-column
+        width="200px"
         prop="address"
         label="公司地址"
         show-overflow-tooltip />
@@ -53,6 +54,7 @@
       <el-table-column
         prop="tel"
         label="负责人电话"
+        width="120px"
         show-overflow-tooltip />
       <el-table-column
         prop="status"
@@ -62,7 +64,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        width="300px"
+        width="350px"
         prop="handle"
         label="操作">
         <template slot-scope="scope">
@@ -70,9 +72,10 @@
             {{ scope.row && scope.row.status ? '禁用': '启用' }}
           </el-button>
           <el-button type="text" @click="handle(1, scope.row)">详情</el-button>
-          <el-button type="text" @click="handle(2, scope.row)">编辑</el-button>
+          <el-button type="text" @click="handle(2, scope.row)" :disabled="!scope.row.status">编辑</el-button>
           <el-button type="text" @click="handle(3, scope.row)">账户充值</el-button>
-          <el-button type="text" @click="handle(4, scope.row)" v-show="isHasAuth(178)">费用记录</el-button>
+          <el-button type="text" @click="handle(4, scope.row)" v-show="isHasAuth(178)">扣费记录</el-button>
+          <el-button type="text" @click="handle(5, scope.row)" v-show="isHasAuth(178)">充值记录</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,8 +95,6 @@
         <el-form-item label="充值公司：" prop="company">
           {{ currentCompany && currentCompany.name || '--'}}
         </el-form-item>
-
-        
         <el-form-item label="充值金额：" prop="address">
           <el-input v-model="form.money"></el-input>
         </el-form-item>
@@ -162,6 +163,8 @@ export default {
         case 4:
           this.$router.push(`/costRecord?id=${data.id}`)
           break;
+        case 5:
+          this.$router.push(`/costRecord?id=${data.id}`)
       }
     },
     // 获取公司列表
