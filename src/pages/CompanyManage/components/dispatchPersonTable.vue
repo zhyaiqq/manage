@@ -13,13 +13,14 @@
             <el-option label="半离职" :value="3" /> 
           </el-select>
         </el-form-item>
-        <el-form-item label="入职时间:" prop="entry_time">
+        <el-form-item label="入职时间:" prop="entryTime">
           <el-date-picker
             @change="search"
-            v-model="formInline.entry_time"
-            type="date"
+            v-model="formInline.entryTime"
+            type="daterange"
             value-format="yyyy-MM-dd"
-            placeholder="选择日期">
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同时间:" prop="time">
@@ -324,7 +325,7 @@ export default {
       formInline: {
         username: '',
         entry_status: '',
-        entry_time: '',
+        entryTime: '',
         time: ''
       },
       form: {
@@ -578,19 +579,21 @@ export default {
     getDispatchList (page) {
       let params = {
         ...this.formInline,
+        start_entry_time: this.formInline.entryTime ? this.formInline.entryTime[0] : '',
+        end_entry_time: this.formInline.entryTime ? this.formInline.entryTime[1] : '',
         contract_start_time: this.formInline.time ? this.formInline.time[0] : '',
         contract_end_time: this.formInline.time ? this.formInline.time[1] : '',
         company_id: this.companyId,
         page: page
       }
       delete params.time
+      delete params.entryTime
       getDispatchList(params).then(res => {
         if (res.code) {
           this.tableData = res.data
           this.page = page
           this.pageTotal = res.count
         }
-        ('获取派遣人员列表', res)
       })
     },
     // 获取公司列表
@@ -599,7 +602,6 @@ export default {
         page: 1,
         page_num: 1000
       }).then(res => {
-        console.log('rewrwerewrewrwr', res)
         if (res.code) this.companyList = res.data
       })
     },

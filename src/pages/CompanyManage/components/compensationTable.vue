@@ -2,8 +2,18 @@
   <div class="company_list">
     <div class="search_top">
       <el-form :inline="true" :model="formInline" class="left">
-        <el-form-item>
+        <el-form-item label="姓名:" prop="username">
           <el-input v-model="formInline.username" placeholder="请输入姓名" @keyup.enter.native="search"></el-input>
+        </el-form-item>
+        <el-form-item label="补偿时间:" prop="time">
+          <el-date-picker
+            @change="search"
+            v-model="formInline.time"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
         <el-button type="primary" @click="search">搜索</el-button>
@@ -89,7 +99,8 @@ export default {
   data () {
     return {
       formInline: {
-        username: ''
+        username: '',
+        time: ''
       },
       form: {
         company_id: Number(this.companyId),
@@ -150,11 +161,15 @@ export default {
     },
     // 补偿金列表
     getCutLog3 (page) {
-      getCutLog3({
+      let params = {
         username: this.formInline.username,
         company_id: this.companyId,
+        start_creat_at: this.formInline.time ? this.formInline.time[0] : '',
+        end_creat_at: this.formInline.time ? this.formInline.time[1] : '',
         page: page
-      }).then(res => {
+      }
+      delete params.time
+      getCutLog3(params).then(res => {
         if (res.code) {
           this.tableData = res.data
           this.page = page

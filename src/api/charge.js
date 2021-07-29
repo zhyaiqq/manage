@@ -15,9 +15,8 @@ export function delCutLog(data) {
 }
 
 // 充值记录
-export function getRecharge(data) {
-  console.log('werewrererwer', data)
-  return axios.get("/api/getCompanyRecharge", data).then(res => {
+export function getRecharge(params) {
+  return axios.get("/api/getCompanyRecharge", { params }).then(res => {
     return res
   })
 }

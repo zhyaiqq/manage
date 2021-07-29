@@ -1,17 +1,25 @@
 <template>
   <div class="company_list">
-  <!--
     <div class="search_top">
       <el-form :inline="true" :model="formInline" class="left">
-        <el-form-item>
+        <el-form-item label="姓名:" prop="username">
           <el-input v-model="formInline.username" placeholder="请输入姓名" @keyup.enter.native="search"></el-input>
+        </el-form-item>
+        <el-form-item label="扣费时间:" prop="time">
+          <el-date-picker
+            @change="search"
+            v-model="formInline.time"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
         <el-button type="primary" @click="search">搜索</el-button>
         </el-form-item>
       </el-form>
     </div>
-    -->
     <el-table
       :data="tableData"
       :header-cell-style="{textAlign: 'center'}"
@@ -48,7 +56,8 @@ export default {
   data () {
     return {
       formInline: {
-        username: ''
+        username: '',
+        time: ''
       },
       form: {},
       tableData: [],
@@ -83,10 +92,15 @@ export default {
     },
     // 充值记录列表
     getRecharge (page) {
-      getRecharge({
+      let params = {
+        ...this.formInline,
+        start_creat_at: this.formInline.time ? this.formInline.time[0] : '',
+        end_creat_at: this.formInline.time ? this.formInline.time[1] : '',
         company_id: this.id,
         page: page
-      }).then(res => {
+      }
+      delete params.time
+      getRecharge(params).then(res => {
         if (res.code) {
           this.tableData = res.data
           this.page = page
