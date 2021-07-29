@@ -12,22 +12,24 @@
             <el-option label="停保" :value="0" /> 
           </el-select>
         </el-form-item>
-        <el-form-item label="入职时间:" prop="entry_time">
+        <el-form-item label="入职时间:" prop="entryTime">
           <el-date-picker
             @change="search"
-            v-model="formInline.entry_time"
-            type="date"
+            v-model="formInline.entryTime"
+            type="daterange"
             value-format="yyyy-MM-dd"
-            placeholder="选择日期">
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="参保日期:" prop="base_time">
+        <el-form-item label="参保时间:" prop="baseTime">
           <el-date-picker
             @change="search"
-            v-model="formInline.base_time"
-            type="date"
+            v-model="formInline.baseTime"
+            type="daterange"
             value-format="yyyy-MM-dd"
-            placeholder="选择日期">
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item>
@@ -285,8 +287,8 @@ export default {
       formInline: {
         username: '',
         is_stop: '',
-        entry_time: '',
-        base_time: ''
+        entryTime: '',
+        baseTime: ''
       },
       form: {
         company_pension: '',
@@ -463,11 +465,18 @@ export default {
     },
     // 获取社保名单
     getSocialList (page) {
-      getSocialList({
+      let params = {
         ...this.formInline,
+        start_entry_time: this.formInline.entryTime ? this.formInline.entryTime[0] : '',
+        end_entry_time: this.formInline.entryTime ? this.formInline.entryTime[1] : '',
+        start_base_time: this.formInline.baseTime ? this.formInline.baseTime[0] : '',
+        end_base_time: this.formInline.baseTime ? this.formInline.baseTime[1] : '',
         company_id: this.companyId,
         page: page
-      }).then(res => {
+      }
+      delete params.baseTime
+      delete params.entryTime
+      getSocialList(params).then(res => {
         if (res.code) {
           this.tableData = res.data
           this.page = page
