@@ -2,8 +2,33 @@
   <div class="company_list">
     <div class="search_top">
       <el-form :inline="true" :model="formInline" class="left">
-        <el-form-item>
+        <el-form-item label="姓名:" prop="username">
           <el-input v-model="formInline.username" placeholder="请输入姓名" @keyup.enter.native="search"></el-input>
+        </el-form-item>
+        <el-form-item label="社保状态:" prop="is_stop">
+          <el-select v-model="formInline.is_stop" placeholder="请选择" @change="search">
+            <el-option label="全部" value="" /> 
+            <el-option label="参保" :value="1" /> 
+            <el-option label="停保" :value="0" /> 
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入职时间:" prop="entry_time">
+          <el-date-picker
+            @change="search"
+            v-model="formInline.entry_time"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="参保日期:" prop="base_time">
+          <el-date-picker
+            @change="search"
+            v-model="formInline.base_time"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
         <el-button type="primary" @click="search">搜索</el-button>
@@ -166,11 +191,11 @@
     </el-pagination>
     <a ref="downloadFile"></a>
     <el-dialog
-      title="修改五险比例"
+      :title="dialogTitle"
       :visible.sync="dialogVisible"
       width="70%"
       @closed="closeDialog(0)">
-      <el-form :model="form" ref="form" :rules="rules" label-width="200px" :inline="true">
+      <el-form :model="form" ref="form" :rules="dialogVisible == '修改五险比例' ? rulesPart : rulesPart" label-width="200px" :inline="true">
         <el-form-item label="养老保险（企业认缴）:" prop="company_pension">
           <el-input v-model="form.company_pension"/>
         </el-form-item>
@@ -258,7 +283,10 @@ export default {
   data () {
     return {
       formInline: {
-        username: ''
+        username: '',
+        is_stop: '',
+        entry_time: '',
+        base_time: ''
       },
       form: {
         company_pension: '',
@@ -279,7 +307,7 @@ export default {
         wages_perce: '',
         type: ''
       },
-      rules: {
+      rulesAll: {
         company_pension: { required: true, message: '请输入养老保险（企业认缴）', trigger: 'change' },
         company_unemployment: { required: true, message: '请输入失业保险（企业认缴）', trigger: 'change' },
         company_medical: { required: true, message: '请输入医疗保险（企业认缴）', trigger: 'change' },
@@ -295,8 +323,22 @@ export default {
         company_id: { required: true, message: '公司不能为空', trigger: 'change' },
         user_id: { required: true, message: '员工不能为空', trigger: 'change' },
         base_time: { required: true, message: '请选择参保时间', trigger: 'change' },
-        // wages_perce: { required: true, message: '请输入用户名', trigger: 'change' },
         type: { required: true, message: '请选择参保类型', trigger: 'change' },
+      },
+      rulesPart: {
+        company_pension: { required: true, message: '请输入养老保险（企业认缴）', trigger: 'change' },
+        company_unemployment: { required: true, message: '请输入失业保险（企业认缴）', trigger: 'change' },
+        company_medical: { required: true, message: '请输入医疗保险（企业认缴）', trigger: 'change' },
+        company_injury: { required: true, message: '请输入工伤保险（企业认缴）', trigger: 'change' },
+        company_birth: { required: true, message: '请输入生育保险（企业认缴）', trigger: 'change' },
+        company_accumulation: { required: true, message: '请输入公积金（企业认缴）', trigger: 'change' },
+        person_pension: { required: true, message: '请输入养老保险（个人认缴）', trigger: 'change' },
+        person_unemployment: { required: true, message: '请输入失业保险（个人认缴）', trigger: 'change' },
+        person_medical: { required: true, message: '请输入医疗保险（个人认缴）', trigger: 'change' },
+        person_injury: { required: true, message: '请输入工伤保险（个人认缴）', trigger: 'change' },
+        person_birth: { required: true, message: '请输入生育保险（个人认缴）', trigger: 'change' },
+        person_accumulation: { required: true, message: '请输入公积金（个人认缴）', trigger: 'change' },
+        company_id: { required: true, message: '公司不能为空', trigger: 'change' }
       },
       form1: {
         staff_id: '',
@@ -312,7 +354,7 @@ export default {
       pageSize: 10,
       pageTotal: 0,
       dialogVisible: false,
-      dialogTitle: '公司社保',
+      dialogTitle: '修改五险比例',
       currentRow: null,
       dialogVisible2: false
     }
@@ -353,6 +395,7 @@ export default {
         'typ']
       switch (type) {
         case 1:
+          this.dialogTitle = '修改五险比例'
           this.dialogVisible = true
           break;
         case 2:
@@ -406,7 +449,7 @@ export default {
     socialConfirm () {
       this.$refs.form.validate((value) => {
         if (!value) return
-        if (this.dialogTitle == '公司社保') {
+        if (this.dialogTitle == '修改五险比例') {
           this.addCompanySocial()
           return
         }
@@ -421,7 +464,7 @@ export default {
     // 获取社保名单
     getSocialList (page) {
       getSocialList({
-        username: this.formInline.username,
+        ...this.formInline,
         company_id: this.companyId,
         page: page
       }).then(res => {
@@ -440,6 +483,7 @@ export default {
       }).then(res => {
         if (res.code) {
           this.dialogVisible = false
+          this.getSocialList(1)
           this.$message.success('修改五险比例成功')
         }
       })

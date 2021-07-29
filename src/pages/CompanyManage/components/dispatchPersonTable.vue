@@ -2,8 +2,36 @@
   <div class="company_list">
     <div class="search_top">
       <el-form :inline="true" :model="formInline" class="left">
-        <el-form-item>
+        <el-form-item label="姓名:" prop="username">
           <el-input v-model="formInline.username" placeholder="请输入姓名" @keyup.enter.native="search"></el-input>
+        </el-form-item>
+        <el-form-item label="状态:" prop="entry_status">
+          <el-select v-model="formInline.entry_status" placeholder="请选择" @change="search">
+            <el-option label="全部" value="" /> 
+            <el-option label="离职" :value="1" /> 
+            <el-option label="在职" :value="2" /> 
+            <el-option label="半离职" :value="3" /> 
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入职时间:" prop="entry_time">
+          <el-date-picker
+            @change="search"
+            v-model="formInline.entry_time"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="合同时间:" prop="time">
+          <el-date-picker
+            @change="search"
+            v-model="formInline.time"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
         <el-button type="primary" @click="search">搜索</el-button>
@@ -76,7 +104,7 @@
         prop="entry_status"
         label="状态">
         <template slot-scope="scope">
-          {{ scope.row.entry_status == 1 ? '离职': '在职'}}
+          {{ scope.row.entry_status == 1 ? '离职': (scope.row.entry_status == 2 ?'在职' : '半离职')}}
         </template>
       </el-table-column>
       <el-table-column
@@ -186,7 +214,7 @@
       </el-form>
       <div class="mb40">
         员工文档信息
-        <span style="fontSize: 12px; color: #f00">（支持文件格式:jpg、pdf）</span>
+        <span style="fontSize: 12px; color: #f00">（仅支持上传图片）</span>
       </div>
       <el-form :model="form2" ref="form2" :rules="rules2" label-width="200px" :inline="true">
         <el-form-item label="上传简历:" prop="resume">
@@ -200,7 +228,7 @@
             <div class="upload-success-cn">
               <img :src="resumeFile.http" v-show="form2.resume" style="width: 100%; height: 100%" />
             </div>
-            <div class="upload-text">{{resumeFile.url && resumeFile.url.substr(resumeFile.url.lastIndexOf('/') + 1)}}</div>
+            <div class="upload-text">{{resumeFile.name}}</div>
             <div>上传简历</div>
           </el-upload>
         </el-form-item>
@@ -215,7 +243,7 @@
             <div class="upload-success-cn">
               <img :src="reportFile.http" v-show="form2.report" style="width: 100%; height: 100%" />
             </div>
-            <div class="upload-text">{{reportFile.url && reportFile.url.substr(reportFile.url.lastIndexOf('/') + 1)}}</div>
+            <div class="upload-text">{{reportFile.name}}</div>
             <div>上传报名表</div>
           </el-upload>
         </el-form-item>
@@ -230,7 +258,7 @@
             <div class="upload-success-cn">
               <img :src="contractFile.http" v-show="form2.contract" style="width: 100%; height: 100%" />
             </div>
-            <div class="upload-text">{{contractFile.url && contractFile.url.substr(contractFile.url.lastIndexOf('/') + 1)}}</div>
+            <div class="upload-text">{{contractFile.name}}</div>
             <div>上传合同</div>
           </el-upload>
         </el-form-item>
@@ -294,7 +322,10 @@ export default {
   data () {
     return {
       formInline: {
-        username: ''
+        username: '',
+        entry_status: '',
+        entry_time: '',
+        time: ''
       },
       form: {
         'name': '',
@@ -366,15 +397,18 @@ export default {
       authorization: { 'Authorization': localStorage.getItem('token') },
       resumeFile: {
         url: '',
-        http: ''
+        http: '',
+        name: ''
       },
       reportFile: {
         url: '',
-        http: ''
+        http: '',
+        name: ''
       },
       contractFile: {
         url: '',
-        http: ''
+        http: '',
+        name: ''
       }
     }
   },
@@ -498,14 +532,17 @@ export default {
         if (type == 0 ) {
           this.resumeFile.url = res.data.url
           this.resumeFile.http = res.data.http
+          this.resumeFile.name = res.data.name
         }
         if (type == 1 ) {
           this.reportFile.url = res.data.url
           this.reportFile.http = res.data.http
+          this.reportFile.name = res.data.name
         }
         if (type == 2 ) {
           this.contractFile.url = res.data.url
           this.contractFile.http = res.data.http
+          this.contractFile.name = res.data.name
         }
         this.$message.success('上传成功')
       } else {
@@ -535,20 +572,19 @@ export default {
           this.form4 = this.$options.data().form4
           this.$refs.form4 && this.$refs.form4.resetFields()
           break;
-      }
-      if (type) {
-
-        return
-      }
- 
+      } 
     },
     // 获取派遣人员列表
     getDispatchList (page) {
-      getDispatchList({
-        username: this.formInline.username,
+      let params = {
+        ...this.formInline,
+        contract_start_time: this.formInline.time ? this.formInline.time[0] : '',
+        contract_end_time: this.formInline.time ? this.formInline.time[1] : '',
         company_id: this.companyId,
         page: page
-      }).then(res => {
+      }
+      delete params.time
+      getDispatchList(params).then(res => {
         if (res.code) {
           this.tableData = res.data
           this.page = page

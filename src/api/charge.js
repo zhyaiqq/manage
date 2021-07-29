@@ -13,3 +13,11 @@ export function delCutLog(data) {
     return res
   })
 }
+
+// 充值记录
+export function getRecharge(data) {
+  console.log('werewrererwer', data)
+  return axios.get("/api/getCompanyRecharge", data).then(res => {
+    return res
+  })
+}

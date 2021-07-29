@@ -29,19 +29,17 @@
         prop="company_name"
         label="补偿公司" />
       <el-table-column
-        prop="company_money"
-        label="公司账户余额" />
-      <el-table-column
         prop="sex_string"
         label="补偿原因" />
       <el-table-column
         prop="creat_at"
         label="补偿时间" />
-      <!--
       <el-table-column
-        prop="sex_string"
-        label="被补偿人电话" />
-      -->
+        prop="company_money"
+        label="补偿后金额" />
+      <el-table-column
+        prop="current_mony"
+        label="当前余额" />
     </el-table>
     <el-pagination
       @current-change="handleCurrentChange"
@@ -58,7 +56,7 @@
       @closed="closeDialog()">
       <el-form :model="form" ref="form" :rules="rules" label-width="200px" :inline="true">
         <el-form-item label="补偿公司:" prop="company_id">
-          <el-select v-model="form.company_id" placeholder="请选择" @change="selectCompany">
+          <el-select v-model="form.company_id" placeholder="请选择" @change="selectCompany" disabled>
             <el-option :label="item.name" :value="item.id" v-for="(item, index) in companyList" :key="index" /> 
           </el-select> 
         </el-form-item>
@@ -94,7 +92,7 @@ export default {
         username: ''
       },
       form: {
-        company_id: '',
+        company_id: Number(this.companyId),
         user_id: '',
         remark: '',
         money: ''

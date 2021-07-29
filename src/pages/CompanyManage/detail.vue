@@ -180,7 +180,7 @@ export default {
         case 2:
           // 编辑岗位
           for (let i = 0; i < jobList.length; i++) {
-            jobList[i].company_id = 31
+            jobList[i].company_id = this.id
           }
           editStation({
             station: jobList

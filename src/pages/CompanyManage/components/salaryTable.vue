@@ -137,6 +137,11 @@
       <el-table-column
         prop="post_management"
         label="管理费"
+        show-overflow-tooltip />
+      <el-table-column
+        prop="creat_at"
+        label="发薪日期"
+        width="180px"
         show-overflow-tooltip>
       </el-table-column>
       <el-table-column

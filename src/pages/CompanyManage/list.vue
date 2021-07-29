@@ -2,8 +2,14 @@
   <div class="company_list">
     <div class="search_top">
       <el-form :inline="true" :model="formInline" class="left">
-        <el-form-item>
+        <el-form-item label="公司名称:" prop="company">
           <el-input v-model="formInline.company" placeholder="请输入公司名称" @keyup.enter.native="search"></el-input>
+        </el-form-item>
+        <el-form-item label="状态:" prop="status">
+          <el-select v-model="formInline.status" placeholder="请选择" @change="search">
+            <el-option label="启动" :value="1" /> 
+            <el-option label="禁用" :value="0" /> 
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search">查询</el-button>
@@ -114,7 +120,8 @@ export default {
   data () {
     return {
       formInline: {
-        company: ''
+        company: '',
+        status: ''
       },
      tableData: [],
       multipleSelection: [],
@@ -164,16 +171,18 @@ export default {
           this.$router.push(`/costRecord?id=${data.id}`)
           break;
         case 5:
-          this.$router.push(`/costRecord?id=${data.id}`)
+          this.$router.push(`/recharge?id=${data.id}`)
+          break;
       }
     },
     // 获取公司列表
     getDataList (page) {
       getCompanyList({
         company_name: this.formInline.company,
+        status: this.formInline.status,
         page: page,
         page_num: 10
-      }).then(res => {
+      }).then(res => { 
         this.tableData = res.data
         this.pageTotal = res.count
         this.page = page

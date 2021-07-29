@@ -83,7 +83,7 @@ export default {
               switch (item.id) {
                 case 130:
                   authRoute.push('/companylist/:id')
-                  authRoute.push('/companydetail/:id')
+                  authRoute.unshift('/companydetail/:id')
                   break;
                 case 178:
                   authRoute.push('/costRecord')

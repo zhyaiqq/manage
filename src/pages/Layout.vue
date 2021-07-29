@@ -7,28 +7,15 @@
       </div>
       <div class="header_right">
         <div>{{userInfo && userInfo.username}}</div>
-        <div class="message" @click="$router.push('/todolist')">
+        <div class="message" @click="jump(1, { url: '/todolist' })">
           <img src="../assets/imgs/info.png" class="message_icon" />
           <div class="count" v-show="todoCount > 0">{{todoCount}}</div>
         </div>
         <div class="right_btn" @click="onLogout">退出登录</div>
-        <!--<el-menu class="el-menu-demo" mode="horizontal">
-          <el-submenu index="1">
-            <template slot="title">{{userInfo && userInfo.username}}</template>
-            <el-menu-item index="2-1">退出登录</el-menu-item>
-          </el-submenu>
-        </el-menu>-->
       </div>
     </div>
     <div class="cn">
       <div class="left">
-        <!-- <div class="layout_company" v-if="showCompany">
-          <div class="company">用工公司</div>
-          <el-input v-model="company" placeholder="搜索公司" @input="search" />
-          <ul class="company_menu">
-            <li v-for="(item, index) in menuCompanyList" :key="index" @click="jump(0, item)" :class="{'active': item.id == companyId}">{{ item.name }}</li>
-          </ul>
-        </div>-->
         <el-menu
           :default-active="menuActive"
           :default-openeds="openMenus"
@@ -79,79 +66,10 @@ import { mapState, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      // menuList: [
-      //   {
-      //     id: '1',
-      //     title: '公司管理',
-      //     icon: 'el-icon-location',
-      //     children: [
-      //       {
-      //         id: '1-1',
-      //         title: '新增公司',
-      //         path: '/companyadd'
-      //       },
-      //       {
-      //         id: '1-2',
-      //         title: '公司列表',
-      //         path: '/companylist'
-      //       },
-      //       {
-      //         id: '1-3',
-      //         title: '待办事项',
-      //         path: '/todolist'
-      //       },
-      //     ]
-      //   },
-      //   {
-      //     id: '2',
-      //     title: '系统权限',
-      //     icon: 'el-icon-location',
-      //     children: [
-      //       {
-      //         id: '2-1',
-      //         title: '角色管理',
-      //         path: '/role'
-      //       }
-      //       // {
-      //       //   id: '2-2',
-      //       //   title: '权限配置',
-      //       //   path: '/auth'
-      //       // }
-      //     ]
-      //   },
-      //   {
-      //     id: '3',
-      //     title: '系统设备',
-      //     icon: 'el-icon-location',
-      //     children: [
-      //       {
-      //         id: '3-1',
-      //         title: '账户设置',
-      //         path: '/account'
-      //       },
-      //       {
-      //         id: '3-2',
-      //         title: '操作日志',
-      //         path: '/log'
-      //       },
-      //       {
-      //         id: '3-3',
-      //         title: '五险基数设置',
-      //         path: '/fiveInsurances'
-      //       },
-      //       {
-      //         id: '3-4',
-      //         title: '提醒设置',
-      //         path: '/remind'
-      //       },
-      //     ]
-      //   }
-      // ],
       pageMeta: {},
       menuActive: '',
       companyList: [],
       company: '',
-      companyId: '',
       timer: null,
       openMenus: ['0'],
       cardClass: ''
@@ -159,18 +77,8 @@ export default {
   },
   created () {
     this.computedClass()
-    const { meta, path } = this.$route
-    console.log('eeeeeeeeeeeee', path)
-    this.companyId = ''
-    this.pageMeta = meta
     this.getMen().then(() => {
-      let result = path.match(/\/companydetail\/(\d+)/)
-      if (result) {
-        this.menuActive = result[1]
-        this.companyId = result[1]
-      } else {
-        this.searchCurrentMenu(this.menuList, meta.title)
-      }
+      this.setCurrentMenu()
     })
     this.getUserInfo()
     this.getMenuCompany()
@@ -184,15 +92,9 @@ export default {
     ...mapState("menu", ['todoCount', 'authMenuList', 'menuList', 'showCompany'])
   },
   watch: {
-    $route(to) {
+    $route() {
       this.computedClass()
-      const { meta, path, params: {id} } = to
-      this.companyId = ''
-      this.pageMeta = meta
-      if (path.includes('/companydetail/')) { 
-        this.companyId = id
-        this.menuActive = ''
-      }
+      this.setCurrentMenu()
     }
   },
   methods: {
@@ -200,12 +102,24 @@ export default {
     ...mapActions('user', ['getUserInfo']),
     ...mapActions("menu", ['getExcelUrl', 'getNewsNum', 'getMen']),
     computedClass () {
+      this.pageMeta = this.$route.meta
       if (this.pageMeta && this.pageMeta.hideHead) {
         this.cardClass = 'card1'
       } else {
         this.cardClass = 'card2'
       }
     },
+    // 设置当前高亮的menu
+    setCurrentMenu () {
+      const { meta, path } = this.$route
+      let result = path.match(/\/companydetail\/(\d+)/)
+      if (result) {
+        this.menuActive = result[1]
+      } else {
+        this.searchCurrentMenu(this.menuList, meta.title)
+      }
+    },
+    // 查找当前高亮的menu
     searchCurrentMenu (arr, title) {
       for (let i = 0; i < arr.length; i++) {
         const element = arr[i];
@@ -223,7 +137,6 @@ export default {
     },
     handleClose(key) {
       if (key == 0) return
-      console.log('rwerewrwerewrwerwerr-------')
       this.openMenus = ['0']
     },
     jump (type, item) {
@@ -321,7 +234,7 @@ export default {
   .message {
     position: relative;
     margin-left: 20px;
-    width: 40px;
+    width: 20px;
     cursor: pointer;
     .message_icon {
       width: 18px;
@@ -329,7 +242,7 @@ export default {
     }
     .count {
       top: -10px;
-      right: 0;
+      right: -15px;
     }
   }
 }

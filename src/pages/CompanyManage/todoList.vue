@@ -2,15 +2,26 @@
   <div class="todo">
     <div class="search_top">
       <el-form :inline="true" :model="formInline" class="left">
-        <el-form-item>
+        <el-form-item label="状态:" prop="aready">
           <el-select v-model="formInline.aready" placeholder="全部待办" @change="search">
             <el-option label="全部待办" value=""></el-option>
             <el-option label="待处理" value="0"></el-option>
             <el-option label="已处理" value="1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-form-item label="任务名称:" prop="username">
           <el-input v-model="formInline.username" placeholder="请输入任务名称" @keyup.enter.native="search"></el-input>
+        </el-form-item>
+        <el-form-item label="到期时间:" prop="time">
+          <el-date-picker
+            @change="search"
+            v-model="formInline.time"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search">查询</el-button>
@@ -100,7 +111,8 @@ export default {
     return {
       formInline: {
         aready: '',
-        username: ''
+        username: '',
+        time: ''
       },
       form: {
         id: '',
@@ -154,7 +166,12 @@ export default {
     },
     // 获取待办事情列表
     getExpire (page) {
-      let params = this.formInline
+      let params = {
+        username: this.formInline.username,
+        aready: this.formInline.aready,
+        start_deal_time: this.formInline.time ? this.formInline.time[0] : '',
+        end_deal_time: this.formInline.time ? this.formInline.time[1] : '',
+      }
       if (params.aready == '') delete params.aready
       getExpire({
         ...params,

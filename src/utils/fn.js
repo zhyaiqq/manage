@@ -43,6 +43,13 @@ const dynamic_routes = [
     }
   },
   {
+    path: '/recharge',
+    component: () => import('@/pages/CompanyManage/recharge.vue'),
+    meta: {
+      title: '公司列表'
+    }
+  },
+  {
     path: '/todolist',
     component: () => import('@/pages/CompanyManage/todoList.vue'),
     meta: {
