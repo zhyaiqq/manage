@@ -75,29 +75,69 @@
         </template>
       </el-table-column>
       <el-table-column
+        width="200px"
         prop="card_id"
         label="身份证号" />
       <el-table-column
+        width="100px"
         prop="age"
         label="出生日期" />
       <el-table-column
+        width="200px"
         prop="address"
         label="住址" />
       <el-table-column
+        prop="department"
+        label="部门" />
+      <el-table-column
+        prop="position"
+        label="岗位" />
+      <el-table-column
+        width="100px"
         prop="entry_time"
         label="入职日期" />
       <el-table-column
+        width="200px"
         prop="current_address"
         label="用工所在地" />
       <el-table-column
         prop="contract_type"
         label="合同类型" />
       <el-table-column
+        width="100px"
         prop="contract_start_time"
         label="合同起始日期" />
       <el-table-column
+        width="100px"
         prop="contract_start_time"
         label="合同结束日期" />
+      <el-table-column
+        width="100px"
+        prop="resume"
+        label="简历">
+        <template slot-scope="scope">
+          <el-button type="text" v-show="!isShowFile(scope.row.resume)" @click="downloadFile(`${scope.row.resume_url}?token=${token}`)">下载</el-button>
+          <img :src="scope.row.resume_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.resume)" />
+        </template>
+      </el-table-column>
+      <el-table-column
+        width="100px"
+        prop="report"
+        label="报名表">
+        <template slot-scope="scope">
+          <el-button type="text" v-show="!isShowFile(scope.row.report)" @click="downloadFile(`${scope.row.report_url}?token=${token}`)">下载</el-button>
+          <img :src="scope.row.report_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.report)" />
+        </template>
+      </el-table-column>
+      <el-table-column
+        width="100px"
+        prop="contract"
+        label="合同">
+        <template slot-scope="scope">
+          <el-button type="text" v-show="!isShowFile(scope.row.contract)" @click="downloadFile(`${scope.row.contract_url}?token=${token}`)">下载</el-button>
+          <img :src="scope.row.contract_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.contract)" />
+        </template>
+      </el-table-column>
       <el-table-column
         prop="remark"
         label="备注" />
@@ -215,7 +255,7 @@
       </el-form>
       <div class="mb40">
         员工文档信息
-        <span style="fontSize: 12px; color: #f00">（仅支持上传图片）</span>
+        <span style="fontSize: 12px; color: #f00">（支持上传图片和pdf文件）</span>
       </div>
       <el-form :model="form2" ref="form2" :rules="rules2" label-width="200px" :inline="true">
         <el-form-item label="上传简历:" prop="resume">
@@ -227,9 +267,9 @@
             :on-success="(res) => uploadSuccess(0, res)"
             :before-upload="uploadResume">
             <div class="upload-success-cn">
-              <img :src="resumeFile.http" v-show="form2.resume" style="width: 100%; height: 100%" />
+              <img :src="resumeFile.http" v-show="isShowFile(form2.resume)" style="width: 100%; height: 100%" />
             </div>
-            <div class="upload-text">{{resumeFile.name}}</div>
+            <div class="upload-text" v-show="form2.resume">{{resumeFile.name}}</div>
             <div>上传简历</div>
           </el-upload>
         </el-form-item>
@@ -242,9 +282,9 @@
             :on-success="(res) => uploadSuccess(1, res)"
             :before-upload="uploadReport">
             <div class="upload-success-cn">
-              <img :src="reportFile.http" v-show="form2.report" style="width: 100%; height: 100%" />
+              <img :src="reportFile.http" v-show="isShowFile(form2.report)" style="width: 100%; height: 100%" />
             </div>
-            <div class="upload-text">{{reportFile.name}}</div>
+            <div class="upload-text" v-show="form2.report">{{reportFile.name}}</div>
             <div>上传报名表</div>
           </el-upload>
         </el-form-item>
@@ -257,9 +297,9 @@
             :on-success="(res) => uploadSuccess(2, res)"
             :before-upload="uploadContract">
             <div class="upload-success-cn">
-              <img :src="contractFile.http" v-show="form2.contract" style="width: 100%; height: 100%" />
+              <img :src="contractFile.http" v-show="isShowFile(form2.contract)" style="width: 100%; height: 100%" />
             </div>
-            <div class="upload-text">{{contractFile.name}}</div>
+            <div class="upload-text" v-show="form2.contract">{{contractFile.name}}</div>
             <div>上传合同</div>
           </el-upload>
         </el-form-item>
@@ -410,7 +450,8 @@ export default {
         url: '',
         http: '',
         name: ''
-      }
+      },
+      token: localStorage.getItem('token')
     }
   },
   props: ['companyId'],
@@ -452,16 +493,18 @@ export default {
               for (let i = 0; i < subjects.length; i++) {
                 this.form[subjects[i]] = res.data.user_info[subjects[i]]
               }
-              console.log('eeeeeeeeeeeeeeeeeee22', this.form)
               this.form2.resume = res.data.user_info.resume
               this.form2.report = res.data.user_info.report
               this.form2.contract = res.data.user_info.contract
               this.resumeFile.url = res.data.user_info.resume
               this.resumeFile.http = res.data.user_info.resume_url
+              this.resumeFile.name = res.data.user_info.resume_name
               this.reportFile.url = res.data.user_info.report
               this.reportFile.http = res.data.user_info.report_url
+              this.reportFile.name = res.data.user_info.report_name
               this.contractFile.url = res.data.user_info.contract
               this.contractFile.http = res.data.user_info.contract_url
+              this.contractFile.name = res.data.user_info.contract_name
               this.dialogTitle = '编辑员工'
               this.dialogVisible = true
             }
@@ -557,6 +600,16 @@ export default {
         this.$message.warning(res.info)
       }
     },
+    isShowFile (url) {
+      console.log('isshowfile', url)
+      if (!url) return false
+      let type = url.substr(url.indexOf('.') + 1).toLowerCase()
+      let arr = ['jpg', 'jpeg', 'png']
+      if (arr.find(item => item == type)) {
+        return true
+      }
+      return false
+    },
     closeDialog (type) {
       switch (type) {
         case 0:
@@ -623,7 +676,7 @@ export default {
       editStaff({
         id: this.currentStaff.id,
         ...this.form,
-        ...this.from2
+        ...this.form2
       }).then(res => {
         if (res.code) {
           this.getDispatchList(this.page)
@@ -655,6 +708,7 @@ export default {
       })
     },
     downloadFile (url) {
+      console.log('werwrewr', url)
       this.$refs.downloadFile.target = '_blank';
       this.$refs.downloadFile.href = url
       this.$refs.downloadFile.click();

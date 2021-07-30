@@ -6,6 +6,12 @@ export function setGlobalBase(data) {
     return res
   })
 }
+// 查询五险基数
+export function findGlobalBase() {
+  return axios.get("/api/findGlobalBase").then(res => {
+    return res
+  })
+}
 
 // 社保名单列表
 export function getSocialList(params) {

@@ -15,7 +15,8 @@
       </el-form-item>
       <el-form-item label="营业执照：" prop="business">
         <div class="upload-success-cn" v-if="type != 1">
-          <img :src="file.http" v-show="baseForm.business" style="width: 100%; height: 100%" />
+          <img :src="file.http" v-show="isShowFile(baseForm.business)" style="width: 100%; height: 100%" />
+          <div class="upload-name">{{file.name}}</div>
         </div>
         <el-upload
           v-else
@@ -24,7 +25,8 @@
           name="image"
           :on-success="uploadSuccess">
           <div class="upload-success-cn">
-            <img :src="file.http" v-show="baseForm.business" style="width: 100%; height: 100%" />
+            <img :src="file.http" v-show="isShowFile(baseForm.business)" style="width: 100%; height: 100%" />
+            <div class="upload-name">{{file.name}}</div>
           </div>
         </el-upload>
       </el-form-item>
@@ -65,7 +67,8 @@ export default {
       },
       file: {
         url: '',
-        http: ''
+        http: '',
+        name: ''
       }
     }
   },
@@ -75,6 +78,7 @@ export default {
       this.baseForm = this.formData
       this.file.url = this.formData.business
       this.file.http = this.formData.business_url
+      this.file.name = this.formData.business_name
     }
   },
   methods: {
@@ -86,11 +90,22 @@ export default {
         this.baseForm.business = res.data.url
         this.file.url = res.data.url
         this.file.http = res.data.http
+        this.file.name = res.data.name
         this.$message.success('上传成功')
       } else {
         this.$message.warning(res.info)
       }
-    }
+    },
+    isShowFile (url) {
+      console.log('isshowfile', url)
+      if (!url) return false
+      let type = url.substr(url.indexOf('.') + 1).toLowerCase()
+      let arr = ['jpg', 'jpeg', 'png']
+      if (arr.find(item => item == type)) {
+        return true
+      }
+      return false
+    },
   }
 }
 </script>

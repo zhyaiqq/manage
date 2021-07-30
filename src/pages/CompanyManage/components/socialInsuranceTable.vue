@@ -87,7 +87,7 @@
         prop="registered"
         label="户口性质"/>
       <el-table-column
-        prop="contract_start_time"
+        prop="entry_time"
         width="170px"
         label="入职日期">
       </el-table-column>

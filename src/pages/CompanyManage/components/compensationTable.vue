@@ -46,7 +46,7 @@
         label="补偿时间" />
       <el-table-column
         prop="company_money"
-        label="补偿后金额" />
+        label="补偿后公司余额" />
       <el-table-column
         prop="current_mony"
         label="当前余额" />
@@ -143,6 +143,7 @@ export default {
     handle (type) {
       switch (type) {
         case 1:
+          this.selectCompany()
           this.dialogVisible = true
           break;
       }

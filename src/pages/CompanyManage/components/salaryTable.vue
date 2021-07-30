@@ -103,9 +103,10 @@
       </el-table-column>
       <el-table-column
         prop="post_age"
-        label="工龄工资"
-        show-overflow-tooltip>
-      </el-table-column>
+        label="工龄工资" />
+      <el-table-column
+        prop="achievements"
+        label="绩效工资" />
       <el-table-column
         prop="post_tax"
         label="扣税额" />
@@ -136,8 +137,10 @@
       </el-table-column>
       <el-table-column
         prop="post_management"
-        label="管理费"
-        show-overflow-tooltip />
+        label="管理费" />
+      <el-table-column
+        prop="all_post"
+        label="实发工资" />
       <el-table-column
         prop="creat_at"
         label="发薪日期"
@@ -177,8 +180,8 @@
         <el-form-item label="基本工资:" prop="salary">
           <el-input v-model="form.salary"/>
         </el-form-item>
-        <el-form-item label="绩效工资:" prop="achievements">
-          <el-input v-model="form.achievements"/>
+        <el-form-item label="岗位工资:" prop="post_salary">
+          <el-input v-model="form.post_salary"/>
         </el-form-item>
         <el-form-item label="银行卡号:" prop="bank_card">
           <el-input v-model="form.bank_card" />
@@ -228,14 +231,14 @@ export default {
       },
       form: {
         'salary': '',
-        'achievements': '',
+        'post_salary': '',
         'bank': '',
         'bank_card': '',
         'pay_date': 15
       },
       rules1: {
         salary: { required: true, message: '请输入基本工资', trigger: 'change' },
-        achievements: { required: true, message: '请输入绩效工资', trigger: 'change' },
+        post_salary: { required: true, message: '请输入岗位工资', trigger: 'change' },
         bank: { required: true, message: '请输入所属银行', trigger: 'change' },
         bank_card: { required: true, message: '请输入银行卡号', trigger: 'change' },
         pay_date: { required: true, message: '请输入发薪日期', trigger: 'change' },
@@ -277,7 +280,7 @@ export default {
       this.getStaffSalaryList(1)
     },
     handle (type, data) {
-      let subjects = ['salary', 'achievements', 'bank', 'bank_card', 'pay_date']
+      let subjects = ['salary', 'post_salary', 'bank', 'bank_card', 'pay_date']
       switch (type) {
         case 1:
           // 导出薪资数据
