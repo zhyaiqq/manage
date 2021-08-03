@@ -104,38 +104,41 @@
         prop="contract_type"
         label="合同类型" />
       <el-table-column
-        width="100px"
+        width="120px"
         prop="contract_start_time"
-        label="合同起始日期" />
+        label="合同开始日期" />
       <el-table-column
-        width="100px"
-        prop="contract_start_time"
+        width="120px"
+        prop="contract_end_time"
         label="合同结束日期" />
       <el-table-column
-        width="100px"
+        width="300px"
         prop="resume"
         label="简历">
         <template slot-scope="scope">
-          <el-button type="text" v-show="!isShowFile(scope.row.resume)" @click="downloadFile(`${scope.row.resume_url}?token=${token}`)">下载</el-button>
+          <el-button type="text" v-show="!isShowFile(scope.row.resume)" @click="downloadFile(`${scope.row.resume_url}?token=${token}`)">下载文件</el-button>
           <img :src="scope.row.resume_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.resume)" />
+          <!-- <el-button type="text" v-show="isShowFile(scope.row.resume)" @click="downloadIamge(`${scope.row.report_url}?token=${token}`)">下载</el-button> -->
         </template>
       </el-table-column>
       <el-table-column
-        width="100px"
+        width="300px"
         prop="report"
         label="报名表">
         <template slot-scope="scope">
-          <el-button type="text" v-show="!isShowFile(scope.row.report)" @click="downloadFile(`${scope.row.report_url}?token=${token}`)">下载</el-button>
+          <el-button type="text" v-show="!isShowFile(scope.row.report)" @click="downloadFile(`${scope.row.report_url}?token=${token}`)">下载文件</el-button>
           <img :src="scope.row.report_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.report)" />
+          <!--<el-button type="text" v-show="isShowFile(scope.row.report)" @click="downloadIamge(`${scope.row.report_url}?token=${token}`)">下载</el-button>-->
         </template>
       </el-table-column>
       <el-table-column
-        width="100px"
+        width="300px"
         prop="contract"
         label="合同">
         <template slot-scope="scope">
-          <el-button type="text" v-show="!isShowFile(scope.row.contract)" @click="downloadFile(`${scope.row.contract_url}?token=${token}`)">下载</el-button>
+          <el-button type="text" v-show="!isShowFile(scope.row.contract)" @click="downloadFile(`${scope.row.contract_url}?token=${token}`)">下载文件</el-button>
           <img :src="scope.row.contract_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.contract)" />
+          <!--<el-button type="text" v-show="isShowFile(scope.row.contract)" @click="downloadIamge(`http://localhost:8084/logo.png`, 'ee')">下载</el-button>-->
         </template>
       </el-table-column>
       <el-table-column
@@ -255,7 +258,7 @@
       </el-form>
       <div class="mb40">
         员工文档信息
-        <span style="fontSize: 12px; color: #f00">（支持上传图片和pdf文件）</span>
+        <!--<span style="fontSize: 12px; color: #f00">（支持上传图片和pdf文件）</span>-->
       </div>
       <el-form :model="form2" ref="form2" :rules="rules2" label-width="200px" :inline="true">
         <el-form-item label="上传简历:" prop="resume">
@@ -708,13 +711,39 @@ export default {
       })
     },
     downloadFile (url) {
-      console.log('werwrewr', url)
-      this.$refs.downloadFile.target = '_blank';
-      this.$refs.downloadFile.href = url
-      this.$refs.downloadFile.click();
+      // console.log('werwrewr', url)
+      // this.$refs.downloadFile.target = '_blank';
+      // this.$refs.downloadFile.href = url
+      // this.$refs.downloadFile.download = url ? url.substr(url.indexOf('') + 1) : '';
+      // this.$refs.downloadFile.click();
+      console.log('改了下')
+        var a = document.createElement('a')
+        var event = new MouseEvent('click')
+        a.download = name || 'photo'
+        a.href = url
+        a.dispatchEvent(event)
     },
     isHasAuth (auth_id) {
       return this.defaultAuth && this.defaultAuth.some(item => item.id == auth_id)
+    },
+    downloadIamge(imgsrc, name) {
+      var image = new Image()
+      image.crossOrigin = ''
+      // image.crossOrigin = 'anonymous'
+      image.src = imgsrc
+      image.onload = function() {
+        var canvas = document.createElement('canvas')
+        canvas.width = image.width
+        canvas.height = image.height
+        var context = canvas.getContext('2d')
+        context.drawImage(image, 0, 0, image.width, image.height)
+        var url = canvas.toDataURL('image/png')
+        var a = document.createElement('a')
+        var event = new MouseEvent('click')
+        a.download = name || 'photo'
+        a.href = url
+        a.dispatchEvent(event)
+      }
     }
   }
 }

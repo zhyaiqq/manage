@@ -105,6 +105,16 @@
             </div>
           </el-upload>
         </el-form-item>
+        <el-form-item label="公司权限:" prop="companyIds">
+          <el-tree
+            ref="tree"
+            :data="companyList"
+            show-checkbox
+            node-key="id"
+            default-expand-all
+            :props="defaultProps"
+            @check-change="handleCheckChange" />
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -116,6 +126,7 @@
 
 <script>
 import { getUserList, getRoleList, addUser, editUser, delUser } from '@/api/role.js'
+import { getCompanySelect } from '@/api/company.js'
 import { mapState } from 'vuex'
 export default {
   data () {
@@ -134,7 +145,8 @@ export default {
         password2: '',
         role_id: '',
         headimg: '',
-        email: ''
+        email: '',
+        companyIds: []
       },
       rules: {
         username: { required: true, message: '请输入用户名', trigger: 'change' },
@@ -143,6 +155,7 @@ export default {
         password2: { required: true, message: '请确认密码', trigger: 'change' },
         role_id: { required: true, message: '请选择角色类型', trigger: 'change' },
         email: { required: true, message: '请输入邮箱', trigger: 'change' },
+        companyIds: { required: true, message: '请选择公司', trigger: 'blur' },
       },
       pageTotal: 0,
       pageSize: 10,
@@ -152,6 +165,15 @@ export default {
       file: {
         http: '',
         url: ''
+      },
+      companyList: [{
+        name: '全选',
+        id: 0,
+        children: []
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
       }
     }
   },
@@ -174,6 +196,7 @@ export default {
       switch (type) {
         case 0:
           // 新增用户
+          this.getCompany()
           this.dialogVisible = true
           this.dialogTitle = '新增用户'
           break;
@@ -189,6 +212,7 @@ export default {
           this.file.url = data.headimg
           this.form.email = data.contact_mail
           this.form.nickname = data.nickname
+          this.currentRow && this.getCompany(this.currentRow.id)
           this.dialogVisible = true
           break;
         case 3:
@@ -210,6 +234,7 @@ export default {
     closeDialog () {
       this.form = this.$options.data().form
       this.$refs.form && this.$refs.form.resetFields()
+      console.log(this.form)
     },
     confirm () {
       this.$refs.form.validate((valid) => {
@@ -221,6 +246,9 @@ export default {
           }
         }
       })
+    },
+    handleCheckChange () {
+      this.form.companyIds = this.$refs.tree.getCheckedKeys()
     },
     // 获取用户列表
     getUserList (page) {
@@ -276,12 +304,28 @@ export default {
         nickname: this.form.nickname,
         role_id: this.form.role_id,
         headimg: this.form.headimg,
-        email: this.form.email
+        email: this.form.email,
+        company_id: this.$refs.tree.getCheckedKeys()
       }).then(res => {
         if (res.code) {
           this.dialogVisible = false
           this.getUserList(1)
           this.$message.success('角色编辑成功')
+        }
+      })
+    },
+    // 查询公司权限
+    getCompany (id) {
+      getCompanySelect(id).then(res => {
+        if (res.code) {
+          let selected = []
+          this.companyList[0].children = res.data
+          res.data && res.data.map(item => {
+            if (item.select) selected.push(item.id)
+          })
+          setTimeout(() => {
+            this.$refs.tree.setCheckedKeys(this.dialogTitle == '新增用户' ? [] : selected);
+          }, 300)
         }
       })
     },

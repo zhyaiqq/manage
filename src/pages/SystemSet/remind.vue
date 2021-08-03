@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { setRemind } from '@/api/system.js'
+import { setRemind, getRemind } from '@/api/system.js'
 export default {
   data () {
     return {
@@ -31,6 +31,9 @@ export default {
       }
     }
   },
+  created () {
+    this.getRemind()
+  },
   methods: {
     submit () {
       this.$refs.form.validate((valid) => {
@@ -39,12 +42,22 @@ export default {
         }
       })
     },
+    // 提醒设置
     setRemind () {
       setRemind({
         ...this.form
       }).then(res => {
         if (res.code) {
           this.$message.success('设置成功')
+        }
+      })
+    },
+    // 查询提醒设置
+    getRemind () {
+      getRemind().then(res => {
+        if (res.code) {
+          this.form.base_expire = res.data.remind_days
+          this.form.base_retire = res.data.remind_days_base_retire
         }
       })
     }

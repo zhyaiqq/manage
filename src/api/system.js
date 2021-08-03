@@ -36,3 +36,10 @@ export function setRemind(data) {
   })
 }
 
+// 查询提醒设置
+export function getRemind(data) {
+  return axios.get("/api/getRemind", data).then(res => {
+    return res
+  })
+}
+

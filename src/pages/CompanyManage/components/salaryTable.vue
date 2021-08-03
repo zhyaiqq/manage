@@ -20,7 +20,10 @@
       </el-form>
     </div>
     <div class="table-btns">
-      <el-button type="primary" 
+      <el-button 
+        type="primary" 
+        size="small"
+        :style="{ marginRight: item == 'record' ? '0px' : '10px' }"
         @click="() => {
           if (item == 'record') {
             this.addSalaryButto2()
@@ -190,7 +193,7 @@
           <el-input v-model="form.bank" />
         </el-form-item>
         <el-form-item label="发薪日期:" prop="pay_date">
-          <el-input-number v-model="form.pay_date" @change="handleChange" :min="1" :max="30" />
+          <el-input-number v-model="form.pay_date" @change="handleChange" :min="1" :max="30" disabled />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

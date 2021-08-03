@@ -39,7 +39,7 @@
         prop="company_name"
         label="补偿公司" />
       <el-table-column
-        prop="sex_string"
+        prop="remark"
         label="补偿原因" />
       <el-table-column
         prop="creat_at"

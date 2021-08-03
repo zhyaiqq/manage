@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card" style="margin: 15px 0;">
     <div slot="header" class="clearfix">
-      <span>公司基础信息新增</span>
+      <span>{{ title }} </span>
     </div>
     <el-form :model="baseForm" :rules="baseFormRules" ref="baseForm" label-width="100px">
       <el-form-item label="公司名称：" prop="name">
@@ -54,7 +54,7 @@ export default {
         charge_person: '',
         business: '',
         tel: '',
-        cost_time: ''
+        cost_time: 15
       },
       baseFormRules: {
         name: { required: true, message: '请输入公司名称', trigger: 'change' },
@@ -69,7 +69,8 @@ export default {
         url: '',
         http: '',
         name: ''
-      }
+      },
+      title: '公司基础信息新增'
     }
   },
   props: ['type', 'formData'],
@@ -79,6 +80,7 @@ export default {
       this.file.url = this.formData.business
       this.file.http = this.formData.business_url
       this.file.name = this.formData.business_name
+      this.title = this.baseForm.name ? '公司基础信息编辑' : '公司基础信息新增'
     }
   },
   methods: {
@@ -109,3 +111,9 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+  .el-input-number {
+    width: 300px;
+  }
+</style>

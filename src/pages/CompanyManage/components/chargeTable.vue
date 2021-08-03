@@ -5,6 +5,14 @@
         <el-form-item label="姓名:" prop="username">
           <el-input v-model="formInline.username" placeholder="请输入姓名" @keyup.enter.native="search"></el-input>
         </el-form-item>
+        <el-form-item label="类型:" prop="type">
+          <el-select v-model="formInline.type" placeholder="请选择" @change="search">
+            <el-option label="全部" value="" /> 
+            <el-option label="工资" :value="1" /> 
+            <el-option label="五险一金" :value="2" /> 
+            <el-option label="补偿金" :value="3" /> 
+          </el-select>
+        </el-form-item>
         <el-form-item label="扣费时间:" prop="time">
           <el-date-picker
             @change="search"
@@ -96,6 +104,7 @@ export default {
     return {
       formInline: {
         username: '',
+        type: '',
         time: ''
       },
       form: {

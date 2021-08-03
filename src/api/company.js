@@ -56,3 +56,11 @@ export function findStation(id) {
     return res
   })
 }
+
+// 查询公司权限
+export function getCompanySelect(id) {
+  console.log('ewrwerewrewrwe', id)
+  return axios.get(`/api/getCompanySelect?user_id=${id}`).then(res => {
+    return res
+  })
+}
