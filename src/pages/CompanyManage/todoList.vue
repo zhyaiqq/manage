@@ -9,8 +9,14 @@
             <el-option label="已处理" value="1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="任务名称:" prop="username">
-          <el-input v-model="formInline.username" placeholder="请输入任务名称" @keyup.enter.native="search"></el-input>
+        <el-form-item label="用户名:" prop="username">
+          <el-input v-model="formInline.username" placeholder="请输入用户名" @keyup.enter.native="search"></el-input>
+        </el-form-item>
+        <el-form-item label="类型:" prop="type">
+          <el-select v-model="formInline.type" placeholder="全部" @change="search">
+            <el-option label="全部" value=""></el-option>
+            <el-option :label="item" :value="index + 1" v-for="(item, index) in typeList" :key="index"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="到期时间:" prop="time">
           <el-date-picker
@@ -34,7 +40,7 @@
       :cell-style="{textAlign: 'center'}"
       border>
       <el-table-column
-        prop="name"
+        prop="name_string"
         label="任务名称" />
       <el-table-column
         prop="is_deal"
@@ -42,6 +48,13 @@
         <template slot-scope="scope">
           <span v-if="scope.row && scope.row.is_deal" style="color: #409EFF">已处理</span>
           <span v-else style="color: #3BB19C">待处理</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="type"
+        label="类型">
+        <template slot-scope="scope">
+          {{typeList[scope.row.type - 1]}}
         </template>
       </el-table-column>
       <el-table-column
@@ -53,6 +66,7 @@
         <template slot-scope="scope">
           <!--<el-button type="primary" @click="handle(0, scope.row)">详情</el-button>-->
           <el-button type="text" @click="handle(1, scope.row)" v-show="scope.row && scope.row.is_deal != 1">处理</el-button>
+          <el-button type="text" @click="handle(2, scope.row)" v-show="scope.row && scope.row.is_ready == 2">已读</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -104,14 +118,16 @@
 </template>
 
 <script>
-import { getExpire, dealExpire } from  '@/api/todo.js'
+import { getExpire, dealExpire, dealRead } from  '@/api/todo.js'
 import { mapActions } from 'vuex'
+import bus from '@/utils/bus.js'
 export default {
   data () {
     return {
       formInline: {
         aready: '',
         username: '',
+        type: '',
         time: ''
       },
       form: {
@@ -132,16 +148,22 @@ export default {
       pageSize: 10,
       page: 1,
       currentRow: null,
-      dialogVisible: false
+      dialogVisible: false,
+      typeList: ['合同到期', '退休', '入职', '离职', '停保', '参保']
     }
   },
   created () {
+    let { type } = this.$route.params
+    if (type) this.formInline.type = type
     this.getExpire(1)
+    bus.$on('currentType', (value) => {
+      this.formInline.type = value
+      this.getExpire(1)
+    })
   },
   methods: {
     ...mapActions("menu", ['getNewsNum']),
     handle (type, data) {
-      console.log('-------', data)
       switch (type) {
         case 0:
           this.$router.push(`/todolist/${data.id}`)
@@ -151,6 +173,14 @@ export default {
           this.currentRow = data
           this.dialogVisible = true
           break;
+        case 2: 
+          // 已读
+          dealRead({id: data.id}).then(res => {
+            if (res.code) {
+              this.getExpire(this.page)
+              this.getNewsNum()
+            }
+          })
       }
     },
     search () {
@@ -169,6 +199,7 @@ export default {
       let params = {
         username: this.formInline.username,
         aready: this.formInline.aready,
+        type: this.formInline.type,
         start_deal_time: this.formInline.time ? this.formInline.time[0] : '',
         end_deal_time: this.formInline.time ? this.formInline.time[1] : '',
       }

@@ -105,7 +105,7 @@
             </div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="公司权限:" prop="companyIds">
+        <el-form-item label="公司权限:" prop="company_id">
           <el-tree
             ref="tree"
             :data="companyList"
@@ -146,7 +146,7 @@ export default {
         role_id: '',
         headimg: '',
         email: '',
-        companyIds: []
+        company_id: []
       },
       rules: {
         username: { required: true, message: '请输入用户名', trigger: 'change' },
@@ -155,7 +155,7 @@ export default {
         password2: { required: true, message: '请确认密码', trigger: 'change' },
         role_id: { required: true, message: '请选择角色类型', trigger: 'change' },
         email: { required: true, message: '请输入邮箱', trigger: 'change' },
-        companyIds: { required: true, message: '请选择公司', trigger: 'blur' },
+        company_id: { required: true, message: '请选择公司', trigger: 'blur' },
       },
       pageTotal: 0,
       pageSize: 10,
@@ -248,7 +248,7 @@ export default {
       })
     },
     handleCheckChange () {
-      this.form.companyIds = this.$refs.tree.getCheckedKeys()
+      this.form.company_id = this.$refs.tree.getCheckedKeys()
     },
     // 获取用户列表
     getUserList (page) {

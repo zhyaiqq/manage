@@ -80,7 +80,7 @@ export default {
       this.file.url = this.formData.business
       this.file.http = this.formData.business_url
       this.file.name = this.formData.business_name
-      this.title = this.baseForm.name ? '公司基础信息编辑' : '公司基础信息新增'
+      this.title = this.baseForm.name ? (this.type != 1 ? '公司基础信息' : '公司基础信息编辑' ) : '公司基础信息新增'
     }
   },
   methods: {

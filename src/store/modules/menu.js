@@ -4,6 +4,7 @@ const module = {
   namespaced: true,
   state: {
     excellUrls: null,
+    todo: {},
     todoCount: 0,
     authMenuList: [],
     menuList: [],
@@ -21,6 +22,9 @@ const module = {
     },
     setTodoCount(state, data) {
       state.todoCount = data
+    },
+    setTodo(state, data) {
+      state.todo = data
     },
     setDefaultAuth(state, data) {
       state.defaultAuth = data
@@ -45,7 +49,10 @@ const module = {
     // 获取待办事总数
     getNewsNum({ commit }) {
       return axios.get("/api/news").then(res => {
-        if (res.code) commit('setTodoCount', res.data.news_count)
+        if (res.code) {
+          commit('setTodoCount', res.data.news_count + res.data.penson_count + res.data.return_count + res.data.socal_count)
+          commit('setTodo', res.data)
+        }
       })
     },
     getMen({ commit }) {

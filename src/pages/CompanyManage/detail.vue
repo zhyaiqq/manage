@@ -1,14 +1,14 @@
 <template>
   <div class="company_detail">
+    <div class="overview">
+      <div v-for="(item, index) in overviewList" :key="index" :class="`item item${index+1}`" @click="clickPanel(index)">
+        <div>{{ item.title }}</div>
+        <div class="bold">{{ item.value }}</div>
+      </div>
+    </div>
     <el-tabs v-model="currentIndex" @tab-click="changeTab" v-if="companyAuth && companyAuth.child.length > 0">
       <el-tab-pane label="基础信息" name="0" v-show="isShowTab(companyAuth.child,'基础信息')">
-        <div style="position: relative">
-          <div class="overview">
-            <div v-for="(item, index) in overviewList" :key="index" :class="`item item${index+1}`">
-              <div>{{ item.title }}</div>
-              <div class="bold">{{ item.value }}</div>
-            </div>
-          </div>
+        <div style="position: relative" v-show="currentIndex == '0'">
           <BaseForm :type="type" :formData="{...baseInfo}" ref="baseComp" />
           <div>
             <el-button type="primary" @click="edit(0)" v-show="type == 1">提交</el-button>
@@ -17,6 +17,7 @@
           </div>
         </div>
       </el-tab-pane>
+      <!--
       <el-tab-pane label="岗位需求" name="1" v-show="isShowTab(companyAuth.child,'岗位需求')">
         <div style="marginTop: 30px; position: relative" v-show="currentIndex == '1'">
           <WorkForm :type="type" :formData="stationInfo" ref="workComp" />
@@ -26,20 +27,21 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="派遣人员" name="2" v-show="isShowTab(companyAuth.child,'派遣人员')">
-        <DispatchTable :companyId="id" v-if="currentIndex == 2" />
+      -->
+      <el-tab-pane label="人员列表" name="1" v-show="isShowTab(companyAuth.child, '派遣人员')">
+        <DispatchTable :companyId="id" v-if="currentIndex == '1'" ref="dispatchTable" />
       </el-tab-pane>
-      <el-tab-pane label="社保名单" name="3" v-show="isShowTab(companyAuth.child,'社保名单')">
-        <SocialTable :companyId="id" v-if="currentIndex == 3" />
+      <el-tab-pane label="社保名单" name="2" v-show="isShowTab(companyAuth.child,'社保名单')">
+        <SocialTable :companyId="id" v-if="currentIndex == '2'" />
       </el-tab-pane>
-      <el-tab-pane label="员工薪资" name="4" v-show="isShowTab(companyAuth.child,'员工薪资')">
-        <SalaryTable :companyId="id" v-if="currentIndex == 4" />
+      <el-tab-pane label="员工薪资" name="3" v-show="isShowTab(companyAuth.child,'员工薪资')">
+        <SalaryTable :companyId="id" v-if="currentIndex == '3'" />
       </el-tab-pane>
-      <el-tab-pane label="扣费记录" name="5" v-show="isShowTab(companyAuth.child,'扣费记录')">
-        <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" v-if="currentIndex == 5" />
+      <el-tab-pane label="费用管理" name="4" v-show="isShowTab(companyAuth.child,'扣费记录')">
+        <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" v-if="currentIndex == '4'" />
       </el-tab-pane>
-      <el-tab-pane label="补偿金" name="6" v-show="isShowTab(companyAuth.child,'补偿金')">
-        <CompensationTable :companyId="id" v-if="currentIndex == 6" />
+      <el-tab-pane label="补偿金" name="5" v-show="isShowTab(companyAuth.child,'补偿金')">
+        <CompensationTable :companyId="id" v-if="currentIndex == '5'" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -47,15 +49,15 @@
 
 <script>
 import BaseForm from './components/baseForm.vue'
-import WorkForm from './components/workForm.vue'
+// import WorkForm from './components/workForm.vue'
 import DispatchTable from './components/dispatchPersonTable.vue'
 import SocialTable from './components/socialInsuranceTable.vue'
 import SalaryTable from './components/salaryTable.vue'
 import ChargeTable from './components/chargeTable.vue'
 import CompensationTable from './components/compensationTable.vue'
 import { mapActions, mapGetters } from 'vuex'
-
 import { findCompany, findStation, editCompany, editStation, getOverview } from '@/api/company.js'
+import bus from '@/utils/bus.js'
 export default {
   data () {
     return {
@@ -82,23 +84,33 @@ export default {
           title: '本月减少员工',
           value: '--',
           color: 'rgba(82, 193, 245, 1)'
-        }
+        },
+        {
+          title: '社保缴纳',
+          value: '--',
+          color: 'rgba(82, 193, 245, 1)'
+        },
+        {
+          title: '社保注销',
+          value: '--',
+          color: 'rgba(82, 193, 245, 1)'
+        },
       ],
-      currentIndex: '0',
+      currentIndex: '1',
       baseInfo: null,
       jobList: null,
       isBack: false,
       pageMeta: null
     }
   },
-  components: { BaseForm, WorkForm, DispatchTable, SocialTable, SalaryTable, ChargeTable, CompensationTable },
+  components: { BaseForm, DispatchTable, SocialTable, SalaryTable, ChargeTable, CompensationTable },
   created () {
     const { action } = this.$route.query
     const { id } = this.$route.params
     this.pageMeta = this.$route.meta
     this.id = id
     this.type = action === 'edit' ? 1 : (this.pageMeta.title == '公司列表' ? 2 : 0)
-    this.btns = this.type == 1 ? ['基础信息', '岗位需求'] : ['基础信息', '岗位需求', '派遣人员', '社保名单', '员工薪资', '扣费记录', '补偿金']
+    this.btns = this.type == 1 ? ['基础信息'] : ['基础信息', '人员列表', '社保名单', '员工薪资', '费用管理', '补偿金']
     this.getCompanyInfo()
     this.getStationInfo()
     this.getOverview()
@@ -116,7 +128,7 @@ export default {
   },
   watch: {
     $route (to) {
-      this.currentIndex = '0'
+      this.currentIndex = '1'
       this.isBack = false
       const { action } = to.query
       const { id } = to.params
@@ -124,7 +136,7 @@ export default {
       this.id = id
       this.type = action === 'edit' ? 1 : 0
       this.type = action === 'edit' ? 1 : (this.pageMeta.title == '公司列表' ? 2 : 0)
-      this.btns = this.type ? ['基础信息', '岗位需求'] : ['基础信息', '岗位需求', '派遣人员', '社保名单', '员工薪资', '扣费记录', '补偿金']
+      this.btns = this.type ? ['基础信息'] : ['基础信息', '人员列表', '社保名单', '员工薪资', '费用管理', '补偿金']
       this.getCompanyInfo()
       this.getStationInfo()
       this.getOverview()
@@ -144,6 +156,19 @@ export default {
       this.isBack = false
       this.type = this.pageMeta.title == '公司列表' ? this.type : 0
     },
+    clickPanel (index) {
+      switch (index) {
+        case 0:
+          this.currentIndex = '4'
+          break;
+        case 1:
+        case 2:
+        case 3:
+          this.currentIndex = '1'
+          bus.$emit('dispatchPerson', index);
+          break;
+      }
+    },
     isShowTab (arr, title) {
       return arr.find(item => item.title == title)
     },
@@ -155,7 +180,8 @@ export default {
     },
     // 编辑
     edit (type) {
-      let jobList = this.$refs['workComp'].jobList
+      // let jobList = this.$refs['workComp'].jobList
+      let jobList = []
       switch (type) {
         case 0:
           // 编辑公司
@@ -227,6 +253,8 @@ export default {
           this.overviewList[1].value = res.data.staff_count
           this.overviewList[2].value = res.data.new_staff
           this.overviewList[3].value = res.data.out_staff
+          this.overviewList[4].value = res.data.count_social
+          this.overviewList[5].value = res.data.out_social
         }
       })
     }
@@ -251,15 +279,25 @@ export default {
       color: #fff;
       &.item1 {
         background-image: linear-gradient(to right, #309EE1 , #55BCC0);
+        cursor: pointer;
       }
       &.item2 {
         background-image: linear-gradient(to right, #FC3B91 , #FF7B7E);
+        cursor: pointer;
       }
       &.item3 {
         background-image: linear-gradient(to right, #9959C6 , #C443D8);
+        cursor: pointer;
       }
       &.item4 {
         background-image: linear-gradient(to right, #F1A323 , #EDC11D);
+        cursor: pointer;
+      }
+      &.item5 {
+        background-image: linear-gradient(to right, rgba(238, 83, 53, 1), rgba(238, 83, 53, .6));
+      }
+      &.item6 {
+        background-image: linear-gradient(to right, rgba(167, 212, 133, 1), rgba(167, 212, 133, .8));
       }
       .bold {
         margin-top: 10px;

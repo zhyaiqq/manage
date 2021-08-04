@@ -1,14 +1,14 @@
 <template>
   <div class="add_company">
     <BaseForm ref="baseComp" type="1" />
-    <WorkForm ref="workComp" type="1" />
+    <!--<WorkForm ref="workComp" type="1" />-->
     <el-button type="primary" @click="submit">提交</el-button>
   </div>
 </template>
 
 <script>
 import BaseForm from './components/baseForm.vue'
-import WorkForm from './components/workForm.vue'
+// import WorkForm from './components/workForm.vue'
 import { addCompany } from '@/api/company.js'
 import { mapActions } from 'vuex'
 export default {
@@ -16,7 +16,7 @@ export default {
     return {
     }
   },
-  components: { BaseForm, WorkForm },
+  components: { BaseForm },
   methods: {
     ...mapActions('company', ['getMenuCompany']),
     submit () {
@@ -31,8 +31,8 @@ export default {
     addCompany () {
       addCompany({
         ...this.$refs['baseComp'].baseForm,
-        station: this.$refs['workComp'].jobList,
-        remark: ''
+        // station: this.$refs['workComp'].jobList,
+        // remark: ''
       }).then(res => {
         if (res.code) {
           this.$message.success('新增成功')

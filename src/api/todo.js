@@ -22,11 +22,19 @@ export function dealExpire(data) {
 }
 
 // 消息中心
-export function getNews () {
+export function getNews() {
   return axios.get("/api/news").then(res => {
     return res
   })
 }
+
+// 待办事已读
+export function dealRead(data) {
+  return axios.post("/api/deal_read", data).then(res => {
+    return res
+  })
+}
+
 
 
 

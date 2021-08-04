@@ -7,10 +7,26 @@
       </div>
       <div class="header_right">
         <div>{{userInfo && userInfo.username}}</div>
-        <div class="message" @click="jump(1, { url: '/todolist' })">
+        <el-dropdown>
+          <span class="message">
+            <img src="../assets/imgs/info.png" class="message_icon" />
+            <div class="count" v-show="todoCount > 0">{{todoCount}}</div>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-for="(item, index) in Object.keys(todo)" :key="index" v-show="todo[item] > 0">
+              <div 
+                @click="goTodoList(item)"
+                style="padding: 10px; display: flex; alignItems: center; justifyContent: space-between; width: 150px">
+                <span>{{todoObj[item]}}</span>
+                <span>({{todo[item]}})</span>
+              </div>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+       <!-- <div class="message" @click="jump(1, { url: '/todolist' })">
           <img src="../assets/imgs/info.png" class="message_icon" />
           <div class="count" v-show="todoCount > 0">{{todoCount}}</div>
-        </div>
+        </div> -->
         <div class="right_btn" @click="onLogout">退出登录</div>
       </div>
     </div>
@@ -62,7 +78,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-
+import bus from '@/utils/bus.js'
 export default {
   data () {
     return {
@@ -72,7 +88,13 @@ export default {
       company: '',
       timer: null,
       openMenus: ['0'],
-      cardClass: ''
+      cardClass: '',
+      todoObj: {
+        'news_count': '合同到期',
+        'penson_count': '退休',
+        'return_count': '社保变动',
+        'socal_count': '人员变动'
+      }
     }
   },
   created () {
@@ -89,7 +111,7 @@ export default {
   computed: {
     ...mapState("company", ['menuCompanyList']),
     ...mapState("user", ['userInfo']),
-    ...mapState("menu", ['todoCount', 'authMenuList', 'menuList', 'showCompany'])
+    ...mapState("menu", ['todoCount', 'todo', 'authMenuList', 'menuList', 'showCompany'])
   },
   watch: {
     $route() {
@@ -139,6 +161,10 @@ export default {
       if (key == 0) return
       this.openMenus = ['0']
     },
+    handleCommand (url) {
+      console.log('eeee', url)
+      // this.jump(1, {url})
+    },
     jump (type, item) {
       const { path, params: { id } } = this.$route
       switch (type) {
@@ -148,6 +174,7 @@ export default {
           }
           break;
         case 1:
+        console.log(111111)
           if (path != item.url) {
             this.$router.push(item.url)
           }
@@ -174,8 +201,17 @@ export default {
         localStorage.removeItem('token')
         localStorage.removeItem('authRoute')
         localStorage.removeItem('companyId')
-        this.$router.push('/login') 
+        this.$router.push('/login')
       })
+    },
+    goTodoList (index) {
+      let arr = ['', 'news_count', 'penson_count', 'socal_count', '', 'return_count']
+      let type = arr.findIndex(item => item == index)
+      if (this.$route.path !== '/todolist') {
+        this.$router.push({ name: 'todolist',  params: {type: type} })
+      } else {
+        bus.$emit('currentType', type);
+      }
     }
   }
 }

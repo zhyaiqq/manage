@@ -362,6 +362,8 @@
 import { getDispatchList, addStaff, staffQuit, staffRemark, editStaff, getStaffDetail } from '@/api/staff.js'
 import { getCompanyList } from '@/api/company.js'
 import { mapState } from 'vuex'
+import dayjs from 'dayjs'
+import bus from '@/utils/bus.js'
 export default { 
   data () {
     return {
@@ -461,6 +463,21 @@ export default {
   created () {
     this.getCompanyList()
     this.getDispatchList(1)
+    bus.$on('dispatchPerson', (index) => {
+      this.formInline = this.$options.data().formInline
+      switch (index) {
+        case 1:
+          this.formInline.entry_status = 2
+          break;
+        case 2:
+          this.formInline.entryTime = [dayjs().startOf('month').format('YYYY-MM-DD'), dayjs().endOf('month').format('YYYY-MM-DD')]
+          break;
+        case 3:
+          this.formInline.entry_status = 1
+          break;
+      }
+      this.getDispatchList(1)
+    });
   },
   computed: {
     ...mapState("menu", ['excellUrls', 'defaultAuth']),
@@ -604,7 +621,6 @@ export default {
       }
     },
     isShowFile (url) {
-      console.log('isshowfile', url)
       if (!url) return false
       let type = url.substr(url.indexOf('.') + 1).toLowerCase()
       let arr = ['jpg', 'jpeg', 'png']

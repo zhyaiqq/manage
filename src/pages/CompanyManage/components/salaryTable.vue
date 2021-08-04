@@ -24,13 +24,7 @@
         type="primary" 
         size="small"
         :style="{ marginRight: item == 'record' ? '0px' : '10px' }"
-        @click="() => {
-          if (item == 'record') {
-            this.addSalaryButto2()
-          } else {
-            this.addSalaryButton()
-          }
-        }" 
+        @click="item == 'record' ? recordBtn () : grantBtn()"
         v-for="(item, index) in Object.keys(btns)"
         :key="index">
         {{item == 'record' ? '确认对账' : '确认发放'}}
@@ -398,7 +392,7 @@ export default {
        
     },
     // 对账发放按钮-发放
-    addSalaryButton () {
+    grantBtn () {
       addSalaryButton({
         company_id: this.companyId,
         is: 1
@@ -409,7 +403,7 @@ export default {
       })
     },
     // 对账发放按钮-对账
-    addSalaryButton2 () {
+    recordBtn () {
       addSalaryButton2({
         company_id: this.companyId,
         is: 0
