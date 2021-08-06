@@ -54,6 +54,7 @@
         prop="handle"
         label="操作">
         <template slot-scope="scope">
+          <el-button type="text" @click="handle(4, scope.row)" v-show="scope.row.is_password">修改密码</el-button>
           <el-button type="text" @click="handle(2, scope.row)" v-show="isHasAuth(223)">编辑</el-button>
           <el-button type="text" @click="handle(3, scope.row)" v-show="isHasAuth(227)">删除</el-button>
         </template>
@@ -71,7 +72,7 @@
       :title="dialogTitle"
       :visible.sync="dialogVisible"
       width="30%"
-      @closed="closeDialog">
+      @closed="closeDialog(0)">
       <el-form :model="form" ref="form" :rules="rules" label-width="100px">
         <el-form-item label="用户名:" prop="username">
           <el-input v-model="form.username"></el-input>
@@ -120,12 +121,32 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="confirm">确 定</el-button>
       </span>
-    </el-dialog>
-  </div>
+    </el-dialog>    
+    <el-dialog
+      title="修改密码"
+      :visible.sync="dialogVisible2"
+      width="30%"
+      @closed="closeDialog(1)">
+      <el-form :model="form2" ref="form2" :rules="rules2" label-width="100px">
+        <el-form-item label="用户名:" prop="user_id">
+          {{this.currentRow && this.currentRow.username}}
+        </el-form-item>
+        <el-form-item label="新密码:" prop="new_password">
+          <el-input v-model="form2.new_password"></el-input>
+        </el-form-item>
+        <el-form-item label="确认新密码:" prop="new_password2">
+          <el-input v-model="form2.new_password2"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible2 = false">取 消</el-button>
+        <el-button type="primary" @click="confirmPwd">确 定</el-button>
+      </span>
+    </el-dialog>  </div>
 </template>
 
 <script>
-import { getUserList, getRoleList, addUser, editUser, delUser } from '@/api/role.js'
+import { getUserList, getRoleList, addUser, editUser, delUser, edPassword2 } from '@/api/role.js'
 import { getCompanySelect } from '@/api/company.js'
 import { mapState } from 'vuex'
 export default {
@@ -156,6 +177,17 @@ export default {
         role_id: { required: true, message: '请选择角色类型', trigger: 'change' },
         email: { required: true, message: '请输入邮箱', trigger: 'change' },
         company_id: { required: true, message: '请选择公司', trigger: 'blur' },
+      },
+      dialogVisible2: false,
+      form2: {
+        user_id: '',
+        new_password: '',
+        new_password2: ''
+      },
+      rules2: {
+        user_id: { required: true, message: '用户不能为空', trigger: 'change' },
+        new_password: { required: true, message: '请输入新密码', trigger: 'change' },
+        new_password2: { required: true, message: '请确认密码', trigger: 'change' },
       },
       pageTotal: 0,
       pageSize: 10,
@@ -219,6 +251,12 @@ export default {
           // 删除
           this.delUser(data.id)
           break;
+        case 4:
+          // 修改密码
+          this.currentRow = data
+          this.form2.user_id = data.id
+          this.dialogVisible2 = true
+          break;
       }
     },
     uploadSuccess (res) {
@@ -231,10 +269,14 @@ export default {
         this.$message.warning(res.info)
       }
     },
-    closeDialog () {
-      this.form = this.$options.data().form
-      this.$refs.form && this.$refs.form.resetFields()
-      console.log(this.form)
+    closeDialog (index) {
+      if (index) {
+        this.form2 = this.$options.data().form2
+        this.$refs.form2 && this.$refs.form2.resetFields()
+      } else {
+        this.form = this.$options.data().form
+        this.$refs.form && this.$refs.form.resetFields()
+      }
     },
     confirm () {
       this.$refs.form.validate((valid) => {
@@ -246,6 +288,13 @@ export default {
           }
         }
       })
+    },
+    confirmPwd () {
+      this.$refs.form2.validate((valid) => {
+        if (valid) {
+          this.edPassword2()
+        }
+      }) 
     },
     handleCheckChange () {
       this.form.company_id = this.$refs.tree.getCheckedKeys()
@@ -326,6 +375,15 @@ export default {
           setTimeout(() => {
             this.$refs.tree.setCheckedKeys(this.dialogTitle == '新增用户' ? [] : selected);
           }, 300)
+        }
+      })
+    },
+    // 管理员修改密码
+    edPassword2 () {
+      edPassword2(this.form2).then(res => {
+        if (res.code) {
+          this.$message.success('修改密码成功')
+          this.dialogVisible2 = false
         }
       })
     },

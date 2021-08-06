@@ -70,6 +70,12 @@ export function delUser(data) {
   })
 }
 
+// 管理员修改密码
+export function edPassword2(data) {
+  return axios.post("/api/ed_password2", data).then(res => {
+    return res
+  })
+}
 
 
 

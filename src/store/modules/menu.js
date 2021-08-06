@@ -50,7 +50,7 @@ const module = {
     getNewsNum({ commit }) {
       return axios.get("/api/news").then(res => {
         if (res.code) {
-          commit('setTodoCount', res.data.news_count + res.data.penson_count + res.data.return_count + res.data.socal_count)
+          commit('setTodoCount', res.data.news_count + res.data.return_count + res.data.penson_count_stop + res.data.penson_count_start + res.data.socal_count_stop + res.data.socal_count_start)
           commit('setTodo', res.data)
         }
       })
