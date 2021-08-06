@@ -64,7 +64,7 @@
         prop="handle"
         label="操作">
         <template slot-scope="scope">
-          <!--<el-button type="primary" @click="handle(0, scope.row)">详情</el-button>-->
+          <el-button type="text" @click="handle(0, scope.row)">详情</el-button>
           <el-button type="text" @click="handle(1, scope.row)" v-show="scope.row && scope.row.is_deal != 1">处理</el-button>
           <el-button type="text" @click="handle(2, scope.row)" v-show="scope.row && scope.row.is_ready == 2">已读</el-button>
         </template>
@@ -114,11 +114,101 @@
         <el-button type="primary" @click="confirm">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="员工详细信息"
+      :visible.sync="dialogVisible2"
+      width="70%"
+      @closed="closeDialog(0)">
+      <div class="mb40">
+        员工基础信息
+      </div>
+      <el-form :model="form3" ref="form3" :rules="rules1" label-width="200px" :inline="true" :validate-on-rule-change="false" class="dialog_detail">
+        <el-form-item label="姓名:" prop="name">
+          {{ this.staffInfo && this.staffInfo.name }}
+        </el-form-item>
+        <el-form-item label="家庭地址:" prop="address">
+          {{ this.staffInfo && this.staffInfo.address }}
+        </el-form-item>
+        <el-form-item label="性别:" prop="sex">
+          {{ this.staffInfo && this.staffInfo.sex_string }}
+        </el-form-item>
+        <el-form-item label="选择身份:" prop="current_type">
+          {{ this.staffInfo && this.staffInfo.current_name }}
+        </el-form-item>
+        <el-form-item label="出生日期:" prop="age">
+          {{ this.staffInfo && this.staffInfo.age }}
+        </el-form-item>
+        <el-form-item label="身份证号码:" prop="card_id">
+          {{ this.staffInfo && this.staffInfo.card_id }}
+        </el-form-item>
+        <el-form-item label="入职日期:" prop="entry_time">
+          {{ this.staffInfo && this.staffInfo.entry_time }}
+        </el-form-item>
+        <el-form-item label="岗位状态:" prop="entry_status">
+          {{ this.staffInfo && this.staffInfo.entry_status_string }}
+        </el-form-item>
+      </el-form>
+      <div class="mb40">
+        员工社保信息
+      </div>
+      <el-form :model="form4" ref="form4" :rules="rules2" label-width="200px" :inline="true" class="dialog_detail">
+        <el-form-item label="五险基数金额:" prop="resume">
+          {{ this.proportionInfo && this.proportionInfo.base }}
+        </el-form-item>
+        <el-form-item label="养老（公司）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.company_pension }}
+        </el-form-item>
+        <el-form-item label="养老（个人）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.person_pension }}
+        </el-form-item>
+        <el-form-item label="公积金（公司）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.company_accumulation }}
+        </el-form-item>
+        <el-form-item label="公积金（个人）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.person_accumulation }}
+        </el-form-item>
+        <el-form-item label="失业（公司）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.company_unemployment }}
+        </el-form-item>
+        <el-form-item label="失业（个人）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.person_unemployment }}
+        </el-form-item>
+        <el-form-item label="医疗（公司）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.company_medical }}
+        </el-form-item>
+        <el-form-item label="医疗（个人）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.person_medical }}
+        </el-form-item>
+        <el-form-item label="工伤（公司）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.company_injury }}
+        </el-form-item>
+        <el-form-item label="工伤（个人）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.person_injury }}
+        </el-form-item>
+        <el-form-item label="生育（公司）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.company_birth }}
+        </el-form-item>
+        <el-form-item label="生育（个人）:" prop="contract">
+          {{ this.proportionInfo && this.proportionInfo.person_birth }}
+        </el-form-item>
+        <el-form-item label="基本薪资:" prop="contract">
+          {{ this.salaryInfo && this.salaryInfo.salary }}
+        </el-form-item>
+        <el-form-item label="绩效薪资:" prop="contract">
+          {{ this.salaryInfo && this.salaryInfo.achievements }}
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible2 = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible2 = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getExpire, dealExpire, dealRead } from  '@/api/todo.js'
+import { getStaffDetail } from '@/api/staff.js'
 import { mapActions } from 'vuex'
 import bus from '@/utils/bus.js'
 export default {
@@ -143,13 +233,33 @@ export default {
         contract_start_time: { required: true, message: '请选择合同开始时间', trigger: 'change' },
         contract_end_time: { required: true, message: '请选择合同结束时间', trigger: 'change' },
       },
+      form3: {
+        'name': '',
+        'address': '',
+        'age': '',
+        'card_id': '',
+        'company_id': Number(this.companyId),
+        'sex': '',
+        'current_type': '',
+        'entry_status': '',
+        'entry_time': '', 
+        'contract_start_time': '', 
+        'contract_end_time': '', 
+        'contract_type': '',
+        'retire_age': ''
+      },
+      form4: {},
       tableData: [],
       pageTotal: 0,
       pageSize: 10,
       page: 1,
       currentRow: null,
       dialogVisible: false,
-      typeList: ['合同到期', '退休', '入职', '离职', '停保', '参保']
+      dialogVisible2: false,
+      typeList: ['合同到期', '退休', '入职', '离职', '停保', '参保'],
+      staffInfo: null,
+      salaryInfo: null,
+      proportionInfo: null
     }
   },
   created () {
@@ -166,7 +276,8 @@ export default {
     handle (type, data) {
       switch (type) {
         case 0:
-          this.$router.push(`/todolist/${data.id}`)
+          // this.$router.push(`/todolist/${data.id}`)
+          data.uers_id && this.getStaffDetail(data.uers_id)
           break;
         case 1:
           this.form.id = data.id
@@ -229,7 +340,27 @@ export default {
           this.$message.success('处理成功')
         }
       })
+    },
+    // 获取员工详细信息
+    getStaffDetail (id) {
+      getStaffDetail(id).then(res => {
+        if (res.code) {
+          this.dialogVisible2 = true
+          this.staffInfo = res.data.user_info
+          this.proportionInfo = res.data.proportion_info
+          this.salaryInfo = res.data.salary
+          console.log('详情', res)
+        } else {
+          this.$message.warning('数据请求失败')
+        }
+      })
     }
   }
 }
 </script>
+
+<style>
+.dialog_detail.el-form--inline .el-form-item {
+  width: 400px;
+}
+</style>

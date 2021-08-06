@@ -9,13 +9,10 @@ const errorHandle = (status, message) => {
       Message.error('请求错误(400)')
       break
     case 401:
-      // Cookies.remove('catl-token')
-      // instance.defaults.headers.token = ''
       localStorage.removeItem('token')
       localStorage.removeItem('authRoute')
       localStorage.removeItem('companyId')
       router.push('/login')
-      // Message.error('未授权，请重新登录(401)')
       Message.error(message)
       break
     case 403:
@@ -30,21 +27,6 @@ const errorHandle = (status, message) => {
     case 500:
       Message.error('服务器错误(500)')
       break
-    case 501:
-      Message.error('服务未实现(501)')
-      break
-    case 502:
-      Message.error('网络错误(502)')
-      break
-    case 503:
-      Message.error('服务不可用(503)')
-      break
-    case 504:
-      Message.error('网络超时(504)')
-      break
-    case 505:
-      Message.error('HTTP版本不受支持(505)')
-      break
     case 0:
       Message.error(message)
       break
@@ -54,7 +36,7 @@ const errorHandle = (status, message) => {
 const instance = axios.create({
   baseURL: 'http://rlzypq.samowl.cn',
   // baseURL: 'http://116.63.143.166:8001',
-  baseURL: '',
+  // baseURL: '',
   timeout: 10000,
   withCredentials: false
 })

@@ -9,7 +9,7 @@ export function getCutLogList(params) {
 
 // 删除扣费记录
 export function delCutLog(data) {
-  return axios.get("/api/delCutLog", data).then(res => {
+  return axios.post("/api/delCutLog", data).then(res => {
     return res
   })
 }
@@ -20,3 +20,18 @@ export function getRecharge(params) {
     return res
   })
 }
+
+// 费用明细
+export function getDetailed(params) {
+  return axios.get("/api/getDetailed", { params }).then(res => {
+    return res
+  })
+}
+
+// 费用汇总
+export function costAll(params) {
+  return axios.get("/api/cost_all", { params }).then(res => {
+    return res
+  })
+}
+

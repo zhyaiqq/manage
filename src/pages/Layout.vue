@@ -13,7 +13,7 @@
             <div class="count" v-show="todoCount > 0">{{todoCount}}</div>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(item, index) in Object.keys(todo)" :key="index" v-show="todo[item] > 0">
+            <el-dropdown-item v-for="(item, index) in Object.keys(todo)" :key="index">
               <div 
                 @click="goTodoList(item)"
                 style="padding: 10px; display: flex; alignItems: center; justifyContent: space-between; width: 150px">
@@ -91,9 +91,11 @@ export default {
       cardClass: '',
       todoObj: {
         'news_count': '合同到期',
-        'penson_count': '退休',
-        'return_count': '社保变动',
-        'socal_count': '人员变动'
+        'return_count': '退休',
+        'penson_count_stop': '离职',
+        'penson_count_start': '入职',
+        'socal_count_stop': '停保',
+        'socal_count_start': '参保',
       }
     }
   },
@@ -205,7 +207,7 @@ export default {
       })
     },
     goTodoList (index) {
-      let arr = ['', 'news_count', 'penson_count', 'socal_count', '', 'return_count']
+      let arr = ['', 'news_count', 'return_count', 'penson_count_start', 'penson_count_stop', 'socal_count_stop', 'socal_count_start']
       let type = arr.findIndex(item => item == index)
       if (this.$route.path !== '/todolist') {
         this.$router.push({ name: 'todolist',  params: {type: type} })

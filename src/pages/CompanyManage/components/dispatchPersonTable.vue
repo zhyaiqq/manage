@@ -361,7 +361,7 @@
 <script>
 import { getDispatchList, addStaff, staffQuit, staffRemark, editStaff, getStaffDetail } from '@/api/staff.js'
 import { getCompanyList } from '@/api/company.js'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import dayjs from 'dayjs'
 import bus from '@/utils/bus.js'
 export default { 
@@ -483,7 +483,14 @@ export default {
     ...mapState("menu", ['excellUrls', 'defaultAuth']),
     ...mapState("company", ['staffTypeList'])
   },
+  watch: {
+    companyId () {
+      this.getCompanyList()
+      this.getDispatchList(1)
+    }
+  },
   methods: {
+    ...mapActions("menu", ['getNewsNum']),
     handleSelectionChange () {},
     handleCurrentChange (page) {
       this.getDispatchList(page)
@@ -710,6 +717,7 @@ export default {
         if (res.code) {
           this.dialogVisible3 = false
           this.getDispatchList(this.page)
+          this.getNewsNum()
           this.$message.success('操作成功')
         }
       })
