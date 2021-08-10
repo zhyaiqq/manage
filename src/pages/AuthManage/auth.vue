@@ -24,7 +24,7 @@
 
 <script>
 import { getRoleAuth, updateAuthRole } from '@/api/role.js'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -45,6 +45,7 @@ export default {
     this.getRoleAuth()
   },
   methods: {
+    ...mapActions("menu", ['getMen']),
     // 获取权限列表
     getRoleAuth () {
       getRoleAuth({
@@ -68,7 +69,6 @@ export default {
             })
             newAuth.push({...item, child: level2})
           })
-          console.log('dddd', newAuth)
           this.authList = newAuth
         }
       })
@@ -80,7 +80,8 @@ export default {
         auth_id: ids
       }).then(res => {
         if (res.code) {
-          this.$message.success('添加角色权限成功')
+          this.getMen()
+          this.$message.success('角色权限修改成功')
         }
       })
     },

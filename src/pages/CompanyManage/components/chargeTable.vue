@@ -39,6 +39,9 @@
           <el-table-column
             prop="create_time"
             label="时间" />
+          <el-table-column
+            prop="username"
+            label="操作人员" />
         </el-table>
         <el-pagination
           @current-change="(value) => handleCurrentChange(1, value)"
@@ -152,6 +155,9 @@
           :cell-style="{textAlign: 'center'}"
           border
           @selection-change="handleSelectionChange">
+          <el-table-column
+            prop="user_name"
+            label="人员" />
           <el-table-column label="五险一金">
             <el-table-column
               prop="company_pension"
@@ -206,6 +212,7 @@
             prop="bu_all_money"
             label="补偿金" />
           <el-table-column
+            width="100px"
             prop="sum_count"
             label="总计" />
         </el-table>

@@ -114,7 +114,7 @@ export default {
     this.getCompanyInfo()
     this.getStationInfo()
     this.getOverview()
-    console.log('companyAuthcompanyAuthcompanyAuth', this.companyAuth)
+    this.currentIndex = this.$route.path.includes('/companylist') ? '0' : '1'
   },
   computed: {
     ...mapGetters('menu', ['companyAuth']),

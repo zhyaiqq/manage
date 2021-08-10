@@ -116,9 +116,19 @@
         prop="resume"
         label="简历">
         <template slot-scope="scope">
-          <el-button type="text" v-show="!isShowFile(scope.row.resume)" @click="downloadFile(`${scope.row.resume_url}?token=${token}`)">下载文件</el-button>
-          <img :src="scope.row.resume_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.resume)" />
-          <!-- <el-button type="text" v-show="isShowFile(scope.row.resume)" @click="downloadIamge(`${scope.row.report_url}?token=${token}`)">下载</el-button> -->
+          <div  v-if="scope.row.resume_url">
+            <el-button type="text" v-show="!isShowFile(scope.row.resume)" @click="downloadFile(`${scope.row.resume_url}?token=${token}`)">下载文件</el-button>
+            <img :src="scope.row.resume_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.resume)" />
+            <!-- <el-button type="text" v-show="isShowFile(scope.row.resume)" @click="downloadIamge(`${scope.row.report_url}?token=${token}`)">下载</el-button> -->
+          </div>
+          <el-upload
+            v-else
+            action="http://rlzypq.samowl.cn/api/upFile"
+            name="image"
+            :show-file-list="false"
+            :on-success="(res) => uploadFile(0, scope.row.id,  res)">
+            <el-button type="text">上传文件</el-button>
+          </el-upload>
         </template>
       </el-table-column>
       <el-table-column
@@ -126,9 +136,19 @@
         prop="report"
         label="报名表">
         <template slot-scope="scope">
-          <el-button type="text" v-show="!isShowFile(scope.row.report)" @click="downloadFile(`${scope.row.report_url}?token=${token}`)">下载文件</el-button>
-          <img :src="scope.row.report_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.report)" />
-          <!--<el-button type="text" v-show="isShowFile(scope.row.report)" @click="downloadIamge(`${scope.row.report_url}?token=${token}`)">下载</el-button>-->
+          <div v-if="scope.row.report_url">
+            <el-button type="text" v-show="!isShowFile(scope.row.report)" @click="downloadFile(`${scope.row.report_url}?token=${token}`)">下载文件</el-button>
+            <img :src="scope.row.report_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.report)" />
+            <!--<el-button type="text" v-show="isShowFile(scope.row.report)" @click="downloadIamge(`${scope.row.report_url}?token=${token}`)">下载</el-button>-->
+          </div>
+          <el-upload
+            v-else
+            action="http://rlzypq.samowl.cn/api/upFile"
+            name="image"
+            :show-file-list="false"
+            :on-success="(res) => uploadFile(1, scope.row.id, res)">
+            <el-button type="text">上传文件</el-button>
+          </el-upload>
         </template>
       </el-table-column>
       <el-table-column
@@ -136,9 +156,19 @@
         prop="contract"
         label="合同">
         <template slot-scope="scope">
-          <el-button type="text" v-show="!isShowFile(scope.row.contract)" @click="downloadFile(`${scope.row.contract_url}?token=${token}`)">下载文件</el-button>
-          <img :src="scope.row.contract_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.contract)" />
-          <!--<el-button type="text" v-show="isShowFile(scope.row.contract)" @click="downloadIamge(`http://localhost:8084/logo.png`, 'ee')">下载</el-button>-->
+          <div v-if="scope.row.contract_url">
+            <el-button type="text" v-show="!isShowFile(scope.row.contract)" @click="downloadFile(`${scope.row.contract_url}?token=${token}`)">下载文件</el-button>
+            <img :src="scope.row.contract_url" style="width: 40px; height: 40px" v-show="isShowFile(scope.row.contract)" />
+            <!--<el-button type="text" v-show="isShowFile(scope.row.contract)" @click="downloadIamge(`http://localhost:8084/logo.png`, 'ee')">下载</el-button>-->
+          </div>
+          <el-upload
+            v-else
+            action="http://rlzypq.samowl.cn/api/upFile"
+            name="image"
+            :show-file-list="false"
+            :on-success="(res) => uploadFile(2, scope.row.id, res)">
+            <el-button type="text">上传文件</el-button>
+          </el-upload>
         </template>
       </el-table-column>
       <el-table-column
@@ -267,8 +297,7 @@
             action="http://rlzypq.samowl.cn/api/upFile"
             :show-file-list="false"
             name="image"
-            :on-success="(res) => uploadSuccess(0, res)"
-            :before-upload="uploadResume">
+            :on-success="(res) => uploadSuccess(0, res)">
             <div class="upload-success-cn">
               <img :src="resumeFile.http" v-show="isShowFile(form2.resume)" style="width: 100%; height: 100%" />
             </div>
@@ -282,8 +311,7 @@
             action="http://rlzypq.samowl.cn/api/upFile"
             name="image"
             :show-file-list="false"
-            :on-success="(res) => uploadSuccess(1, res)"
-            :before-upload="uploadReport">
+            :on-success="(res) => uploadSuccess(1, res)">
             <div class="upload-success-cn">
               <img :src="reportFile.http" v-show="isShowFile(form2.report)" style="width: 100%; height: 100%" />
             </div>
@@ -297,8 +325,7 @@
             action="http://rlzypq.samowl.cn/api/upFile"
             name="image"
             :show-file-list="false"
-            :on-success="(res) => uploadSuccess(2, res)"
-            :before-upload="uploadContract">
+            :on-success="(res) => uploadSuccess(2, res)">
             <div class="upload-success-cn">
               <img :src="contractFile.http" v-show="isShowFile(form2.contract)" style="width: 100%; height: 100%" />
             </div>
@@ -359,7 +386,7 @@
 </template>
 
 <script>
-import { getDispatchList, addStaff, staffQuit, staffRemark, editStaff, getStaffDetail } from '@/api/staff.js'
+import { getDispatchList, addStaff, staffQuit, staffRemark, editStaff, getStaffDetail, editStaffFile } from '@/api/staff.js'
 import { getCompanyList } from '@/api/company.js'
 import { mapState, mapActions } from 'vuex'
 import dayjs from 'dayjs'
@@ -588,13 +615,20 @@ export default {
         }
       })
     },
-    uploadResume () {
-    },
-    // 上传报名单
-    uploadReport () {
-    },
-    // 上传合同
-    uploadContract () {
+    uploadFile (type, staffId, res) {
+      if (res.code) {
+        let subject = ['resume', 'report', 'contract']
+        let params = { id: staffId }
+        params[subject[type]] = res.data.url
+        editStaffFile(params).then(res => {
+          if (res.code) {
+            this.$message.success('文件上传成功')
+            this.getDispatchList(this.page)
+          }
+        })
+      } else {
+        this.$message.warning(res.info)
+      }
     },
     uploadSuccess (type, res) {
       if (res.code) {

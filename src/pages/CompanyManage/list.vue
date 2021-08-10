@@ -32,7 +32,8 @@
       <el-table-column
         prop="name"
         label="公司名称"
-        width="120px" />
+        width="120px"
+        show-overflow-tooltip />
       <el-table-column
         width="200px"
         prop="address"

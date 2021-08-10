@@ -56,7 +56,6 @@ const module = {
       })
     },
     getMen({ commit }) {
-      console.log('gent------------')
       return axios.get("/api/getMen").then(res => {
         if (res.code) {
           let authMenuList = []

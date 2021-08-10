@@ -63,6 +63,12 @@ export function getStaffDetail(id) {
   })
 }
 
+// 编辑员工文件
+export function editStaffFile(data) {
+  return axios.post('/api/ed_staff_file', data).then(res => {
+    return res
+  })
+}
 
 
 

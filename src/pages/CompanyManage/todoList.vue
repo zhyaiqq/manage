@@ -58,6 +58,9 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="username"
+        label="操作人员" />
+      <el-table-column
         prop="deal_time"
         label="更新时间" />
       <el-table-column

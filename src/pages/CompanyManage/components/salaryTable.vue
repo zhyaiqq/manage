@@ -27,8 +27,8 @@
         @click="item == 'record' ? recordBtn () : grantBtn()"
         v-for="(item, index) in Object.keys(btns)"
         :key="index">
-        {{item == 'record' ? '确认对账' : '确认发放'}}
-      </el-button>
+        {{item == 'record' ? '确认对账' : '确认发放'}}      
+        </el-button>
       <el-upload
         v-show="isHasAuth(174)"
         style="display:inline-block; margin-right:10px"
@@ -76,35 +76,45 @@
         label="职位" />
       <el-table-column
         prop="salary"
+        width="100px"
         label="基本工资" />
       <el-table-column
         prop="post_salary"
+        width="100px"
         label="岗位工资"/>
       <el-table-column
+        width="100px"
         prop="post_allowance"
         label="岗位津贴"/>
       <el-table-column
+        width="100px"
         prop="post_check"
         label="考核工资"/>
       <el-table-column
+        width="100px"
         prop="post_work"
         label="出勤工资"/>
       <el-table-column
+        width="100px"
         prop="post_education"
         label="学历工资">
       </el-table-column>
       <el-table-column
         prop="post_title"
+        width="100px"
         label="职称工资"
         show-overflow-tooltip>
       </el-table-column>
       <el-table-column
+        width="100px"
         prop="post_age"
         label="工龄工资" />
       <el-table-column
+        width="100px"
         prop="achievements"
         label="绩效工资" />
       <el-table-column
+        width="100px"
         prop="post_tax"
         label="扣税额" />
       <el-table-column
@@ -144,6 +154,14 @@
         width="180px"
         show-overflow-tooltip>
       </el-table-column>
+      <el-table-column
+        width="100px"
+        prop="is_record_string"
+        label="确认对账" />
+      <el-table-column
+        width="100px"
+        prop="is_out_string"
+        label="是否发放" />
       <el-table-column
         prop="remak"
         label="备注"
