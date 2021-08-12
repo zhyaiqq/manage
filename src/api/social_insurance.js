@@ -63,3 +63,10 @@ export function getSocialInfo(params) {
 }
 
 
+// 社保补偿名单
+export function getSocialCompensate(params) {
+  return axios.get("/api/social_compensate", { params }).then(res => {
+    return res
+  })
+}
+

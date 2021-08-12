@@ -99,7 +99,6 @@ export default {
       }
     },
     isShowFile (url) {
-      console.log('isshowfile', url)
       if (!url) return false
       let type = url.substr(url.indexOf('.') + 1).toLowerCase()
       let arr = ['jpg', 'jpeg', 'png']

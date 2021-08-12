@@ -7,41 +7,30 @@
       </div>
     </div>
     <el-tabs v-model="currentIndex" @tab-click="changeTab" v-if="companyAuth && companyAuth.child.length > 0">
-      <el-tab-pane label="基础信息" name="0" v-show="isShowTab(companyAuth.child,'基础信息')">
-        <div style="position: relative" v-show="currentIndex == '0'">
+      <el-tab-pane label="基础信息" name="基础信息" v-if="isShowTab(companyAuth.child,'基础信息')">
+        <div style="position: relative" v-show="currentIndex == '基础信息'">
           <BaseForm :type="type" :formData="{...baseInfo}" ref="baseComp" />
           <div>
-            <el-button type="primary" @click="edit(0)" v-show="type == 1">提交</el-button>
-            <el-button type="primary" @click="edit(1)" v-show="type == 0" :disabled="baseInfo && baseInfo.status == 0">编辑</el-button>
-            <el-button type="primary" plain @click="cancelEdit" v-show="type == 1">取消</el-button>
+            <el-button type="primary" @click="edit(0)" v-if="type == 1">提交</el-button>
+            <el-button type="primary" @click="edit(1)" v-if="type == 0" :disabled="baseInfo && baseInfo.status == 0">编辑</el-button>
+            <el-button type="primary" plain @click="cancelEdit" v-if="type == 1">取消</el-button>
           </div>
         </div>
       </el-tab-pane>
-      <!--
-      <el-tab-pane label="岗位需求" name="1" v-show="isShowTab(companyAuth.child,'岗位需求')">
-        <div style="marginTop: 30px; position: relative" v-show="currentIndex == '1'">
-          <WorkForm :type="type" :formData="stationInfo" ref="workComp" />
-          <div>
-            <el-button type="primary" @click="edit(2)" v-show="type == 1">提交</el-button>
-            <el-button type="primary" @click="edit(3)" v-show="type == 0" :disabled="baseInfo && baseInfo.status == 0">编辑</el-button>
-          </div>
-        </div>
+      <el-tab-pane label="人员列表" name="人员列表" v-if="isShowTab(companyAuth.child,'人员列表')">
+        <DispatchTable :companyId="id" v-if="currentIndex == '人员列表'" ref="dispatchTable" />
       </el-tab-pane>
-      -->
-      <el-tab-pane label="人员列表" name="1" v-show="isShowTab(companyAuth.child, '派遣人员')">
-        <DispatchTable :companyId="id" v-if="currentIndex == '1'" ref="dispatchTable" />
+      <el-tab-pane label="社保名单" name="社保名单" v-if="isShowTab(companyAuth.child,'社保名单')">
+        <SocialTable :companyId="id" v-if="currentIndex == '社保名单'" />
       </el-tab-pane>
-      <el-tab-pane label="社保名单" name="2" v-show="isShowTab(companyAuth.child,'社保名单')">
-        <SocialTable :companyId="id" v-if="currentIndex == '2'" />
+      <el-tab-pane label="员工薪资" name="员工薪资" v-if="isShowTab(companyAuth.child,'员工薪资')">
+        <SalaryTable :companyId="id" v-if="currentIndex == '员工薪资'" />
       </el-tab-pane>
-      <el-tab-pane label="员工薪资" name="3" v-show="isShowTab(companyAuth.child,'员工薪资')">
-        <SalaryTable :companyId="id" v-if="currentIndex == '3'" />
+      <el-tab-pane label="费用管理" name="费用管理" v-if="isShowTab(companyAuth.child,'费用管理')">
+        <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" v-if="currentIndex == '费用管理'" />
       </el-tab-pane>
-      <el-tab-pane label="费用管理" name="4" v-show="isShowTab(companyAuth.child,'扣费记录')">
-        <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" v-if="currentIndex == '4'" />
-      </el-tab-pane>
-      <el-tab-pane label="补偿金" name="5" v-show="isShowTab(companyAuth.child,'补偿金')">
-        <CompensationTable :companyId="id" v-if="currentIndex == '5'" />
+      <el-tab-pane label="补偿金" name="补偿金" v-if="isShowTab(companyAuth.child,'补偿金')">
+        <CompensationTable :companyId="id" v-if="currentIndex == '补偿金'" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -96,7 +85,7 @@ export default {
           color: 'rgba(82, 193, 245, 1)'
         },
       ],
-      currentIndex: '1',
+      currentIndex: '',
       baseInfo: null,
       jobList: null,
       isBack: false,
@@ -114,7 +103,7 @@ export default {
     this.getCompanyInfo()
     this.getStationInfo()
     this.getOverview()
-    this.currentIndex = this.$route.path.includes('/companylist') ? '0' : '1'
+    this.computedCurrentIndex()
   },
   computed: {
     ...mapGetters('menu', ['companyAuth']),
@@ -128,7 +117,6 @@ export default {
   },
   watch: {
     $route (to) {
-      this.currentIndex = '1'
       this.isBack = false
       const { action } = to.query
       const { id } = to.params
@@ -140,16 +128,31 @@ export default {
       this.getCompanyInfo()
       this.getStationInfo()
       this.getOverview()
+      this.computedCurrentIndex()
     },
     companyAuth () {
       if (this.companyAuth && this.companyAuth.child.length > 0) {
-        console.log('erwrewrwerwer---------------', this.companyAuth)
-        // this.currentIndex = '1'
+        let result = this.companyAuth.child.map(item => item.title == '人员列表')
+        if (result) {
+          this.currentIndex = this.$route.path.includes('/companylist') ? this.companyAuth.child[0].title : '人员列表' 
+          return
+        }
+        this.currentIndex = this.companyAuth.child[0].title
       }
     }
   },
   methods: {
     ...mapActions('company', ['getMenuCompany']),
+    computedCurrentIndex () {
+      if (this.companyAuth && this.companyAuth.child.length > 0) {
+        let result = this.companyAuth.child.map(item => item.title == '人员列表')
+        if (result) {
+          this.currentIndex = this.$route.path.includes('/companylist') ? this.companyAuth.child[0].title : '人员列表' 
+          return
+        }
+        this.currentIndex = this.companyAuth.child[0].title
+      }
+    },
     changeTab () {
       this.jobList = [...this.jobList]
       this.pageMeta = this.$route.meta
@@ -159,12 +162,12 @@ export default {
     clickPanel (index) {
       switch (index) {
         case 0:
-          this.currentIndex = '4'
+          this.currentIndex = '费用管理'
           break;
         case 1:
         case 2:
         case 3:
-          this.currentIndex = '1'
+          this.currentIndex = '人员列表'
           bus.$emit('dispatchPerson', index);
           break;
       }
@@ -315,3 +318,7 @@ export default {
   }
 }
 </style>
+
+agr_platform=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYW5jbG91ZHNfYWdyIiwiaXNzIjoiaGFuY2xvdWRzX2FnciIsImlhdCI6MTYyODY2MjIwNywiZXhwIjoxNjMxMjU0MjA3LCJuYmYiOjE2Mjg2NjIyMDcsImp0aSI6IjY1In0.3SUD0n5MAgoxohQPZ3wD9dbdqSvpmJtlAbW21BwXz_s; 
+agr_platform_refresh=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYW5jbG91ZHNfYWdyIiwiaXNzIjoiaGFuY2xvdWRzX2FnciIsImlhdCI6MTYyODY2MjIwNywiZXhwIjoxNjMxMjU0MjA3LCJuYmYiOjE2Mjg2NjIyMDcsImp0aSI6IjY1In0.3SUD0n5MAgoxohQPZ3wD9dbdqSvpmJtlAbW21BwXz_s; 
+saas-agr=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYW5jbG91ZHNfYWdyIiwiaXNzIjoiaGFuY2xvdWRzX2FnciIsImlhdCI6MTYyODY2MjIwNywiZXhwIjoxNjMxMjU0MjA3LCJuYmYiOjE2Mjg2NjIyMDcsImp0aSI6IjY1In0.3SUD0n5MAgoxohQPZ3wD9dbdqSvpmJtlAbW21BwXz_s

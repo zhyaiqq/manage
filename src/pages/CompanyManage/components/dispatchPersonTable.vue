@@ -501,6 +501,7 @@ export default {
           break;
         case 3:
           this.formInline.entry_status = 1
+          this.formInline.entryTime = [dayjs().startOf('month').format('YYYY-MM-DD'), dayjs().endOf('month').format('YYYY-MM-DD')]
           break;
       }
       this.getDispatchList(1)

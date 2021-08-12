@@ -96,13 +96,10 @@
             label="相关人" />
           <el-table-column
             prop="money"
-            label="收款金额" />
+            label="扣款金额" />
           <el-table-column
             prop="company_name"
             label="扣费公司" />
-          <el-table-column
-            prop="company_name"
-            label="扣款金额" />
           <el-table-column
             prop="company_money"
             label="公司账户余额" />
