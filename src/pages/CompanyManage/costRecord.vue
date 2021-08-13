@@ -17,6 +17,7 @@
       border
       @selection-change="handleSelectionChange">
       <el-table-column
+        fixed
         prop="name"
         label="相关人" />
       <el-table-column

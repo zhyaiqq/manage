@@ -104,6 +104,7 @@ export default {
     this.getStationInfo()
     this.getOverview()
     this.computedCurrentIndex()
+    bus.$on('updateAccountMoney', () => this.getOverview())
   },
   computed: {
     ...mapGetters('menu', ['companyAuth']),

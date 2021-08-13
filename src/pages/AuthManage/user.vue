@@ -25,6 +25,7 @@
       :cell-style="{textAlign: 'center'}"
       border>
       <el-table-column
+        fixed
         prop="username"
         label="用户名称" />
       <el-table-column

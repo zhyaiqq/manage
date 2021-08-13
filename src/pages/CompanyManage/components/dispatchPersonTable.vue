@@ -65,6 +65,7 @@
         width="55">
       </el-table-column>
       <el-table-column
+        fixed
         prop="name"
         label="姓名" />
       <el-table-column

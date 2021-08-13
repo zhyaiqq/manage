@@ -28,6 +28,7 @@
           border
           @selection-change="handleSelectionChange">
           <el-table-column
+            fixed
             prop="company_name"
             label="扣费公司" />
           <el-table-column
@@ -92,6 +93,7 @@
           border
           @selection-change="handleSelectionChange">
           <el-table-column
+            fixed
             prop="name"
             label="相关人" />
           <el-table-column
@@ -153,6 +155,7 @@
           border
           @selection-change="handleSelectionChange">
           <el-table-column
+            fixed
             prop="user_name"
             label="人员" />
           <el-table-column label="五险一金">
@@ -250,6 +253,7 @@ import { getCutLogList, delCutLog, getDetailed, costAll } from '@/api/charge.js'
 import { recharge } from '@/api/company.js'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
+import bus from '@/utils/bus.js'
 export default {
   data () {
     return {
@@ -365,16 +369,23 @@ export default {
     recharge () {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          recharge({
-            company_id: this.companyId,
-            money: this.form.money
-          }).then(res => {
-            if (res.code) {
-              this.dialogVisible = false
-              this.getCutLogList(this.page)
-              this.$message.success('充值成功')
+          this.$alert('确定为该账户充值吗?', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+              if (action == 'confirm') 
+                recharge({
+                  company_id: this.companyId,
+                  money: this.form.money
+                }).then(res => {
+                  if (res.code) {
+                    this.dialogVisible = false
+                    this.getCutLogList(this.page)
+                    this.$message.success('充值成功')
+                    bus.$emit('updateAccountMoney')
+                  }
+                })
             }
-          })
+          });
         }
       })
     },

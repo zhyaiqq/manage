@@ -27,6 +27,7 @@
       border
       @selection-change="handleSelectionChange">
       <el-table-column
+        fixed
         prop="username"
         label="充值人" />
       <el-table-column

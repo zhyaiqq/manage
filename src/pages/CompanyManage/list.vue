@@ -26,10 +26,12 @@
         type="selection"
         width="55" />
       <el-table-column
+        fixed
         prop="id"
         label="编号"
         width="120" />
       <el-table-column
+        fixed
         prop="name"
         label="公司名称"
         width="120px"

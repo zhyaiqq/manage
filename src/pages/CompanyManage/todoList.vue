@@ -40,6 +40,7 @@
       :cell-style="{textAlign: 'center'}"
       border>
       <el-table-column
+        fixed
         prop="name_string"
         label="任务名称" />
       <el-table-column

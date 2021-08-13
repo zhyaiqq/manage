@@ -30,6 +30,7 @@
       border
       @selection-change="handleSelectionChange">
       <el-table-column
+        fixed
         prop="name"
         label="被补偿人" />
       <el-table-column
