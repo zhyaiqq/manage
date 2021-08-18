@@ -70,3 +70,10 @@ export function getSocialCompensate(params) {
   })
 }
 
+// 查询公司社保比例
+export function getCompanySocialInfo(params) {
+  return axios.get("/api/getCompanySocialInfo", { params }).then(res => {
+    return res
+  })
+}
+

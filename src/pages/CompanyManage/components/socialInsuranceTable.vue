@@ -199,7 +199,7 @@
         >
         </el-pagination>
       </el-tab-pane>
-      <el-tab-pane label="社保补偿名单" name="1">
+      <el-tab-pane label="社保记录" name="1">
         <div class="search_top">
           <el-form :inline="true" :model="formInline2" class="left">
             <el-form-item label="姓名:" prop="username">
@@ -439,6 +439,7 @@ import {
   editPersonSocial,
   getSocialInfo,
   getSocialCompensate,
+  getCompanySocialInfo,
 } from "@/api/social_insurance.js";
 import { mapState } from "vuex";
 import dayjs from "dayjs";
@@ -694,8 +695,17 @@ export default {
       ];
       switch (type) {
         case 1:
-          this.dialogTitle = "修改五险比例";
-          this.dialogVisible = true;
+          getCompanySocialInfo({
+            company_id: this.companyId,
+          }).then((res) => {
+            for (let i = 0; i < subjects.length; i++) {
+              this.form[subjects[i]] = res.data[subjects[i]]
+                ? res.data[subjects[i]] * 100
+                : "";
+            }
+            this.dialogTitle = "修改五险比例";
+            this.dialogVisible = true;
+          });
           break;
         case 2:
           // 导出社保名单
