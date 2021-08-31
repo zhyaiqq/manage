@@ -70,6 +70,12 @@ export function editStaffFile(data) {
   })
 }
 
+// 获取员工离职原因列表
+export function getQuitReason() {
+  return axios.get(`/api/select_region`).then(res => {
+    return res
+  })
+}
 
 
 

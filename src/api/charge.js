@@ -35,3 +35,18 @@ export function costAll(params) {
   })
 }
 
+// 费用月汇总
+export function costMonthAll(params) {
+  return axios.get(`/api/month_cost_all`, { params }).then(res => {
+    return res
+  })
+}
+
+// 管理费设置
+export function setManageFee(data) {
+  return axios.post("/api/setManageFee", data).then(res => {
+    return res
+  })
+}
+
+

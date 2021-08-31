@@ -49,3 +49,11 @@ export function addSalaryButton2(data) {
     return res
   })
 }
+
+
+// 对账发放按钮-单个发放
+export function addSalaryButton3(data) {
+  return axios.post("/api/addSalaryButton3", data).then(res => {
+    return res
+  })
+}

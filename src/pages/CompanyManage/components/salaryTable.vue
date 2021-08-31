@@ -125,7 +125,7 @@
         show-overflow-tooltip
       >
       </el-table-column>
-      <el-table-column prop="post_management" label="管理费" />
+      <!-- <el-table-column prop="post_management" label="管理费" /> -->
       <el-table-column prop="all_post" label="实发工资" />
       <el-table-column
         prop="creat_at"
@@ -142,16 +142,25 @@
         <template slot-scope="scope">
           <el-button
             type="text"
+            @click="handle(5, scope.row)"
+            v-show="scope.row.is_out == 0"
+          >
+            发放
+          </el-button>
+          <el-button
+            type="text"
             @click="handle(3, scope.row)"
             v-show="isHasAuth(169) && scope.row.is_record != 1"
-            >编辑</el-button
           >
+            编辑
+          </el-button>
           <el-button
             type="text"
             @click="handle(4, scope.row)"
             v-show="isHasAuth(172) && scope.row.is_record != 1"
-            >备注</el-button
           >
+            备注
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -229,6 +238,7 @@ import {
   getSalaryButton,
   addSalaryButton,
   addSalaryButton2,
+  addSalaryButton3,
 } from "@/api/salary.js";
 import { mapState } from "vuex";
 import bus from "@/utils/bus.js";
@@ -340,6 +350,10 @@ export default {
           this.form2.psu_id = this.currentRow.psu_id;
           this.dialogVisible2 = true;
           break;
+        case 5:
+          // 发放
+          this.grantBtn(1, data.psu_id);
+          break;
       }
     },
     uploadSuccess(res) {
@@ -430,11 +444,13 @@ export default {
       });
     },
     // 对账发放按钮-发放
-    grantBtn() {
-      addSalaryButton({
+    grantBtn(flag, id) {
+      let params = {
         company_id: this.companyId,
         is: 1,
-      }).then((res) => {
+      };
+      if (flag) params.salary_id = id;
+      addSalaryButton(params).then((res) => {
         if (res.code) {
           this.getSalaryButton();
           this.getStaffSalaryList(this.page);
@@ -454,6 +470,18 @@ export default {
           this.getSalaryButton();
           this.$message.success("操作成功");
         }
+      });
+    },
+    addSalaryButton3(id) {
+      addSalaryButton3({
+        company_id: this.companyId,
+        is: 1,
+        id,
+      }).then((res) => {
+        if (res.code) {
+          this.getStaffSalaryList(this.page);
+        }
+        console.log(res);
       });
     },
     isHasAuth(auth_id) {

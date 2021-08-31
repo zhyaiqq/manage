@@ -77,3 +77,10 @@ export function getCompanySocialInfo(params) {
   })
 }
 
+// 社保记录
+export function getSocialLow(params) {
+  return axios.get("/api/getSocialLow", { params }).then(res => {
+    return res
+  })
+}
+
