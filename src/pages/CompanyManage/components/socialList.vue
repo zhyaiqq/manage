@@ -727,11 +727,13 @@ export default {
         username: "",
         time: dayjs().format("YYYY-MM"),
       },
+      companySocial: null
     };
   },
   props: ["companyId"],
   created() {
     this.getSocialList(1);
+    this.getCompanySocialInfo()
   },
   computed: {
     ...mapState("menu", ["defaultAuth"]),
@@ -781,17 +783,13 @@ export default {
       ];
       switch (type) {
         case 1:
-          getCompanySocialInfo({
-            company_id: this.companyId,
-          }).then((res) => {
-            for (let i = 0; i < subjects.length; i++) {
-              this.form[subjects[i]] = res.data[subjects[i]]
-                ? res.data[subjects[i]] * 100
-                : "";
-            }
-            this.dialogTitle = "修改五险比例";
-            this.dialogVisible = true;
-          });
+          for (let i = 0; i < subjects.length; i++) {
+            this.form[subjects[i]] = this.companySocial[subjects[i]]
+              ? this.companySocial[subjects[i]] * 100
+              : "";
+          }
+          this.dialogTitle = "修改五险比例";
+          this.dialogVisible = true;
           break;
         case 2:
           // 导出社保名单
@@ -813,7 +811,7 @@ export default {
               this.dialogTitle = "员工社保";
               this.currentRow = data;
               for (let i = 0; i < subjects.length; i++) {
-                this.form[subjects[i]] = res.data[subjects[i]];
+                this.form[subjects[i]] = res.data[subjects[i]] ?  res.data[subjects[i]] : (this.companySocial[subjects[i]] ? this.companySocial[subjects[i]] * 100 : '')
               }
               this.form.type = res.data.is_base;
               this.dialogVisible = true;
@@ -922,9 +920,20 @@ export default {
         company_id: this.companyId,
       }).then((res) => {
         if (res.code) {
+          this.getCompanySocialInfo()
           this.dialogVisible = false;
           this.getSocialList(1);
           this.$message.success("修改五险比例成功");
+        }
+      });
+    },
+    // 查询公司五险一金设置
+    getCompanySocialInfo () {
+      getCompanySocialInfo({
+        company_id: this.companyId,
+      }).then((res) => {
+        if (res.code) {
+          this.companySocial = res.data
         }
       });
     },

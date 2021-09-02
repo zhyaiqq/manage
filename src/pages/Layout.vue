@@ -132,6 +132,12 @@ export default {
         penson_count_start: "入职",
         socal_count_stop: "停保",
         socal_count_start: "参保",
+        shengyu_count: "生育变动",
+        shiye_count: "失业变动",
+        yanglao_count: "养老变动",
+        yiliao_count: "医疗变动",
+        gongshang_count: "工伤变动",
+        gongjijin_count: "公积金变动"
       },
     };
   },
@@ -261,6 +267,12 @@ export default {
         "penson_count_stop",
         "socal_count_stop",
         "socal_count_start",
+        "yanglao_count",
+        "shiye_count",
+        "yiliao_count",
+        "gongshang_count",
+        "shengyu_count",
+        "gongjijin_count"
       ];
       let type = arr.findIndex((item) => item == index);
       if (this.$route.path !== "/todolist") {

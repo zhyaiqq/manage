@@ -50,7 +50,15 @@ const module = {
     getNewsNum({ commit }) {
       return axios.get("/api/news").then(res => {
         if (res.code) {
-          commit('setTodoCount', res.data.news_count + res.data.return_count + res.data.penson_count_stop + res.data.penson_count_start + res.data.socal_count_stop + res.data.socal_count_start)
+          let obj = res.data
+          let count = 0
+          for (const key in obj) {
+            if (Object.hasOwnProperty.call(obj, key)) {
+              count += obj[key];
+              
+            }
+          }
+          commit('setTodoCount', count)
           commit('setTodo', res.data)
         }
       })

@@ -92,7 +92,7 @@
           <el-button
             type="text"
             @click="handle(1, scope.row)"
-            v-show="scope.row && scope.row.is_deal != 1"
+            v-show="scope.row && scope.row.is_deal == 0"
             >处理</el-button
           >
           <el-button

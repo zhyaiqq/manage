@@ -203,16 +203,22 @@ export default {
     },
     // 账户充值
     onRecharge () {
-      recharge({
-        company_id: this.currentCompany.id,
-        money: this.form.money
-      }).then(res => {
-        if (res.code) {
-          this.dialogVisible = false
-          this.getDataList(this.page)
-          this.$message.success('充值成功')
-        }
-      })
+      this.$alert(`确定为该账户充值${this.form.money}元吗?`, "提示", {
+        confirmButtonText: "确定",
+        callback: (action) => {
+          if (action == "confirm")
+            recharge({
+              company_id: this.currentCompany.id,
+              money: this.form.money
+            }).then(res => {
+              if (res.code) {
+                this.dialogVisible = false
+                this.getDataList(this.page)
+                this.$message.success('充值成功')
+              }
+            })
+        },
+      });
     },
     isHasAuth (auth_id) {
       return this.defaultAuth && this.defaultAuth.some(item => item.id == auth_id)

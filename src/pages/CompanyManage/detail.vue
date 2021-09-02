@@ -27,7 +27,7 @@
         <SalaryTable :companyId="id" v-if="currentIndex == '员工薪资'" />
       </el-tab-pane>
       <el-tab-pane label="费用管理" name="费用管理" v-if="isShowTab(companyAuth.child,'费用管理')">
-        <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name" v-if="currentIndex == '费用管理'" />
+        <ChargeTable :companyId="id" :companyName="baseInfo && baseInfo.name"  v-if="currentIndex == '费用管理'" />
       </el-tab-pane>
       <el-tab-pane label="补偿金" name="补偿金" v-if="isShowTab(companyAuth.child,'补偿金')">
         <CompensationTable :companyId="id" v-if="currentIndex == '补偿金'" />
@@ -155,6 +155,7 @@ export default {
       }
     },
     changeTab () {
+      localStorage.setItem('activeName', this.currentIndex)
       this.jobList = [...this.jobList]
       this.pageMeta = this.$route.meta
       this.isBack = false

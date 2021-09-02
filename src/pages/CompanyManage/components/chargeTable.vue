@@ -216,6 +216,9 @@
           <el-button type="primary" @click="handle(5)" size="small"
             >管理费设置</el-button
           >
+          <el-button type="primary" @click="handle(6)" size="small"
+            >导出费用月汇总</el-button
+          >
         </div>
         <el-table
           :data="tableData4"
@@ -223,6 +226,7 @@
           :cell-style="{ textAlign: 'center' }"
           border
           @selection-change="handleSelectionChange"
+          show-summary
         >
           <el-table-column fixed prop="month" label="月份" />
           <el-table-column prop="company_name" label="派遣单位" />
@@ -256,14 +260,13 @@
       title="追加余额"
       :visible.sync="dialogVisible"
       width="40%"
-      @closed="closeDialog"
+      @closed="closeDialog(0)"
     >
       <el-form
         :model="form"
         ref="form"
         :rules="rules"
-        label-width="200px"
-        :inline="true"
+        label-width="100px"
       >
         <el-form-item label="追加公司:">
           {{ companyName }}
@@ -281,14 +284,13 @@
       title="管理费设置"
       :visible.sync="dialogVisible2"
       width="40%"
-      @closed="closeDialog"
+      @closed="closeDialog(1)"
     >
       <el-form
         :model="form2"
         ref="form2"
         :rules="rules2"
-        label-width="200px"
-        :inline="true"
+        label-width="100px"
       >
         <el-form-item label="公司:">
           {{ companyName }}
@@ -314,7 +316,7 @@ import {
   costMonthAll,
   setManageFee,
 } from "@/api/charge.js";
-import { recharge } from "@/api/company.js";
+import { recharge, findCompany } from "@/api/company.js";
 import { mapState } from "vuex";
 import dayjs from "dayjs";
 import bus from "@/utils/bus.js";
@@ -392,7 +394,11 @@ export default {
         this.getCutLogList(page);
       }
     },
-    handleClick() {},
+    handleClick() {
+      if (this.activeName == 0) {
+        this.getDetailed(this.page2);
+      }
+    },
     search(type) {
       if (type == 3) {
         this.costMonthAll(1);
@@ -404,9 +410,15 @@ export default {
         this.getCutLogList(1);
       }
     },
-    closeDialog() {
-      this.form = this.$options.data().form;
-      this.$refs.form.resetFields();
+    closeDialog(index) {
+      if (index == 0) {
+        this.form = this.$options.data().form;
+        this.$refs.form.resetFields();
+      } else {
+        this.form2 = this.$options.data().form2;
+        this.$refs.form2.resetFields();
+      }
+
     },
     handle(type, data) {
       switch (type) {
@@ -440,7 +452,17 @@ export default {
           break;
         case 5:
           // 设置管理费
-          this.dialogVisible2 = true;
+          this.getCompanyInfo()
+          break;
+        case 6:
+          // 导出费用月汇总
+          this.downloadFile(
+            `http://rlzypq.samowl.cn/api/out_month_cost_all?company_id=${
+              this.companyId
+            }&year=${this.formInline4.year}&token=${localStorage.getItem(
+              "token"
+            )}`
+          );
           break;
       }
     },
@@ -466,7 +488,7 @@ export default {
     recharge() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.$alert("确定为该账户充值吗?", "提示", {
+          this.$alert(`确定为该账户充值${this.form.money}元吗?`, "提示", {
             confirmButtonText: "确定",
             callback: (action) => {
               if (action == "confirm")
@@ -547,6 +569,13 @@ export default {
         }
       });
     },
+    // 查询公司详情 - 获取管理费
+    getCompanyInfo () {
+      findCompany(this.companyId).then(res => {
+        if (res.code) this.form2.money = res.data.manage_fee
+        this.dialogVisible2 = true;
+      })
+    },
     // 设置管理费
     setManageFee() {
       this.$refs.form2.validate((valid) => {
@@ -580,5 +609,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.el-table .cell {
+  text-align: center;
+}
 </style>

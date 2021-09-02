@@ -126,7 +126,7 @@
         >
         </el-pagination>
       </el-tab-pane>
-      <el-tab-pane label="社保记录" name="2" v-if="false">
+      <el-tab-pane label="社保记录" name="2">
         <div class="search_top">
           <el-form :inline="true" :model="formInline3" class="left">
             <el-form-item label="姓名:" prop="username">
@@ -136,13 +136,13 @@
                 @keyup.enter.native="search(2)"
               ></el-input>
             </el-form-item>
-            <el-form-item label="时间:" prop="time">
+            <el-form-item label="时间:" prop="year">
               <el-date-picker
                 :clearable="false"
-                v-model="formInline3.time"
-                type="month"
+                v-model="formInline3.year"
+                type="year"
                 placeholder="选择日期"
-                value-format="yyyy-MM"
+                value-format="yyyy"
                 @change="search(2)"
               />
             </el-form-item>
@@ -151,8 +151,14 @@
             </el-form-item>
           </el-form>
         </div>
+        <div class="table-btns">
+          <el-button
+            type="primary"
+            @click="handle(6)"
+            size="small">导出社保记录</el-button>
+        </div>
         <el-table
-          :data="tableData2"
+          :data="tableData3"
           :header-cell-style="{ textAlign: 'center' }"
           :cell-style="{ textAlign: 'center' }"
           border
@@ -165,84 +171,54 @@
             width="100px"
             show-overflow-tooltip
           />
-          <el-table-column width="150px" prop="last_all" label="上年缴费" />
           <el-table-column
             width="150px"
-            prop="difference_all"
-            label="应补缴费"
+            prop="money"
+            label="公司缴费总额"
           />
-          <el-table-column width="150px" prop="social_log" label="上年基数" />
-          <el-table-column
-            width="150px"
-            prop="current_social"
-            label="下年基数"
-          />
+          <el-table-column width="150px" prop="company_money" label="公司账户余额" />
           <el-table-column
             width="150px"
             prop="company_pension"
-            label="养老（企业比例）"
+            label="养老（企业）"
           />
-          <el-table-column
-            width="150px"
-            prop="person_pension"
-            label="养老（个人比例）"
-          />
+
           <el-table-column
             width="150px"
             prop="company_unemployment"
-            label="失业（企业比例）"
+            label="失业（企业）"
           />
-          <el-table-column
-            width="150px"
-            prop="person_unemployment"
-            label="失业（个人比例）"
-          />
+
           <el-table-column
             width="150px"
             prop="company_medical"
-            label="医疗（企业比例）"
+            label="医疗（企业）"
           />
-          <el-table-column
-            width="150px"
-            prop="person_medical"
-            label="医疗（个人比例）"
-          />
+
           <el-table-column
             width="150px"
             prop="company_injury"
-            label="工伤（企业比例）"
+            label="工伤（企业）"
           />
-          <el-table-column
-            width="150px"
-            prop="person_injury"
-            label="工伤（个人比例）"
-          />
+
           <el-table-column
             width="150px"
             prop="company_birth"
-            label="生育（企业比例）"
+            label="生育（企业）"
           />
-          <el-table-column
-            width="150px"
-            prop="person_birth"
-            label="生育（个人比例）"
-          />
+
           <el-table-column
             width="150px"
             prop="company_accumulation"
-            label="公积金（企业比例）"
+            label="公积金（企业）"
           />
-          <el-table-column
-            width="150px"
-            prop="person_accumulation"
-            label="公积金（个人比例）"
-          />
+ 
         </el-table>
         <el-pagination
-          @current-change="(page) => handleCurrentChange(1, page)"
-          :current-page="page2"
-          :page-size="pageSize2"
-          :total="pageTotal2"
+          @current-change="(page) => handleCurrentChange(2, page)"
+          :current-page="page3"
+          :page-size="pageSize3"
+          :total="pageTotal3"
           layout="total, prev, pager, next, jumper"
           background
         >
@@ -575,9 +551,13 @@ export default {
       page2: 1,
       pageSize2: 10,
       pageTotal2: 0,
+      tableData3: [],
+      page3: 1,
+      pageSize3: 10,
+      pageTotal3: 0,
       formInline3: {
         username: "",
-        time: dayjs().format("YYYY-MM"),
+        year: dayjs().format("YYYY"),
       },
     };
   },
@@ -586,7 +566,7 @@ export default {
   created() {
     this.getSocialList(1);
     this.getSocialCompensate(1);
-    // this.getSocialLow(1);
+    this.getSocialLow(1);
   },
   computed: {
     ...mapState("menu", ["defaultAuth"]),
@@ -594,7 +574,9 @@ export default {
   methods: {
     handleSelectionChange() {},
     handleCurrentChange(type, page) {
-      if (type) {
+      if (type === 2) {
+        this.getSocialLow(page);
+      } else if (type === 1) {
         this.getSocialCompensate(page);
       } else {
         this.getSocialList(page);
@@ -686,6 +668,16 @@ export default {
           // 停保
           this.stop();
           break;
+        case 6:
+          // 导出社保记录
+          this.$refs.downloadFile.target = "_blank";
+          this.$refs.downloadFile.href = `http://rlzypq.samowl.cn/api/out_social_low?company_id=${
+            this.companyId
+          }&username=${this.formInline3.username}&year=${this.formInline3.year}&token=${localStorage.getItem(
+            "token"
+          )}`;
+          this.$refs.downloadFile.click();
+          break;
       }
     },
     closeDialog(type) {
@@ -767,7 +759,11 @@ export default {
         page: page,
       };
       getSocialLow(params).then((res) => {
-        console.log(res);
+        if (res.code) {
+          this.tableData3 = res.data;
+          this.page3 = page;
+          this.pageTotal3 = res.count;
+        }
       });
     },
     // 修改五险比例
