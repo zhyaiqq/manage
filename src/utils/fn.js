@@ -134,9 +134,12 @@ export function generateRoutes(router) {
   let authList = localStorage.getItem('authRoute')
   if (!authList) return
   authList = JSON.parse(authList)
-  const newRoutes = authList && authList.map(item => {
+  let newRoutes = []
+  authList && authList.map(item => {
     let result = dynamic_routes.find(item1 => item1.path == item)
-    return result
+    if (result) {
+      newRoutes.push(result)
+    }
   })
   router.addRoute('Home', {
     path: '/',
@@ -149,5 +152,4 @@ export function generateRoutes(router) {
     path: '*',
     redirect: '/404'
   })
-  console.log(router)
 }

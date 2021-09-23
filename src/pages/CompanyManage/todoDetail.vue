@@ -1,10 +1,13 @@
 <template>
   <div class="todo_detail">
     <div class="base_info">
-      <div class="tag_title1 mb40">
-        员工基础信息
-      </div>
-      <el-form :model="baseForm" :rules="baseFormRules" :inline="true" label-width="200px">
+      <div class="tag_title1 mb40">员工基础信息</div>
+      <el-form
+        :model="baseForm"
+        :rules="baseFormRules"
+        :inline="true"
+        label-width="200px"
+      >
         <el-form-item label="姓名：" prop="name" required>
           <el-input v-model="baseForm.name" disabled></el-input>
         </el-form-item>
@@ -13,13 +16,22 @@
         </el-form-item>
         <el-form-item label="性别：" prop="sex" required>
           <el-select v-model="baseForm.sex" placeholder="请选择" disabled>
-            <el-option label="女" :value="0" /> 
-            <el-option label="男" :value="1" /> 
+            <el-option label="女" :value="0" />
+            <el-option label="男" :value="1" />
           </el-select>
         </el-form-item>
         <el-form-item label="选择身份：" prop="current_type" required>
-          <el-select v-model="baseForm.current_type" placeholder="请选择" disabled>
-            <el-option :label="item.name" :value="item.id" v-for="(item, index) in staffTypeList" :key="index" /> 
+          <el-select
+            v-model="baseForm.current_type"
+            placeholder="请选择"
+            disabled
+          >
+            <el-option
+              :label="item.name"
+              :value="item.id"
+              v-for="(item, index) in staffTypeList"
+              :key="index"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="年龄：" prop="age" required>
@@ -33,14 +45,18 @@
         </el-form-item>
         <el-form-item label="选择社保状态：" prop="is_stop" required>
           <el-select v-model="baseForm.is_stop" placeholder="请选择" disabled>
-            <el-option label="参保" :value="1" /> 
-            <el-option label="停保" :value="0" /> 
+            <el-option label="参保" :value="1" />
+            <el-option label="停保" :value="0" />
           </el-select>
         </el-form-item>
         <el-form-item label="选择岗位状态：" prop="entry_status" required>
-          <el-select v-model="baseForm.entry_status" placeholder="请选择" disabled>
-            <el-option label="离职" :value="1" /> 
-            <el-option label="在职" :value="2" /> 
+          <el-select
+            v-model="baseForm.entry_status"
+            placeholder="请选择"
+            disabled
+          >
+            <el-option label="离职" :value="1" />
+            <el-option label="在职" :value="2" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -80,48 +96,45 @@
 </template>
 
 <script>
-import { findExpireStaff } from  '@/api/todo.js'
-import { mapState } from 'vuex'
+import { findExpireStaff } from "@/api/todo.js";
+import { mapState } from "vuex";
 export default {
-  data () {
+  data() {
     return {
       baseForm: {
-        company: '',
-        address: '',
-        legal_person: '',
-        charge_person: '',
-        current_type: '',
-        tel: ''
+        company: "",
+        address: "",
+        legal_person: "",
+        charge_person: "",
+        current_type: "",
+        tel: "",
       },
       baseFormRules: {},
-      id: ''
-    }
+      id: "",
+    };
   },
-  created () {
-    const { id } = this.$route.params
-    this.id = id
-    this.findExpireStaff()
+  created() {
+    const { id } = this.$route.params;
+    this.id = id;
+    this.findExpireStaff();
   },
   computed: {
-    ...mapState("company", ['staffTypeList'])
+    ...mapState("company", ["staffTypeList"]),
   },
   methods: {
-    submit () {
-      console.log(this.jobList)
-    },
+    submit() {},
     // 获取待办事详情
-    findExpireStaff () {
+    findExpireStaff() {
       findExpireStaff({
-        id: this.id
-      }).then(res => {
-        if(res.code) {
-          this.baseForm = res.info
-          console.log('代办事情详情', res.info)
+        id: this.id,
+      }).then((res) => {
+        if (res.code) {
+          this.baseForm = res.info;
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style scoped lang="less">

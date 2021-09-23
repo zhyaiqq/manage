@@ -137,15 +137,12 @@ export default {
         yanglao_count: "养老变动",
         yiliao_count: "医疗变动",
         gongshang_count: "工伤变动",
-        gongjijin_count: "公积金变动"
+        gongjijin_count: "公积金变动",
       },
     };
   },
   created() {
     this.computedClass();
-    this.getMen().then(() => {
-      this.setCurrentMenu();
-    });
     this.getUserInfo();
     this.getMenuCompany();
     this.getExcelUrl();
@@ -168,6 +165,13 @@ export default {
       this.computedClass();
       this.setCurrentMenu();
     },
+  },
+  beforeRouteEnter: (to, from, next) => {
+    window.$store.dispatch("menu/getMen").then((res) => {
+      if (res.code && res.data && res.data.length > 0) {
+        next((vm) => vm.setCurrentMenu());
+      }
+    });
   },
   methods: {
     ...mapActions("company", ["getMenuCompany", "getStaffList"]),
@@ -228,7 +232,6 @@ export default {
           }
           break;
         case 1:
-          console.log(111111);
           if (path != item.url) {
             this.$router.push(item.url);
           }
@@ -272,7 +275,7 @@ export default {
         "yiliao_count",
         "gongshang_count",
         "shengyu_count",
-        "gongjijin_count"
+        "gongjijin_count",
       ];
       let type = arr.findIndex((item) => item == index);
       if (this.$route.path !== "/todolist") {

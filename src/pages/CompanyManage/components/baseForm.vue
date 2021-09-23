@@ -80,16 +80,16 @@ export default {
       },
       baseFormRules: {
         name: { required: true, message: "请输入公司名称", trigger: "change" },
-        address: {
-          required: true,
-          message: "请输入公司地址",
-          trigger: "change",
-        },
-        corporation: {
-          required: true,
-          message: "请输入公司法人",
-          trigger: "change",
-        },
+        // address: {
+        //   required: true,
+        //   message: "请输入公司地址",
+        //   trigger: "change",
+        // },
+        // corporation: {
+        //   required: true,
+        //   message: "请输入公司法人",
+        //   trigger: "change",
+        // },
         // business: {
         //   required: true,
         //   message: "请上传营业执照",
@@ -159,6 +159,6 @@ export default {
 
 <style lang="less" scoped>
 .el-input-number {
-  width: 300px;
+  // width: 300px;
 }
 </style>

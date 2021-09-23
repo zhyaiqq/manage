@@ -56,7 +56,6 @@ export default {
           let newAuth = [];
           let level2 = [];
           let level3 = [];
-          console.log("authlist", authList);
           authList &&
             authList.map((item) => {
               level2 = [];

@@ -62,6 +62,7 @@
       >
     </div>
     <el-table
+      height="450"
       :data="tableData"
       :header-cell-style="{ textAlign: 'center' }"
       :cell-style="{ textAlign: 'center' }"
@@ -138,6 +139,14 @@
       <el-table-column width="100px" prop="is_out_string" label="是否发放" />
       <el-table-column prop="remak" label="备注" show-overflow-tooltip>
       </el-table-column>
+      <el-table-column
+        :prop="key"
+        :label="tableColumn[key]"
+        show-overflow-tooltip
+        v-for="(key, index) in Object.keys(tableColumn)"
+        :key="index"
+      >
+      </el-table-column>
       <el-table-column width="150px" prop="handle" label="操作">
         <template slot-scope="scope">
           <el-button
@@ -177,15 +186,63 @@
     <el-dialog
       title="编辑薪资信息"
       :visible.sync="dialogVisible"
-      width="40%"
+      width="80%"
       @closed="closeDialog(0)"
     >
-      <el-form :model="form" ref="form" :rules="rules1" label-width="200px">
+      <el-form
+        :model="form"
+        ref="form"
+        :rules="rules1"
+        label-width="100px"
+        :inline="true"
+      >
         <el-form-item label="基本工资:" prop="salary">
           <el-input v-model="form.salary" />
         </el-form-item>
         <el-form-item label="岗位工资:" prop="post_salary">
           <el-input v-model="form.post_salary" />
+        </el-form-item>
+        <el-form-item label="绩效工资:" prop="achievements">
+          <el-input v-model="form.achievements" />
+        </el-form-item>
+        <el-form-item label="岗位津贴:" prop="post_allowance">
+          <el-input v-model="form.post_allowance" />
+        </el-form-item>
+        <el-form-item label="考核工资:" prop="post_check">
+          <el-input v-model="form.post_check" />
+        </el-form-item>
+        <el-form-item label="出勤工资:" prop="post_work">
+          <el-input v-model="form.post_work" />
+        </el-form-item>
+        <el-form-item label="学历工资:" prop="post_education">
+          <el-input v-model="form.post_education" />
+        </el-form-item>
+        <el-form-item label="职称工资:" prop="post_title">
+          <el-input v-model="form.post_title" />
+        </el-form-item>
+        <el-form-item label="工龄工资:" prop="post_age">
+          <el-input v-model="form.post_age" />
+        </el-form-item>
+        <el-form-item label="扣税额:" prop="post_tax">
+          <el-input v-model="form.post_tax" />
+        </el-form-item>
+        <el-form-item label="个人养老保险:" prop="person_pension">
+          <el-input v-model="form.person_pension" />
+        </el-form-item>
+        <!-- <el-form-item label="个人意外伤害保险:" prop="person_accident">
+          <el-input v-model="form.person_accident" />
+        </el-form-item> -->
+        <el-form-item label="个人失业险:" prop="person_unemployment">
+          <el-input v-model="form.person_unemployment" />
+        </el-form-item>
+        <el-form-item label="个人医疗保险:" prop="person_medical">
+          <el-input v-model="form.person_medical" />
+        </el-form-item>
+        <!-- <el-form-item label="个人生育保险:" prop="person_birth">
+          <el-input v-model="form.person_birth" />
+        </el-form-item> -->
+        <el-form-item label="个人公积金:" prop="person_accumulation">
+          <el-input v-model="form.person_accumulation" />
         </el-form-item>
         <el-form-item label="银行卡号:" prop="bank_card">
           <el-input v-model="form.bank_card" />
@@ -211,7 +268,7 @@
     <el-dialog
       title="薪资备注"
       :visible.sync="dialogVisible2"
-      width="30%"
+      width="40%"
       @closed="closeDialog(1)"
     >
       <el-form :model="form2" ref="form2" :rules="rules2" label-width="100px">
@@ -252,6 +309,20 @@ export default {
       form: {
         salary: "",
         post_salary: "",
+        achievements: "",
+        post_allowance: "",
+        post_check: "",
+        post_work: "",
+        post_education: "",
+        post_age: "",
+        post_title: "",
+        post_tax: "",
+        person_pension: "",
+        person_accident: "",
+        person_unemployment: "",
+        person_medical: "",
+        person_birth: "",
+        person_accumulation: "",
         bank: "",
         bank_card: "",
         pay_date: 15,
@@ -265,6 +336,76 @@ export default {
         post_salary: {
           required: true,
           message: "请输入岗位工资",
+          trigger: "change",
+        },
+        achievements: {
+          required: true,
+          message: "请输入绩效工资",
+          trigger: "change",
+        },
+        post_allowance: {
+          required: true,
+          message: "请输入岗位津贴",
+          trigger: "change",
+        },
+        post_check: {
+          required: true,
+          message: "请输入考核工资",
+          trigger: "change",
+        },
+        post_work: {
+          required: true,
+          message: "请输入出勤工资",
+          trigger: "change",
+        },
+        post_education: {
+          required: true,
+          message: "请输入学历工资",
+          trigger: "change",
+        },
+        post_title: {
+          required: true,
+          message: "请输入职称工资",
+          trigger: "change",
+        },
+        post_age: {
+          required: true,
+          message: "请输入工龄工资",
+          trigger: "change",
+        },
+        post_tax: {
+          required: true,
+          message: "请输入扣税额",
+          trigger: "change",
+        },
+        person_pension: {
+          required: true,
+          message: "请输入养老保险",
+          trigger: "change",
+        },
+        person_accident: {
+          required: true,
+          message: "请输入意外伤害保险",
+          trigger: "change",
+        },
+        person_unemployment: {
+          required: true,
+          message: "请输入失业险",
+          trigger: "change",
+        },
+        person_medical: {
+          required: true,
+          message: "请输入医疗保险",
+          trigger: "change",
+        },
+        person_birth: {
+          required: true,
+          message: "请输入生育保险",
+          trigger: "change",
+        },
+        person_accumulation: {
+          required: true,
+          message: "请输入住房公积金",
           trigger: "change",
         },
         bank: { required: true, message: "请输入所属银行", trigger: "change" },
@@ -301,6 +442,7 @@ export default {
       currentRow: null,
       authorization: { Authorization: localStorage.getItem("token") },
       btns: {},
+      tableColumn: {},
     };
   },
   props: ["companyId"],
@@ -320,7 +462,27 @@ export default {
       this.getStaffSalaryList(1);
     },
     handle(type, data) {
-      let subjects = ["salary", "post_salary", "bank", "bank_card", "pay_date"];
+      let subjects = [
+        "salary",
+        "post_salary",
+        "achievements",
+        "post_allowance",
+        "post_check",
+        "post_work",
+        "post_education",
+        "post_age",
+        "post_title",
+        "post_tax",
+        "person_pension",
+        "person_accident",
+        "person_unemployment",
+        "person_medical",
+        "person_birth",
+        "person_accumulation",
+        "bank",
+        "bank_card",
+        "pay_date",
+      ];
       switch (type) {
         case 1:
           // 导出薪资数据
@@ -388,7 +550,21 @@ export default {
         page: page,
       }).then((res) => {
         if (res.code) {
-          this.tableData = res.data;
+          this.tableColumn = res.data.company_salary_custom || [];
+          let arr = [];
+          let staff_list = res.data.staff_list || [];
+          staff_list.map((item) => {
+            let { custom_content, ...other } = item;
+            if (custom_content) {
+              for (const key in custom_content) {
+                if (Object.hasOwnProperty.call(custom_content, key)) {
+                  other[key] = custom_content[key];
+                }
+              }
+            }
+            arr.push(other);
+          });
+          this.tableData = arr;
           this.page = page;
           this.pageTotal = res.count;
         }
@@ -411,7 +587,7 @@ export default {
     // 编辑薪资信息
     editSalary() {
       editSalary({
-        psu_id: this.currentRow.user_id,
+        psu_id: this.currentRow.psu_id,
         ...this.form,
       }).then((res) => {
         if (res.code) {

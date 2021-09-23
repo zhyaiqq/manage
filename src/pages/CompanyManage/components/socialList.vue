@@ -66,6 +66,7 @@
           >
         </div>
         <el-table
+          height="350"
           :data="tableData"
           :header-cell-style="{ textAlign: 'center' }"
           :cell-style="{ textAlign: 'center' }"
@@ -264,6 +265,7 @@
           >
         </div>
         <el-table
+          height="350"
           :data="tableData"
           :header-cell-style="{ textAlign: 'center' }"
           :cell-style="{ textAlign: 'center' }"
@@ -402,14 +404,14 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
-      width="70%"
+      width="80%"
       @closed="closeDialog(0)"
     >
       <el-form
         :model="form"
         ref="form"
         :rules="dialogVisible == '修改五险比例' ? rulesPart : rulesPart"
-        label-width="200px"
+        label-width="150px"
         :inline="true"
       >
         <el-form-item label="养老保险（企业认缴）:" prop="company_pension">
@@ -487,7 +489,7 @@
     <el-dialog
       title="社保备注"
       :visible.sync="dialogVisible2"
-      width="30%"
+      width="40%"
       @closed="closeDialog(1)"
     >
       <el-form :model="form1" ref="form1" :rules="rules1" label-width="100px">
@@ -501,6 +503,28 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible2 = false">取 消</el-button>
         <el-button type="primary" @click="confirm">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title=""
+      :visible.sync="dialogVisible3"
+      width="30%"
+      @closed="closeDialog(2)"
+    >
+      <el-form :model="form2" ref="form2" label-width="150px" :inline="true">
+        <el-form-item label="参保时间:" prop="entry_time">
+          <el-date-picker
+            v-model="form2.entry_time"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible3 = false">取 消</el-button>
+        <el-button type="primary" @click="stop">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -727,13 +751,17 @@ export default {
         username: "",
         time: dayjs().format("YYYY-MM"),
       },
-      companySocial: null
+      companySocial: {},
+      dialogVisible3: false,
+      form2: {
+        entry_time: "",
+      },
     };
   },
   props: ["companyId"],
   created() {
     this.getSocialList(1);
-    this.getCompanySocialInfo()
+    this.getCompanySocialInfo();
   },
   computed: {
     ...mapState("menu", ["defaultAuth"]),
@@ -811,7 +839,11 @@ export default {
               this.dialogTitle = "员工社保";
               this.currentRow = data;
               for (let i = 0; i < subjects.length; i++) {
-                this.form[subjects[i]] = res.data[subjects[i]] ?  res.data[subjects[i]] : (this.companySocial[subjects[i]] ? this.companySocial[subjects[i]] * 100 : '')
+                this.form[subjects[i]] = res.data[subjects[i]]
+                  ? res.data[subjects[i]]
+                  : this.companySocial[subjects[i]]
+                  ? this.companySocial[subjects[i]] * 100
+                  : "";
               }
               this.form.type = res.data.is_base;
               this.dialogVisible = true;
@@ -825,9 +857,11 @@ export default {
           // 备注
           break;
         case 5:
+          this.form2.entry_time = "";
           this.currentRow = data;
+          this.dialogVisible3 = true;
           // 停保
-          this.stop();
+          // this.stop();
           break;
       }
     },
@@ -920,7 +954,7 @@ export default {
         company_id: this.companyId,
       }).then((res) => {
         if (res.code) {
-          this.getCompanySocialInfo()
+          this.getCompanySocialInfo();
           this.dialogVisible = false;
           this.getSocialList(1);
           this.$message.success("修改五险比例成功");
@@ -928,22 +962,32 @@ export default {
       });
     },
     // 查询公司五险一金设置
-    getCompanySocialInfo () {
+    getCompanySocialInfo() {
       getCompanySocialInfo({
         company_id: this.companyId,
       }).then((res) => {
         if (res.code) {
-          this.companySocial = res.data
+          this.companySocial = res.data;
         }
       });
     },
     // 员工停保
     stop() {
+      if (this.currentRow.is_stop == 0 && this.form2.entry_time == "") {
+        this.$message.warning("请选择参保时间");
+        return;
+      }
       stop({
         staff_id: this.currentRow.id,
+        entry_time: this.form2.entry_time,
       }).then((res) => {
         if (res.code) {
-          this.$message.success("停保成功");
+          if (this.currentRow.is_stop == 0) {
+            this.$message.success("参保成功");
+          } else {
+            this.$message.success("停保成功");
+          }
+          this.dialogVisible3 = false;
           this.getSocialList(1);
         }
       });

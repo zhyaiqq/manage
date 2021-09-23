@@ -8,6 +8,7 @@ import "./assets/css/common.less"
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
+window.$store = store;
 new Vue({
   router,
   store,

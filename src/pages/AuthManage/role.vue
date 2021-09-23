@@ -24,6 +24,7 @@
       >
     </div>
     <el-table
+      height="550"
       :data="tableData"
       :header-cell-style="{ textAlign: 'center' }"
       :cell-style="{ textAlign: 'center' }"
@@ -72,7 +73,7 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="40%"
       @closed="closeDialog"
     >
       <el-form :model="form" ref="form" :rules="rules" label-width="100px">
@@ -88,12 +89,41 @@
         <el-button type="primary" @click="confirm">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="权限设置"
+      :visible.sync="dialogVisible2"
+      width="30%"
+      @closed="closeDialog"
+    >
+      <div class="top">当前角色：{{ currentRow && currentRow.title }}</div>
+      <el-tree
+        ref="tree"
+        :data="treeData"
+        show-checkbox
+        node-key="id"
+        :default-checked-keys="treeCheckedKeys"
+        @check-change="handleNodeClick"
+        :props="defaultProps"
+      >
+      </el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible2 = false">取 消</el-button>
+        <el-button type="primary" @click="updateAuthRole">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getRoleList, delRole, addRole, editRole } from "@/api/role.js";
-import { mapState } from "vuex";
+import {
+  getRoleList,
+  delRole,
+  addRole,
+  editRole,
+  getRoleAuth,
+  updateAuthRole,
+} from "@/api/role.js";
+import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -104,6 +134,7 @@ export default {
       tableData: [],
       multipleSelection: [],
       dialogVisible: false,
+      dialogVisible2: false,
       dialogTitle: "新增角色",
       form: {
         name: "",
@@ -121,6 +152,12 @@ export default {
           trigger: "change",
         },
       },
+      treeData: [],
+      defaultProps: {
+        children: "child",
+        label: "title",
+      },
+      treeCheckedKeys: [],
     };
   },
   created() {
@@ -130,6 +167,7 @@ export default {
     ...mapState("menu", ["defaultAuth"]),
   },
   methods: {
+    ...mapActions("menu", ["getMen"]),
     handleSelectionChange() {},
     search() {
       this.getRoleList(1);
@@ -146,7 +184,10 @@ export default {
           break;
         case 1:
           // 权限设置
-          this.$router.push(`/auth?role_id=${data.id}&role_name=${data.title}`);
+          this.currentRow = data;
+          // this.$router.push(`/auth?role_id=${data.id}&role_name=${data.title}`);
+          this.getRoleAuth(data.id);
+          this.dialogVisible2 = true;
           break;
         case 2:
           // 编辑
@@ -225,14 +266,64 @@ export default {
         }
       });
     },
+    // 获取权限列表
+    getRoleAuth(id) {
+      getRoleAuth({
+        role_id: id,
+      }).then((res) => {
+        if (res.code) {
+          let keys = [];
+          this.treeData = res.data;
+          res.data.map((item) => {
+            if (item.select) keys.push(item.id);
+            if (item.child && item.child.length > 0) {
+              item.child.map((item2) => {
+                if (item2.select) keys.push(item2.id);
+                if (item2.child && item2.child.length > 0) {
+                  item2.child.map((item3) => {
+                    if (item3.select) keys.push(item3.id);
+                    if (item3.child && item3.child.length > 0) {
+                      item3.child.map((item4) => {
+                        if (item4.select) keys.push(item4.id);
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+          this.treeCheckedKeys = keys;
+        }
+      });
+    },
+    // 添加角色权限
+    updateAuthRole() {
+      updateAuthRole({
+        role_id: this.currentRow.id,
+        auth_id: this.$refs.tree.getCheckedKeys(),
+      }).then((res) => {
+        if (res.code) {
+          this.dialogVisible2 = false;
+          this.getMen();
+          this.$message.success("角色权限修改成功");
+        }
+      });
+    },
     isHasAuth(auth_id) {
       return (
         this.defaultAuth && this.defaultAuth.some((item) => item.id == auth_id)
       );
+    },
+    handleNodeClick(data) {
+      console.log(data);
     },
   },
 };
 </script>
 
 <style scoped>
+.company_list .top {
+  font-weight: bold;
+  margin-bottom: 20px;
+}
 </style>

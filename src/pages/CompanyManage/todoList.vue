@@ -54,6 +54,7 @@
       </el-form>
     </div>
     <el-table
+      height="600"
       :data="tableData"
       :header-cell-style="{ textAlign: 'center' }"
       :cell-style="{ textAlign: 'center' }"
@@ -85,7 +86,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="username" label="操作人员" />
-      <el-table-column prop="deal_time" label="更新时间" />
+      <el-table-column prop="creat_time" label="创建时间" />
+      <el-table-column prop="deal_time" label="处理时间" />
       <el-table-column prop="handle" label="操作">
         <template slot-scope="scope">
           <el-button type="text" @click="handle(0, scope.row)">详情</el-button>
@@ -113,7 +115,7 @@
       background
     >
     </el-pagination>
-    <el-dialog title="待办事处理" :visible.sync="dialogVisible" width="30%">
+    <el-dialog title="待办事处理" :visible.sync="dialogVisible" width="40%">
       <el-form :model="form" ref="form" :rules="rules" label-width="100px">
         <el-form-item label="任务名称:" prop="id">
           {{ this.currentRow && this.currentRow.name }}
@@ -121,14 +123,29 @@
         <el-form-item
           label="处理结果:"
           prop="type"
-          v-if="currentRow && [1, 2, 3, 4, 5, 6].indexOf(currentRow.type) > -1"
+          v-if="currentRow && [1].indexOf(currentRow.type) > -1"
         >
           <el-select v-model="form.type" placeholder="请选择">
             <el-option label="续期" :value="1" />
             <el-option label="直接结束" :value="2" />
           </el-select>
         </el-form-item>
-        <el-form-item label="处理结果:" prop="type" v-else>
+        <el-form-item
+          label="处理结果:"
+          prop="type"
+          v-if="currentRow && [2, 3, 4, 5, 6].indexOf(currentRow.type) > -1"
+        >
+          <el-select v-model="form.type" placeholder="请选择">
+            <el-option label="已完成" :value="3" />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="处理结果:"
+          prop="type"
+          v-if="
+            currentRow && [7, 8, 9, 10, 11, 12].indexOf(currentRow.type) > -1
+          "
+        >
           <el-select v-model="form.type" placeholder="请选择">
             <el-option label="已完成" :value="3" />
             <el-option label="暂缓" :value="4" />
@@ -370,7 +387,7 @@ export default {
         case 1:
           // 处理
           this.form.id = data.id;
-          this.form.type = [1, 2, 3, 4, 5, 6].indexOf(data.type) > -1 ? 2 : "";
+          this.form.type = [1].indexOf(data.type) > -1 ? 2 : "";
           this.currentRow = data;
           this.dialogVisible = true;
           break;

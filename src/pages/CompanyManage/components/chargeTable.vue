@@ -28,6 +28,7 @@
           >
         </div>
         <el-table
+          height="400"
           :data="tableData2"
           :header-cell-style="{ textAlign: 'center' }"
           :cell-style="{ textAlign: 'center' }"
@@ -89,7 +90,7 @@
             </el-form-item>
           </el-form>
         </div>
-        <div class="table-btns">
+        <!-- <div class="table-btns">
           <el-button
             type="primary"
             @click="handle(1)"
@@ -97,8 +98,9 @@
             size="small"
             >追加余额</el-button
           >
-        </div>
+        </div> -->
         <el-table
+          height="450"
           :data="tableData"
           :header-cell-style="{ textAlign: 'center' }"
           :cell-style="{ textAlign: 'center' }"
@@ -132,7 +134,7 @@
         >
         </el-pagination>
       </el-tab-pane>
-      <el-tab-pane label="费用汇总" name="2">
+      <el-tab-pane label="费用年汇总" name="2">
         <div class="search_top">
           <el-form :inline="true" :model="formInline3" class="left">
             <el-form-item label="年份:" prop="year">
@@ -156,6 +158,7 @@
           >
         </div>
         <el-table
+          height="400"
           :data="tableData3"
           :header-cell-style="{ textAlign: 'center' }"
           :cell-style="{ textAlign: 'center' }"
@@ -221,6 +224,7 @@
           >
         </div>
         <el-table
+          height="400"
           :data="tableData4"
           :header-cell-style="{ textAlign: 'center' }"
           :cell-style="{ textAlign: 'center' }"
@@ -255,6 +259,14 @@
         </el-pagination> -->
       </el-tab-pane>
     </el-tabs>
+    <el-button
+      style="position: absolute; top: 0px; left: 400px"
+      type="primary"
+      @click="handle(1)"
+      v-show="isHasAuth(180)"
+      size="small"
+      >追加余额</el-button
+    >
     <a ref="downloadFile"></a>
     <el-dialog
       title="追加余额"
@@ -262,12 +274,7 @@
       width="40%"
       @closed="closeDialog(0)"
     >
-      <el-form
-        :model="form"
-        ref="form"
-        :rules="rules"
-        label-width="100px"
-      >
+      <el-form :model="form" ref="form" :rules="rules" label-width="100px">
         <el-form-item label="追加公司:">
           {{ companyName }}
         </el-form-item>
@@ -286,12 +293,7 @@
       width="40%"
       @closed="closeDialog(1)"
     >
-      <el-form
-        :model="form2"
-        ref="form2"
-        :rules="rules2"
-        label-width="100px"
-      >
+      <el-form :model="form2" ref="form2" :rules="rules2" label-width="100px">
         <el-form-item label="公司:">
           {{ companyName }}
         </el-form-item>
@@ -418,7 +420,6 @@ export default {
         this.form2 = this.$options.data().form2;
         this.$refs.form2.resetFields();
       }
-
     },
     handle(type, data) {
       switch (type) {
@@ -452,7 +453,7 @@ export default {
           break;
         case 5:
           // 设置管理费
-          this.getCompanyInfo()
+          this.getCompanyInfo();
           break;
         case 6:
           // 导出费用月汇总
@@ -570,11 +571,11 @@ export default {
       });
     },
     // 查询公司详情 - 获取管理费
-    getCompanyInfo () {
-      findCompany(this.companyId).then(res => {
-        if (res.code) this.form2.money = res.data.manage_fee
+    getCompanyInfo() {
+      findCompany(this.companyId).then((res) => {
+        if (res.code) this.form2.money = res.data.manage_fee;
         this.dialogVisible2 = true;
-      })
+      });
     },
     // 设置管理费
     setManageFee() {

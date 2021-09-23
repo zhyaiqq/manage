@@ -1,5 +1,11 @@
 <template>
-  <el-form :model="form" :rules="formRules" ref="form" label-width="100px" class="account_set">
+  <el-form
+    :model="form"
+    :rules="formRules"
+    ref="form"
+    label-width="100px"
+    class="account_set"
+  >
     <el-form-item>
       <el-upload
         class="avatar-uploader"
@@ -7,8 +13,9 @@
         name="image"
         :show-file-list="false"
         :on-success="uploadSuccess"
-        :before-upload="beforeUpload">
-        <img :src="imageUrl" class="avatar">
+        :before-upload="beforeUpload"
+      >
+        <img :src="imageUrl" class="avatar" />
         <div>上传头像</div>
       </el-upload>
     </el-form-item>
@@ -34,29 +41,41 @@
 </template>
 
 <script>
-import { setUser, findLogUser } from '@/api/system.js'
+import { setUser, findLogUser } from "@/api/system.js";
 export default {
-  data () {
+  data() {
     return {
       form: {
-        username: '',
-        email: '',
-        password_old: '',
-        password: '',
-        password2: ''
+        username: "",
+        email: "",
+        password_old: "",
+        password: "",
+        password2: "",
       },
       formRules: {
-        username: { required: true, message: '请输入用户名', trigger: 'change' },
-        email: { required: true, message: '请输入邮箱', trigger: 'change' },
-        password_old: { required: true, message: '请输入原始密码', trigger: 'change' },
-        password: { required: true, message: '请输入新密码', trigger: 'change' },
-        password2: { required: true, message: '请确认密码', trigger: 'change' },
+        username: {
+          required: true,
+          message: "请输入用户名",
+          trigger: "change",
+        },
+        email: { required: true, message: "请输入邮箱", trigger: "change" },
+        password_old: {
+          required: true,
+          message: "请输入原始密码",
+          trigger: "change",
+        },
+        password: {
+          required: true,
+          message: "请输入新密码",
+          trigger: "change",
+        },
+        password2: { required: true, message: "请确认密码", trigger: "change" },
       },
-      imageUrl: ''
-    }
+      imageUrl: "",
+    };
   },
-  created () {
-    this.findLogUser()
+  created() {
+    this.findLogUser();
   },
   methods: {
     beforeUpload() {
@@ -64,7 +83,6 @@ export default {
       // this.file = file
       // const isJPG = file.type === 'image/jpeg';
       // const isLt2M = file.size / 1024 / 1024 < 2;
-
       // if (!isJPG) {
       //   this.$message.error('上传头像图片只能是 JPG 格式!');
       // }
@@ -73,55 +91,55 @@ export default {
       // }
       // return isJPG && isLt2M;
     },
-    uploadSuccess (res) {
+    uploadSuccess(res) {
       if (res.code) {
-        this.imageUrl = res.data.http
-        this.$message.success('上传成功')
+        this.imageUrl = res.data.http;
+        this.$message.success("上传成功");
       } else {
-        this.$message.warning(res.info)
+        this.$message.warning(res.info);
       }
     },
-    submit () {
+    submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
           if (this.form.password2 !== this.form.password) {
-            this.$message.warning('两次密码输入不一致')
-            return
+            this.$message.warning("两次密码输入不一致");
+            return;
           }
-          this.setUser()
+          this.setUser();
         }
-      })
+      });
     },
     // 账户设置
-    setUser () {
+    setUser() {
       let params = {
         ...this.form,
-        headimg: this.imageUrl
-      }
-      setUser(params).then(res => {
+        headimg: this.imageUrl,
+      };
+      setUser(params).then((res) => {
         if (res.code) {
-          localStorage.removeItem('token')
-          localStorage.removeItem('authRoute')
-          localStorage.removeItem('companyId')
-          this.$message.success('账户修改成功，请重新登录')
+          localStorage.removeItem("token");
+          localStorage.removeItem("authRoute");
+          localStorage.removeItem("companyId");
+          this.$message.success("账户修改成功，请重新登录");
           setTimeout(() => {
-            this.$router.push('./login')
-          }, 100)
+            this.$router.push("./login");
+          }, 100);
         }
-      })
+      });
     },
     // 查询登录用户
-    findLogUser () {
-      findLogUser().then(res => {
+    findLogUser() {
+      findLogUser().then((res) => {
         if (res.code) {
-          this.form.username = res.data.username
-          this.form.email = res.data.contact_mail
-          this.imageUrl = res.data.headimg
+          this.form.username = res.data.username;
+          this.form.email = res.data.contact_mail;
+          this.imageUrl = res.data.headimg;
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>

@@ -1,4 +1,5 @@
 import axios from "@/utils/axios";
+import { Promise } from "core-js";
 
 const module = {
   namespaced: true,
@@ -55,7 +56,7 @@ const module = {
           for (const key in obj) {
             if (Object.hasOwnProperty.call(obj, key)) {
               count += obj[key];
-              
+
             }
           }
           commit('setTodoCount', count)
@@ -64,25 +65,27 @@ const module = {
       })
     },
     getMen({ commit }) {
-      return axios.get("/api/getMen").then(res => {
-        if (res.code) {
-          let authMenuList = []
-          let isCompany = false
-          res.data && res.data.map(item => {
-            if (item.pid == 0) {
-              authMenuList.push(item)
-            }
-            if (item.id == 130) {
-              isCompany = true
-            }
-          })
-          let menuList = authMenuList.filter(item => item.id != 130)
-          commit('setDefaultAuth', res.data)
-          commit('setAuthMenu', authMenuList)
-          commit('setMenu', menuList)
-          commit('setShowCompany', isCompany)
-          return res
-        }
+      return new Promise(resolve => {
+        axios.get("/api/getMen").then(res => {
+          if (res.code) {
+            let authMenuList = []
+            let isCompany = false
+            res.data && res.data.map(item => {
+              if (item.pid == 0) {
+                authMenuList.push(item)
+              }
+              if (item.id == 130) {
+                isCompany = true
+              }
+            })
+            let menuList = authMenuList.filter(item => item.id != 130)
+            commit('setDefaultAuth', res.data)
+            commit('setAuthMenu', authMenuList)
+            commit('setMenu', menuList)
+            commit('setShowCompany', isCompany)
+            resolve(res)
+          }
+        })
       })
     }
   },

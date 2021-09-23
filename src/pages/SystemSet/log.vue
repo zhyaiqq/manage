@@ -35,6 +35,7 @@
       </el-form>
     </div>
     <el-table
+      height="600"
       :data="tableData"
       :header-cell-style="{ textAlign: 'center' }"
       :cell-style="{ textAlign: 'center' }"

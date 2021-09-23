@@ -9,7 +9,6 @@ const module = {
   },
   mutations: {
     setUser(state, data) {
-      console.log(data)
       state.userInfo = data
     }
   },

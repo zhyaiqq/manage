@@ -86,6 +86,7 @@
       >
     </div>
     <el-table
+      height="450"
       :data="tableData"
       :header-cell-style="{ textAlign: 'center' }"
       :cell-style="{ textAlign: 'center' }"
@@ -272,12 +273,15 @@
         :model="form"
         ref="form"
         :rules="rules1"
-        label-width="200px"
+        label-width="100px"
         :inline="true"
         :validate-on-rule-change="false"
       >
         <el-form-item label="姓名:" prop="name">
           <el-input v-model="form.name" />
+        </el-form-item>
+        <el-form-item label="档案号:" prop="record">
+          <el-input v-model="form.record" />
         </el-form-item>
         <el-form-item label="家庭地址:" prop="address">
           <el-input v-model="form.address" />
@@ -413,7 +417,7 @@
         :model="form2"
         ref="form2"
         :rules="rules2"
-        label-width="200px"
+        label-width="100px"
         :inline="true"
       >
         <el-form-item label="上传简历:" prop="resume">
@@ -488,7 +492,7 @@
     <el-dialog
       title="员工备注"
       :visible.sync="dialogVisible2"
-      width="30%"
+      width="40%"
       @closed="closeDialog(1)"
     >
       <el-form :model="form3" ref="form3" :rules="rules3" label-width="100px">
@@ -507,7 +511,7 @@
     <el-dialog
       title="员工离职"
       :visible.sync="dialogVisible3"
-      width="30%"
+      width="40%"
       @closed="closeDialog(2)"
     >
       <el-form :model="form4" ref="form4" :rules="rules4" label-width="100px">
@@ -594,17 +598,18 @@ export default {
       },
       form: {
         name: "",
+        record: "",
         address: "",
         age: "",
         card_id: "",
         company_id: Number(this.companyId),
         sex: "",
         current_type: "",
-        entry_status: "",
+        entry_status: 2,
         entry_time: "",
         contract_start_time: "",
         contract_end_time: "",
-        contract_type: "",
+        contract_type: "正式合同",
         retire_age: "",
         out_time: "",
         out_region: "",
@@ -671,9 +676,9 @@ export default {
         contract: "",
       },
       rules2: {
-        resume: { required: true, message: "请上传简历", trigger: "change" },
-        report: { required: true, message: "请上传报名表", trigger: "change" },
-        contract: { required: true, message: "请上传合同", trigger: "change" },
+        // resume: { required: true, message: "请上传简历", trigger: "change" },
+        // report: { required: true, message: "请上传报名表", trigger: "change" },
+        // contract: { required: true, message: "请上传合同", trigger: "change" },
       },
       form3: {
         staff_id: "",
@@ -741,28 +746,31 @@ export default {
   created() {
     this.getQuitReason();
     this.getCompanyList();
-    this.getDispatchList(1);
+    // this.getDispatchList(1);
     bus.$on("dispatchPerson", (index) => {
-      this.formInline = this.$options.data().formInline;
-      switch (index) {
-        case 1:
-          this.formInline.entry_status = 2;
-          break;
-        case 2:
-          this.formInline.entryTime = [
-            dayjs().startOf("month").format("YYYY-MM-DD"),
-            dayjs().endOf("month").format("YYYY-MM-DD"),
-          ];
-          break;
-        case 3:
-          this.formInline.entry_status = 1;
-          this.formInline.entryTime = [
-            dayjs().startOf("month").format("YYYY-MM-DD"),
-            dayjs().endOf("month").format("YYYY-MM-DD"),
-          ];
-          break;
-      }
-      this.getDispatchList(1);
+      console.log("eeeeee");
+      setTimeout(() => {
+        this.formInline = this.$options.data().formInline;
+        switch (index) {
+          case 1:
+            this.formInline.entry_status = 2;
+            break;
+          case 2:
+            this.formInline.entryTime = [
+              dayjs().startOf("month").format("YYYY-MM-DD"),
+              dayjs().endOf("month").format("YYYY-MM-DD"),
+            ];
+            break;
+          case 3:
+            this.formInline.entry_status = 1;
+            this.formInline.entryTime = [
+              dayjs().startOf("month").format("YYYY-MM-DD"),
+              dayjs().endOf("month").format("YYYY-MM-DD"),
+            ];
+            break;
+        }
+        this.getDispatchList(1);
+      }, 100);
     });
   },
   computed: {
@@ -788,6 +796,7 @@ export default {
       this.currentStaff = data;
       let subjects = [
         "name",
+        "record",
         "address",
         "age",
         "card_id",
@@ -1104,7 +1113,6 @@ export default {
       // this.$refs.downloadFile.href = url
       // this.$refs.downloadFile.download = url ? url.substr(url.indexOf('') + 1) : '';
       // this.$refs.downloadFile.click();
-      console.log("改了下");
       var a = document.createElement("a");
       var event = new MouseEvent("click");
       a.download = name || "photo";
@@ -1147,6 +1155,6 @@ export default {
 }
 .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
-  width: 300px;
+  /* width: 300px; */
 }
 </style>

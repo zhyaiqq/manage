@@ -4,7 +4,7 @@
       <el-tab-pane label="社保名单" name="0">
         <SocialList :companyId="companyId" />
       </el-tab-pane>
-      <el-tab-pane label="社保补差" name="1">
+      <el-tab-pane label="补差" name="1">
         <div class="search_top">
           <el-form :inline="true" :model="formInline2" class="left">
             <el-form-item label="姓名:" prop="username">
@@ -30,6 +30,7 @@
           </el-form>
         </div>
         <el-table
+          height="450"
           :data="tableData2"
           :header-cell-style="{ textAlign: 'center' }"
           :cell-style="{ textAlign: 'center' }"
@@ -152,12 +153,12 @@
           </el-form>
         </div>
         <div class="table-btns">
-          <el-button
-            type="primary"
-            @click="handle(6)"
-            size="small">导出社保记录</el-button>
+          <el-button type="primary" @click="handle(6)" size="small"
+            >导出社保记录</el-button
+          >
         </div>
         <el-table
+          height="400"
           :data="tableData3"
           :header-cell-style="{ textAlign: 'center' }"
           :cell-style="{ textAlign: 'center' }"
@@ -171,12 +172,12 @@
             width="100px"
             show-overflow-tooltip
           />
+          <el-table-column width="150px" prop="money" label="公司缴费总额" />
           <el-table-column
             width="150px"
-            prop="money"
-            label="公司缴费总额"
+            prop="company_money"
+            label="公司账户余额"
           />
-          <el-table-column width="150px" prop="company_money" label="公司账户余额" />
           <el-table-column
             width="150px"
             prop="company_pension"
@@ -212,7 +213,41 @@
             prop="company_accumulation"
             label="公积金（企业）"
           />
- 
+          <el-table-column
+            width="150px"
+            prop="person_pension"
+            label="养老（个人）"
+          />
+
+          <el-table-column
+            width="150px"
+            prop="person_unemployment"
+            label="失业（个人）"
+          />
+
+          <el-table-column
+            width="150px"
+            prop="person_medical"
+            label="医疗（个人）"
+          />
+
+          <el-table-column
+            width="150px"
+            prop="person_injury"
+            label="工伤（个人）"
+          />
+
+          <el-table-column
+            width="150px"
+            prop="person_birth"
+            label="生育（个人）"
+          />
+
+          <el-table-column
+            width="150px"
+            prop="person_accumulation"
+            label="公积金（个人）"
+          />
         </el-table>
         <el-pagination
           @current-change="(page) => handleCurrentChange(2, page)"
@@ -229,14 +264,14 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
-      width="70%"
+      width="80%"
       @closed="closeDialog(0)"
     >
       <el-form
         :model="form"
         ref="form"
         :rules="dialogVisible == '修改五险比例' ? rulesPart : rulesPart"
-        label-width="200px"
+        label-width="100px"
         :inline="true"
       >
         <el-form-item label="养老保险（企业认缴）:" prop="company_pension">
@@ -308,13 +343,13 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="socialConfirm">确 定</el-button>
+        <el-button type="primary" @click="socialConfirm">确 定xx</el-button>
       </span>
     </el-dialog>
     <el-dialog
       title="社保备注"
       :visible.sync="dialogVisible2"
-      width="30%"
+      width="40%"
       @closed="closeDialog(1)"
     >
       <el-form :model="form1" ref="form1" :rules="rules1" label-width="100px">
@@ -673,9 +708,9 @@ export default {
           this.$refs.downloadFile.target = "_blank";
           this.$refs.downloadFile.href = `http://rlzypq.samowl.cn/api/out_social_low?company_id=${
             this.companyId
-          }&username=${this.formInline3.username}&year=${this.formInline3.year}&token=${localStorage.getItem(
-            "token"
-          )}`;
+          }&username=${this.formInline3.username}&year=${
+            this.formInline3.year
+          }&token=${localStorage.getItem("token")}`;
           this.$refs.downloadFile.click();
           break;
       }
