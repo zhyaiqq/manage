@@ -760,6 +760,9 @@ export default {
   },
   props: ["companyId"],
   created() {
+    let activeName = localStorage.getItem("social-2");
+    this.activeName = this.activeName == null ? 0 : activeName;
+    console.log("activeName", activeName);
     this.getSocialList(1);
     this.getCompanySocialInfo();
   },
@@ -788,8 +791,11 @@ export default {
           break;
       }
     },
-    handleClick() {},
+    handleClick() {
+      localStorage.setItem("social-2", this.activeName);
+    },
     handle(type, data) {
+      console.log(data);
       let subjects = [
         "company_pension",
         "company_unemployment",
@@ -857,8 +863,12 @@ export default {
           // 备注
           break;
         case 5:
-          this.form2.entry_time = "";
           this.currentRow = data;
+          if (this.currentRow.is_stop == 1) {
+            this.stop();
+            return;
+          }
+          this.form2.entry_time = data.base_time || "";
           this.dialogVisible3 = true;
           // 停保
           // this.stop();
@@ -988,7 +998,7 @@ export default {
             this.$message.success("停保成功");
           }
           this.dialogVisible3 = false;
-          this.getSocialList(1);
+          this.getSocialList(this.page);
         }
       });
     },

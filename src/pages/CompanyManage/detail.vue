@@ -262,6 +262,7 @@ export default {
       }
     },
     changeTab() {
+      localStorage.setItem("social-2", 0);
       let path = this.$router.history.current.path;
       this.$router.push({
         path,

@@ -483,6 +483,30 @@
             <div>上传合同</div>
           </el-upload>
         </el-form-item>
+        <el-form-item label="上传附件:" prop="contract">
+          <el-upload
+            class="avatar-uploader"
+            action="http://rlzypq.samowl.cn/api/upFile"
+            name="image"
+            :on-success="(res) => uploadSuccess(3, res)"
+            multiple
+            :file-list="fileList"
+            :on-remove="handleRemove"
+            :on-preview="handlePreview"
+          >
+            <div class="upload-success-cn">
+              <img
+                :src="contractFile.http"
+                v-show="isShowFile(form2.contract)"
+                style="width: 100%; height: 100%"
+              />
+            </div>
+            <div class="upload-text" v-show="form2.contract">
+              {{ contractFile.name }}
+            </div>
+            <div>上传附件</div>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -590,6 +614,7 @@ import bus from "@/utils/bus.js";
 export default {
   data() {
     return {
+      fileList: [],
       formInline: {
         username: "",
         entry_status: "",
@@ -746,7 +771,7 @@ export default {
   created() {
     this.getQuitReason();
     this.getCompanyList();
-    // this.getDispatchList(1);
+    this.getDispatchList(1);
     bus.$on("dispatchPerson", (index) => {
       console.log("eeeeee");
       setTimeout(() => {
@@ -785,6 +810,12 @@ export default {
   },
   methods: {
     ...mapActions("menu", ["getNewsNum"]),
+    handleRemove(file, files) {
+      this.fileList = files;
+    },
+    handlePreview(file) {
+      this.downloadFile("http://rlzypq.samowl.cn" + file.url);
+    },
     handleSelectionChange() {},
     handleCurrentChange(page) {
       this.getDispatchList(page);
@@ -861,6 +892,16 @@ export default {
               this.contractFile.url = res.data.user_info.contract;
               this.contractFile.http = res.data.user_info.contract_url;
               this.contractFile.name = res.data.user_info.contract_name;
+              let list = res.data.user_info.annex
+                ? res.data.user_info.annex.split(",")
+                : [];
+              list.map((item) => {
+                this.fileList.push({
+                  url: item,
+                  name: item.substr(item.lastIndexOf("/") + 1),
+                });
+              });
+              console.log("list", list);
               this.dialogTitle = "编辑员工";
               this.dialogVisible = true;
             }
@@ -953,16 +994,20 @@ export default {
           this.resumeFile.url = res.data.url;
           this.resumeFile.http = res.data.http;
           this.resumeFile.name = res.data.name;
-        }
-        if (type == 1) {
+        } else if (type == 1) {
           this.reportFile.url = res.data.url;
           this.reportFile.http = res.data.http;
           this.reportFile.name = res.data.name;
-        }
-        if (type == 2) {
+        } else if (type == 2) {
           this.contractFile.url = res.data.url;
           this.contractFile.http = res.data.http;
           this.contractFile.name = res.data.name;
+        } else if (type == 3) {
+          this.fileList.push({
+            url: res.data.url,
+            http: res.data.http,
+            name: res.data.name,
+          });
         }
         this.$message.success("上传成功");
       } else {
@@ -986,6 +1031,7 @@ export default {
       return false;
     },
     closeDialog(type) {
+      this.fileList = [];
       switch (type) {
         case 0:
           this.form = this.$options.data().form;
@@ -1041,9 +1087,15 @@ export default {
     },
     // 新增员工
     addStaff() {
+      let annex = "";
+      this.fileList.map((item) => {
+        annex += item.url + ",";
+      });
+      annex = annex.substr(0, annex.length - 1);
       addStaff({
         ...this.form,
         ...this.form2,
+        annex,
       }).then((res) => {
         if (res.code) {
           this.getDispatchList(1);
@@ -1054,6 +1106,11 @@ export default {
     },
     // 编辑员工
     editStaff() {
+      let annex = "";
+      this.fileList.map((item) => {
+        annex += item.url + ",";
+      });
+      annex = annex.substr(0, annex.length - 1);
       let out_region = "";
       if (this.form.out_region != this.quitList.length - 1) {
         out_region = this.quitList[this.form.out_region];
@@ -1066,6 +1123,7 @@ export default {
         ...this.form,
         ...this.form2,
         out_region,
+        annex,
       };
       delete params.custom_region;
       editStaff(params).then((res) => {

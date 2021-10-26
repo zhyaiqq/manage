@@ -102,12 +102,12 @@
         show-overflow-tooltip
       >
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="person_accident"
         label="意外伤害保险"
         show-overflow-tooltip
       >
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         prop="person_unemployment"
         label="失业险"
